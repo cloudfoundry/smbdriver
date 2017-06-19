@@ -114,6 +114,7 @@ var mountFlagDefault = flag.String(
 )
 
 const fsType = "cifs"
+const listenAddress = "127.0.0.1"
 
 func main() {
 	parseCommandLine()
@@ -164,7 +165,7 @@ func main() {
 	adminClient := driveradminlocal.NewDriverAdminLocal()
 	adminHandler, _ := driveradminhttp.NewHandler(logger, adminClient)
 	// TODO handle error
-	adminAddress := "127.0.0.1:" + strconv.Itoa(*adminPort)
+	adminAddress := listenAddress + ":" + strconv.Itoa(*adminPort)
 	adminServer := http_server.New(adminAddress, adminHandler)
 
 	servers = append(grouper.Members{
@@ -196,7 +197,7 @@ func processRunnerFor(servers grouper.Members) ifrit.Runner {
 }
 
 func createSmbDriverServer(logger lager.Logger, client voldriver.Driver, atPort int, driversPath string, jsonSpec bool) ifrit.Runner {
-	atAddress := "127.0.0.1:" + strconv.Itoa(atPort)
+	atAddress := listenAddress + ":" + strconv.Itoa(atPort)
 	advertisedUrl := "http://" + atAddress
 	logger.Info("writing-spec-file", lager.Data{"location": driversPath, "name": "smbdriver", "address": advertisedUrl})
 	if jsonSpec {
@@ -241,7 +242,7 @@ func createSmbDriverServer(logger lager.Logger, client voldriver.Driver, atPort 
 }
 
 func createSmbDriverUnixServer(logger lager.Logger, client voldriver.Driver, atPort int) ifrit.Runner {
-	atAddress := "127.0.0.1:" + strconv.Itoa(atPort)
+	atAddress := listenAddress + ":" + strconv.Itoa(atPort)
 	handler, err := driverhttp.NewHandler(logger, client)
 	exitOnFailure(logger, err)
 	return http_server.NewUnixServer(atAddress, handler)
