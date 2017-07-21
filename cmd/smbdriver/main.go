@@ -18,16 +18,16 @@ import (
 
 	"github.com/AbelHu/smbdriver"
 
+	"code.cloudfoundry.org/lager/lagerflags"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
+	"github.com/AbelHu/smbdriver/driveradmin/driveradminhttp"
+	"github.com/AbelHu/smbdriver/driveradmin/driveradminlocal"
 	"github.com/tedsuo/ifrit"
 	"github.com/tedsuo/ifrit/grouper"
 	"github.com/tedsuo/ifrit/http_server"
 	"github.com/tedsuo/ifrit/sigmon"
-	"code.cloudfoundry.org/lager/lagerflags"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminhttp"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminlocal"
 )
 
 var atPort = flag.Int(
@@ -102,13 +102,13 @@ var insecureSkipVerify = flag.Bool(
 )
 
 var mountFlagAllowed = flag.String(
-	"allowed-in-mount",
+	"mountFlagAllowed",
 	"",
 	"This is a comma separted list of parameters allowed to be send in extra config. Each of this parameters can be specify by brokers",
 )
 
 var mountFlagDefault = flag.String(
-	"default-in-mount",
+	"mountFlagDefault",
 	"",
 	"This is a comma separted list of like params:value. This list specify default value of parameters. If parameters has default value and is not in allowed list, this default value become a forced value who's cannot be override",
 )
