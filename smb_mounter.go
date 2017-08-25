@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"path/filepath"
+
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
@@ -13,9 +15,9 @@ import (
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
-	"path/filepath"
 )
 
+// smbMounter represent nfsdriver.Mounter for SMB
 type smbMounter struct {
 	invoker invoker.Invoker
 	osutil  osshim.Os
@@ -23,10 +25,12 @@ type smbMounter struct {
 	config  Config
 }
 
+// NewSmbMounter create SMB mounter
 func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) nfsdriver.Mounter {
 	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
 }
 
+// Mount mount SMB folder to a local path
 // Azure File Service:
 //   required: username, password, vers=3.0
 //   optional: uid, gid, file_mode, dir_mode, readonly | ro
@@ -73,6 +77,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 	return err
 }
 
+// Unmount unmount a SMB folder from a local path
 func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	logger := env.Logger().Session("smb-umount")
 	logger.Info("start")
@@ -81,6 +86,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	return err
 }
 
+// Check check whether a local path is mounted or not
 func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
 	logger := env.Logger().Session("smb-check-mountpoint")
 	logger.Info("start")
@@ -100,6 +106,7 @@ func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
 	return true
 }
 
+// Purge delete all files in a local path
 func (m *smbMounter) Purge(env voldriver.Env, path string) {
 	logger := env.Logger().Session("purge")
 	logger.Info("start")

@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Config represents the configurations for SMB mount
 type Config struct {
 	Allowed   []string
 	Mandatory []string
@@ -25,6 +26,7 @@ func inArray(list []string, key string) bool {
 	return false
 }
 
+// NewSmbConfig creates Config for SMB
 func NewSmbConfig() *Config {
 	myConf := new(Config)
 
@@ -36,6 +38,7 @@ func NewSmbConfig() *Config {
 	return myConf
 }
 
+// Copy copy a config
 func (config *Config) Copy() *Config {
 	myConf := new(Config)
 
@@ -53,6 +56,7 @@ func (config *Config) Copy() *Config {
 	return myConf
 }
 
+// SetEntries set options to a config. Those options in ignoreList will be ignored.
 func (config *Config) SetEntries(opts map[string]interface{}, ignoreList []string) error {
 	errorList := config.parseMap(opts, ignoreList)
 
@@ -69,6 +73,7 @@ func (config *Config) SetEntries(opts map[string]interface{}, ignoreList []strin
 	return nil
 }
 
+// MakeParams generate parameters as an array from config.
 func (config Config) MakeParams() []string {
 	params := []string{}
 
@@ -89,6 +94,7 @@ func (config Config) MakeParams() []string {
 	return params
 }
 
+// MakeConfig generate parameters as a map from config.
 func (config Config) MakeConfig() map[string]interface{} {
 	params := map[string]interface{}{}
 
@@ -103,6 +109,7 @@ func (config Config) MakeConfig() map[string]interface{} {
 	return params
 }
 
+// ReadConf read config.
 func (config *Config) ReadConf(allowedFlag string, defaultFlag string, mandatoryFields []string) error {
 	if len(allowedFlag) > 0 {
 		config.Allowed = strings.Split(allowedFlag, ",")
@@ -117,6 +124,7 @@ func (config *Config) ReadConf(allowedFlag string, defaultFlag string, mandatory
 	return nil
 }
 
+// CheckMandatory get missing mandatory options.
 func (config Config) CheckMandatory() []string {
 	var result []string
 

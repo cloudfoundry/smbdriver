@@ -45,7 +45,7 @@ var adminPort = flag.Int(
 var driversPath = flag.String(
 	"driversPath",
 	"",
-	"Path to directory where drivers are installed",
+	"[REQUIRED] - Path to directory where drivers are installed",
 )
 
 var transport = flag.String(
@@ -63,54 +63,54 @@ var mountDir = flag.String(
 var requireSSL = flag.Bool(
 	"requireSSL",
 	false,
-	"whether the fake driver should require ssl-secured communication",
+	"Whether the fake driver should require ssl-secured communication",
 )
 
 var caFile = flag.String(
 	"caFile",
 	"",
-	"the certificate authority public key file to use with ssl authentication",
+	"(optional) - The certificate authority public key file to use with ssl authentication",
 )
 
 var certFile = flag.String(
 	"certFile",
 	"",
-	"the public key file to use with ssl authentication",
+	"(optional) - The public key file to use with ssl authentication",
 )
 
 var keyFile = flag.String(
 	"keyFile",
 	"",
-	"the private key file to use with ssl authentication",
+	"(optional) - The private key file to use with ssl authentication",
 )
 var clientCertFile = flag.String(
 	"clientCertFile",
 	"",
-	"the public key file to use with client ssl authentication",
+	"(optional) - The public key file to use with client ssl authentication",
 )
 
 var clientKeyFile = flag.String(
 	"clientKeyFile",
 	"",
-	"the private key file to use with client ssl authentication",
+	"(optional) - The private key file to use with client ssl authentication",
 )
 
 var insecureSkipVerify = flag.Bool(
 	"insecureSkipVerify",
 	false,
-	"whether SSL communication should skip verification of server IP addresses in the certificate",
+	"Whether SSL communication should skip verification of server IP addresses in the certificate",
 )
 
 var mountFlagAllowed = flag.String(
 	"mountFlagAllowed",
 	"",
-	"This is a comma separted list of parameters allowed to be send in extra config. Each of this parameters can be specify by brokers",
+	"[REQUIRED] - This is a comma separted list of parameters allowed to be send in extra config. Each of this parameters can be specify by brokers",
 )
 
 var mountFlagDefault = flag.String(
 	"mountFlagDefault",
 	"",
-	"This is a comma separted list of like params:value. This list specify default value of parameters. If parameters has default value and is not in allowed list, this default value become a forced value who's cannot be override",
+	"(optional) - This is a comma separted list of like params:value. This list specify default value of parameters. If parameters has default value and is not in allowed list, this default value become a forced value who's cannot be override",
 )
 
 const fsType = "cifs"
@@ -249,7 +249,7 @@ func createSmbDriverUnixServer(logger lager.Logger, client voldriver.Driver, atP
 }
 
 func newLogger() (lager.Logger, *lager.ReconfigurableSink) {
-	sink, err := lager.NewRedactingWriterSink(os.Stdout, lager.DEBUG, nil, nil)
+	sink, err := lager.NewRedactingWriterSink(os.Stdout, lager.DEBUG, []string{"[Pp]wd", "[Pp]ass", "args"}, nil)
 	if err != nil {
 		panic(err)
 	}

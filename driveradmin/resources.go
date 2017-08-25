@@ -7,7 +7,7 @@ import (
 
 const (
 	EvacuateRoute = "evacuate"
-	PingRoute = "ping"
+	PingRoute     = "ping"
 )
 
 var Routes = rata.Routes{
@@ -16,7 +16,6 @@ var Routes = rata.Routes{
 }
 
 //go:generate counterfeiter -o smbdriverfakes/fake_driver_admin.go src/github.com/AbelHu/smbdriver/driveradmin DriverAdmin
-
 type DriverAdmin interface {
 	Evacuate(env voldriver.Env) ErrorResponse
 	Ping(env voldriver.Env) ErrorResponse
@@ -30,4 +29,3 @@ type ErrorResponse struct {
 type Drainable interface {
 	Drain(env voldriver.Env) error
 }
-
