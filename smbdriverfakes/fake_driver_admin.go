@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"code.cloudfoundry.org/voldriver"
-	"github.com/AbelHu/smbdriver/driveradmin"
+	"github.com/cloudfoundry/smbdriver/driveradmin"
 )
 
 type FakeDriverAdmin struct {

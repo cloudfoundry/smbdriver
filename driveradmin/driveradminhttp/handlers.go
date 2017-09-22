@@ -6,7 +6,7 @@ import (
 
 	cf_http_handlers "code.cloudfoundry.org/cfhttp/handlers"
 	"code.cloudfoundry.org/lager"
-	"github.com/AbelHu/smbdriver/driveradmin"
+	"github.com/cloudfoundry/smbdriver/driveradmin"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"github.com/tedsuo/rata"
 )

@@ -1,7 +1,7 @@
 package driveradminlocal
 
 import (
-	"github.com/AbelHu/smbdriver/driveradmin"
+	"github.com/cloudfoundry/smbdriver/driveradmin"
 	"code.cloudfoundry.org/voldriver"
 	"github.com/tedsuo/ifrit"
 	"os"

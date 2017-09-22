@@ -11,9 +11,9 @@ import (
 	"code.cloudfoundry.org/lager/lagertest"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/AbelHu/smbdriver/smbdriverfakes"
-	"github.com/AbelHu/smbdriver/driveradmin"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminhttp"
+	"github.com/cloudfoundry/smbdriver/smbdriverfakes"
+	"github.com/cloudfoundry/smbdriver/driveradmin"
+	"github.com/cloudfoundry/smbdriver/driveradmin/driveradminhttp"
 )
 
 var _ = Describe("Volman Driver Handlers", func() {

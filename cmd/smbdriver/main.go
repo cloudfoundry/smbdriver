@@ -16,14 +16,14 @@ import (
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/nfsdriver"
 
-	"github.com/AbelHu/smbdriver"
+	"github.com/cloudfoundry/smbdriver"
 
 	"code.cloudfoundry.org/lager/lagerflags"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminhttp"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminlocal"
+	"github.com/cloudfoundry/smbdriver/driveradmin/driveradminhttp"
+	"github.com/cloudfoundry/smbdriver/driveradmin/driveradminlocal"
 	"github.com/tedsuo/ifrit"
 	"github.com/tedsuo/ifrit/grouper"
 	"github.com/tedsuo/ifrit/http_server"

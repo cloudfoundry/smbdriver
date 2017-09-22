@@ -9,9 +9,9 @@ import (
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/AbelHu/smbdriver/driveradmin/driveradminlocal"
-	"github.com/AbelHu/smbdriver/driveradmin"
-	"github.com/AbelHu/smbdriver/smbdriverfakes"
+	"github.com/cloudfoundry/smbdriver/driveradmin/driveradminlocal"
+	"github.com/cloudfoundry/smbdriver/driveradmin"
+	"github.com/cloudfoundry/smbdriver/smbdriverfakes"
 )
 
 var _ = Describe("Driver Admin Local", func() {

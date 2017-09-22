@@ -17,7 +17,7 @@ var driverPath string
 
 var _ = BeforeSuite(func() {
 	var err error
-	driverPath, err = Build("github.com/AbelHu/smbdriver/cmd/smbdriver")
+	driverPath, err = Build("github.com/cloudfoundry/smbdriver/cmd/smbdriver")
 	Expect(err).ToNot(HaveOccurred())
 })
 

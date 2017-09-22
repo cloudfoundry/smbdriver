@@ -12,7 +12,7 @@ import (
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/voldriverfakes"
-	"github.com/AbelHu/smbdriver"
+	"github.com/cloudfoundry/smbdriver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"os"

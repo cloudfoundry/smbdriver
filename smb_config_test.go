@@ -4,7 +4,7 @@ import (
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
 	"fmt"
-	. "github.com/AbelHu/smbdriver"
+	. "github.com/cloudfoundry/smbdriver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"strconv"
