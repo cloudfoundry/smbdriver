@@ -30,12 +30,13 @@ func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.
 	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
 }
 
+// Reference: https://www.samba.org/samba/docs/man/manpages-3/mount.cifs.8.html
 // Mount mount SMB folder to a local path
 // Azure File Service:
 //   required: username, password, vers=3.0
 //   optional: uid, gid, file_mode, dir_mode, readonly | ro
 // Windows Share Folders:
-//   required: username, password
+//   required: username, password | sec
 //   optional: uid, gid, file_mode, dir_mode, readonly | ro, domain
 func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts map[string]interface{}) error {
 	logger := env.Logger().Session("smb-mount")
