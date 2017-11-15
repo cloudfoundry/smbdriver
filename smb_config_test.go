@@ -1,14 +1,15 @@
 package smbdriver_test
 
 import (
-	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/lager/lagertest"
 	"fmt"
-	. "github.com/cloudfoundry/smbdriver"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"strconv"
 	"strings"
+
+	"code.cloudfoundry.org/lager"
+	"code.cloudfoundry.org/lager/lagertest"
+	. "code.cloudfoundry.org/smbdriver"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 func map2string(entry map[string]string, joinKeyVal string, joinElemnts string) string {

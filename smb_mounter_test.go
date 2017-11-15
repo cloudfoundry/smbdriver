@@ -4,19 +4,20 @@ import (
 	"context"
 	"fmt"
 
+	"os"
+	"strings"
+
 	"code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake"
 	"code.cloudfoundry.org/goshims/osshim/os_fake"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
 	"code.cloudfoundry.org/nfsdriver"
+	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/voldriverfakes"
-	"github.com/cloudfoundry/smbdriver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"os"
-	"strings"
 )
 
 var _ = Describe("SmbMounter", func() {

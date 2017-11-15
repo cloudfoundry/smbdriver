@@ -6,7 +6,7 @@ import (
 
 	cf_http_handlers "code.cloudfoundry.org/cfhttp/handlers"
 	"code.cloudfoundry.org/lager"
-	"github.com/cloudfoundry/smbdriver/driveradmin"
+	"code.cloudfoundry.org/smbdriver/driveradmin"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"github.com/tedsuo/rata"
 )
@@ -18,7 +18,7 @@ func NewHandler(logger lager.Logger, client driveradmin.DriverAdmin) (http.Handl
 
 	var handlers = rata.Handlers{
 		driveradmin.EvacuateRoute: newEvacuateHandler(logger, client),
-		driveradmin.PingRoute: newPingHandler(logger, client),
+		driveradmin.PingRoute:     newPingHandler(logger, client),
 	}
 
 	return rata.NewRouter(driveradmin.Routes, handlers)

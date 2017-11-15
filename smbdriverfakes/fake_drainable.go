@@ -4,8 +4,8 @@ package smbdriverfakes
 import (
 	"sync"
 
+	"code.cloudfoundry.org/smbdriver/driveradmin"
 	"code.cloudfoundry.org/voldriver"
-	"github.com/cloudfoundry/smbdriver/driveradmin"
 )
 
 type FakeDrainable struct {
