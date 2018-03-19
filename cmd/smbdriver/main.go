@@ -9,6 +9,7 @@ import (
 
 	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
+	"code.cloudfoundry.org/nfsdriver/oshelper"
 
 	"code.cloudfoundry.org/goshims/filepathshim"
 	"code.cloudfoundry.org/goshims/ioutilshim"
@@ -142,6 +143,7 @@ func main() {
 		&ioutilshim.IoutilShim{},
 		*mountDir,
 		mounter,
+		oshelper.NewOsHelper(),
 	)
 
 	if *transport == "tcp" {
