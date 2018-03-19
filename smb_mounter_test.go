@@ -3,6 +3,7 @@ package smbdriver_test
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 
 	"os"
 	"strings"
@@ -47,7 +48,7 @@ var _ = Describe("SmbMounter", func() {
 		fakeOs = &os_fake.FakeOs{}
 
 		config := smbdriver.NewSmbConfig()
-		config.ReadConf("username,password,vers,uid,gid,file_mode,dir_mode,readonly,ro", "", []string{})
+		_ = config.ReadConf("username,password,vers,uid,gid,file_mode,dir_mode,readonly,ro", "", []string{})
 
 		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
 	})
@@ -116,7 +117,7 @@ var _ = Describe("SmbMounter", func() {
 				opts = map[string]interface{}{}
 
 				config := smbdriver.NewSmbConfig()
-				config.ReadConf("password,vers,file_mode,dir_mode,readonly", "", []string{"username"})
+				_ = config.ReadConf("password,vers,file_mode,dir_mode,readonly", "", []string{"username"})
 
 				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
 
@@ -209,8 +210,16 @@ var _ = Describe("SmbMounter", func() {
 	})
 
 	Context("#Purge", func() {
+		var (
+			rootPath string
+		)
+
+		BeforeEach(func() {
+			rootPath = filepath.Join("var", "vcap", "data", "some", "path")
+		})
+
 		JustBeforeEach(func() {
-			subject.Purge(env, "/var/vcap/data/some/path")
+			subject.Purge(env, rootPath)
 		})
 
 		Context("when stuff is in the directory", func() {
@@ -225,7 +234,7 @@ var _ = Describe("SmbMounter", func() {
 			It("should remove stuff", func() {
 				Expect(fakeOs.RemoveAllCallCount()).NotTo(BeZero())
 				path := fakeOs.RemoveAllArgsForCall(0)
-				Expect(path).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
+				Expect(path).To(Equal(filepath.Join(rootPath, "guidy-guid-guid")))
 			})
 
 			Context("when the stuff is not a directory", func() {
