@@ -1,11 +1,13 @@
+// +build windows
+
 package smbdriver_test
 
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 
-	"os"
 	"strings"
 
 	"code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake"
@@ -48,58 +50,49 @@ var _ = Describe("SmbMounter", func() {
 		fakeOs = &os_fake.FakeOs{}
 
 		config := smbdriver.NewSmbConfig()
-		_ = config.ReadConf("username,password,vers,uid,gid,file_mode,dir_mode,readonly,ro", "", []string{})
+		_ = config.ReadConf("username,password", "", []string{})
 
 		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
 	})
 
 	Context("#Mount", func() {
+		BeforeEach(func() {
+			opts["username"] = "fakeusername"
+			opts["password"] = "fakepassword"
+		})
+
 		Context("when mount succeeds", func() {
 			JustBeforeEach(func() {
 				fakeInvoker.InvokeReturns(nil, nil)
 				err = subject.Mount(env, "source", "target", opts)
 			})
 
-			It("should return without error", func() {
-				Expect(err).NotTo(HaveOccurred())
-			})
-
 			It("should use the passed in variables", func() {
+				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
-				Expect(cmd).To(Equal("mount"))
+				Expect(cmd).To(Equal("net"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("/user:fakeusername"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("fakepassword"))
+			})
+
+			It("should make a symbolic link", func() {
+				Expect(err).NotTo(HaveOccurred())
+				_, cmd, args := fakeInvoker.InvokeArgsForCall(1)
+				Expect(cmd).To(Equal("cmd"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("/c"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("mklink"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("/d"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
 			})
 
-			Context("when mounting read only with readonly", func() {
-				Context("and readonly is passed", func() {
-					BeforeEach(func() {
-						opts["readonly"] = true
-					})
-
-					It("should include the ro flag", func() {
-						_, _, args := fakeInvoker.InvokeArgsForCall(0)
-						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
-					})
-				})
-
-				Context("and ro is passed", func() {
-					BeforeEach(func() {
-						opts["ro"] = true
-					})
-
-					It("should include the ro flag", func() {
-						_, _, args := fakeInvoker.InvokeArgsForCall(0)
-						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
-					})
-				})
-			})
 		})
 
 		Context("when mount errors", func() {
 			BeforeEach(func() {
 				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
-
 				err = subject.Mount(env, "source", "target", opts)
 			})
 
@@ -108,16 +101,12 @@ var _ = Describe("SmbMounter", func() {
 			})
 		})
 
-		Context("when mount is cancelled", func() {
-			// TODO: when we pick up the lager.Context
-		})
-
 		Context("when error occurs", func() {
 			BeforeEach(func() {
 				opts = map[string]interface{}{}
 
 				config := smbdriver.NewSmbConfig()
-				_ = config.ReadConf("password,vers,file_mode,dir_mode,readonly", "", []string{"username"})
+				_ = config.ReadConf("password", "", []string{"username"})
 
 				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
 
@@ -157,14 +146,13 @@ var _ = Describe("SmbMounter", func() {
 				err = subject.Unmount(env, "target")
 			})
 
-			It("should return without error", func() {
-				Expect(err).NotTo(HaveOccurred())
-			})
-
 			It("should use the passed in variables", func() {
+				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
-				Expect(cmd).To(Equal("umount"))
+				Expect(cmd).To(Equal("net"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("/delete"))
 			})
 		})
 
@@ -189,10 +177,23 @@ var _ = Describe("SmbMounter", func() {
 			BeforeEach(func() {
 				success = subject.Check(env, "target", "source")
 			})
+
+			It("should use the passed in variables", func() {
+				Expect(err).NotTo(HaveOccurred())
+				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
+				Expect(cmd).To(Equal("net"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("|"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("findstr.exe"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("/L"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("'source'"))
+			})
+
 			It("uses correct context", func() {
 				env, _, _ := fakeInvoker.InvokeArgsForCall(0)
 				Expect(fmt.Sprintf("%#v", env.Context())).To(ContainSubstring("timerCtx"))
 			})
+
 			It("reports valid mountpoint", func() {
 				Expect(success).To(BeTrue())
 			})
