@@ -142,7 +142,7 @@ var _ = Describe("SmbMounter", func() {
 		Context("when mount succeeds", func() {
 			BeforeEach(func() {
 				fakeInvoker.InvokeReturns(nil, nil)
-
+				fakeOs.ReadlinkReturns("source", nil)
 				err = subject.Unmount(env, "target")
 			})
 
@@ -151,7 +151,7 @@ var _ = Describe("SmbMounter", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("net"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("/delete"))
 			})
 		})

@@ -80,6 +80,11 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 		return err
 	}
 
+	err = m.osutil.RemoveAll(target)
+	if err != nil {
+		return err
+	}
+
 	mklinkOptions := []string{
 		"/c",
 		"mklink",
@@ -97,12 +102,18 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	logger.Info("start")
 	defer logger.Info("end")
 
+	source, err := m.osutil.Readlink(target)
+	logger.Debug("source", lager.Data{"source": source})
+	if err != nil {
+		return err
+	}
+
 	unmountOptions := []string{
 		"use",
-		target,
+		source,
 		"/delete",
 	}
-	_, err := m.invoker.Invoke(env, "net", unmountOptions)
+	_, err = m.invoker.Invoke(env, "net", unmountOptions)
 	return err
 }
 
