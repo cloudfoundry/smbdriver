@@ -180,7 +180,6 @@ var _ = Describe("SmbMounter", func() {
 			})
 
 			It("should use the passed in variables", func() {
-				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("net"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
