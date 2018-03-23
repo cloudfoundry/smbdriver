@@ -175,6 +175,7 @@ var _ = Describe("SmbMounter", func() {
 
 		Context("when check succeeds", func() {
 			BeforeEach(func() {
+				fakeInvoker.InvokeReturns(nil, nil)
 				success = subject.Check(env, "target", "source")
 			})
 
