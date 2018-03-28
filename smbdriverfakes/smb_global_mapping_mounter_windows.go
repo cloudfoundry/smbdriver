@@ -1,4 +1,4 @@
-// // +build windows
+// +build windows
 
 package smbdriver
 
@@ -60,14 +60,10 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 	}
 
 	mountOptions := []string{
-		"-file",
-		"/var/vcap/jobs/smbdriver/scripts/mounter.ps1",
-		"-username",
-		opts["username"].(string),
-		"-password",
-		opts["password"].(string),
-		"-remotePath",
+		"use",
 		source,
+		fmt.Sprintf("/user:%s", opts["username"].(string)),
+		opts["password"].(string),
 	}
 
 	logger.Debug("parse-mount", lager.Data{
@@ -79,7 +75,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountOptions, ",")})
-	_, err := m.invoker.Invoke(env, "powershell.exe", mountOptions)
+	_, err := m.invoker.Invoke(env, "net", mountOptions)
 	if err != nil {
 		return err
 	}
@@ -113,13 +109,11 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	}
 
 	unmountOptions := []string{
-		"-file",
-		"/var/vcap/jobs/smbdriver/scripts/unmounter.ps1",
-		"-remotePath",
+		"use",
 		source,
+		"/delete",
 	}
-
-	_, err = m.invoker.Invoke(env, "powershell.exe", unmountOptions)
+	_, err = m.invoker.Invoke(env, "net", unmountOptions)
 	return err
 }
 

@@ -1,4 +1,4 @@
-// +build windows
+// // +build windows
 
 package smbdriver_test
 
@@ -67,14 +67,21 @@ var _ = Describe("SmbMounter", func() {
 				err = subject.Mount(env, "source", "target", opts)
 			})
 
-			It("should use the passed in variables", func() {
+			It("should succeed", func() {
 				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should call the powershell mounter script with the correct arguments", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
-				Expect(cmd).To(Equal("net"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("/user:fakeusername"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("fakepassword"))
+				Expect(cmd).To(Equal("powershell.exe"))
+				Expect(args[0]).To(Equal("-file"))
+				Expect(args[1]).To(Equal("/var/vcap/jobs/smbdriver/scripts/mounter.ps1"))
+				Expect(args[2]).To(Equal("-username"))
+				Expect(args[3]).To(Equal("fakeusername"))
+				Expect(args[4]).To(Equal("-password"))
+				Expect(args[5]).To(Equal("fakepassword"))
+				Expect(args[6]).To(Equal("-remotePath"))
+				Expect(args[7]).To(Equal("source"))
 			})
 
 			It("should make a symbolic link", func() {
@@ -87,7 +94,6 @@ var _ = Describe("SmbMounter", func() {
 				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
 			})
-
 		})
 
 		Context("when mount errors", func() {
@@ -146,13 +152,17 @@ var _ = Describe("SmbMounter", func() {
 				err = subject.Unmount(env, "target")
 			})
 
-			It("should use the passed in variables", func() {
+			It("should succeed", func() {
 				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should call the powershell unmounter script with the right parameters", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
-				Expect(cmd).To(Equal("net"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("/delete"))
+				Expect(cmd).To(Equal("powershell.exe"))
+				Expect(args[0]).To(Equal("-file"))
+				Expect(args[1]).To(Equal("/var/vcap/jobs/smbdriver/scripts/unmounter.ps1"))
+				Expect(args[2]).To(Equal("-remotePath"))
+				Expect(args[3]).To(Equal("source"))
 			})
 		})
 
