@@ -1,4 +1,4 @@
-// // +build windows
+// +build windows
 
 package smbdriver_test
 
@@ -75,7 +75,7 @@ var _ = Describe("SmbMounter", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("powershell.exe"))
 				Expect(args[0]).To(Equal("-file"))
-				Expect(args[1]).To(Equal("/var/vcap/jobs/smbdriver/scripts/mounter.ps1"))
+				Expect(args[1]).To(Equal("C:/var/vcap/jobs/smbdriver/scripts/mounter.ps1"))
 				Expect(args[2]).To(Equal("-username"))
 				Expect(args[3]).To(Equal("fakeusername"))
 				Expect(args[4]).To(Equal("-password"))
@@ -160,7 +160,7 @@ var _ = Describe("SmbMounter", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("powershell.exe"))
 				Expect(args[0]).To(Equal("-file"))
-				Expect(args[1]).To(Equal("/var/vcap/jobs/smbdriver/scripts/unmounter.ps1"))
+				Expect(args[1]).To(Equal("C:/var/vcap/jobs/smbdriver/scripts/unmounter.ps1"))
 				Expect(args[2]).To(Equal("-remotePath"))
 				Expect(args[3]).To(Equal("source"))
 			})

@@ -1,4 +1,4 @@
-// // +build windows
+// +build windows
 
 package smbdriver
 
@@ -61,7 +61,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 
 	mountOptions := []string{
 		"-file",
-		"/var/vcap/jobs/smbdriver/scripts/mounter.ps1",
+		"C:/var/vcap/jobs/smbdriver/scripts/mounter.ps1",
 		"-username",
 		opts["username"].(string),
 		"-password",
@@ -114,7 +114,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 
 	unmountOptions := []string{
 		"-file",
-		"/var/vcap/jobs/smbdriver/scripts/unmounter.ps1",
+		"C:/var/vcap/jobs/smbdriver/scripts/unmounter.ps1",
 		"-remotePath",
 		source,
 	}
