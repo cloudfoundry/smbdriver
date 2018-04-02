@@ -107,7 +107,6 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	defer logger.Info("end")
 
 	source, err := m.osutil.Readlink(target)
-	logger.Debug("source", lager.Data{"source": source})
 	if err != nil {
 		return err
 	}
@@ -119,6 +118,13 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 		source,
 	}
 
+	logger.Debug("parse-unmount", lager.Data{
+		"given_target":  target,
+		"given_source":  source,
+		"mountOptions":  unmountOptions,
+	})
+
+	logger.Debug("unmount", lager.Data{"params": strings.Join(mountOptions, ",")})
 	_, err = m.invoker.Invoke(env, "powershell.exe", unmountOptions)
 	return err
 }
