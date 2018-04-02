@@ -124,7 +124,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 		"mountOptions":  unmountOptions,
 	})
 
-	logger.Debug("unmount", lager.Data{"params": strings.Join(mountOptions, ",")})
+	logger.Debug("unmount", lager.Data{"params": strings.Join(unmountOptions, ",")})
 	_, err = m.invoker.Invoke(env, "powershell.exe", unmountOptions)
 	return err
 }
