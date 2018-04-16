@@ -5,6 +5,7 @@ package smbdriver
 import (
 	"context"
 	"fmt"
+	"path"
 	"strings"
 	"time"
 
@@ -18,6 +19,8 @@ import (
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
 )
+
+const ScriptsPath = "C:/var/vcap/jobs/smbdriver-windows/scripts"
 
 // smbMounter represent nfsdriver.Mounter for SMB
 type smbMounter struct {
@@ -61,7 +64,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 
 	mountOptions := []string{
 		"-file",
-		"C:/var/vcap/jobs/smbdriver/scripts/mounter.ps1",
+		path.Join(ScriptsPath, "mounter.ps1"),
 		"-username",
 		opts["username"].(string),
 		"-password",
@@ -113,7 +116,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 
 	unmountOptions := []string{
 		"-file",
-		"C:/var/vcap/jobs/smbdriver/scripts/unmounter.ps1",
+		path.Join(ScriptsPath, "unmounter.ps1"),
 		"-remotePath",
 		source,
 	}
@@ -140,7 +143,7 @@ func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
 	env = driverhttp.EnvWithContext(ctx, env)
 	checkMountOptions := []string{
 		"-file",
-		"C:/var/vcap/jobs/smbdriver/scripts/check_mount.ps1",
+		path.Join(ScriptsPath, "check_mount.ps1"),
 		"-remotePath",
 		mountPoint,
 	}
