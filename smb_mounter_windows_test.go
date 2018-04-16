@@ -191,12 +191,11 @@ var _ = Describe("SmbMounter", func() {
 
 			It("should use the passed in variables", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
-				Expect(cmd).To(Equal("net"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("use"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("|"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("findstr.exe"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("/L"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("'source'"))
+				Expect(cmd).To(Equal("powershell.exe"))
+				Expect(args[0]).To(Equal("-file"))
+				Expect(args[1]).To(Equal("C:/var/vcap/jobs/smbdriver/scripts/check_mount.ps1"))
+				Expect(args[2]).To(Equal("-remotePath"))
+				Expect(args[3]).To(Equal("source"))
 			})
 
 			It("uses correct context", func() {

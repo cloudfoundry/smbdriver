@@ -119,9 +119,9 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	}
 
 	logger.Debug("parse-unmount", lager.Data{
-		"given_target":  target,
-		"given_source":  source,
-		"mountOptions":  unmountOptions,
+		"given_target": target,
+		"given_source": source,
+		"mountOptions": unmountOptions,
 	})
 
 	logger.Debug("unmount", lager.Data{"params": strings.Join(unmountOptions, ",")})
@@ -138,16 +138,18 @@ func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
 	ctx, cancel := context.WithDeadline(context.TODO(), time.Now().Add(time.Second*5))
 	defer cancel()
 	env = driverhttp.EnvWithContext(ctx, env)
-	checkOptions := []string{
-		"use",
-		"|",
-		"findstr.exe",
-		"/L",
-		fmt.Sprintf("'%s'", mountPoint),
+	checkMountOptions := []string{
+		"-file",
+		"C:/var/vcap/jobs/smbdriver/scripts/check_mount.ps1",
+		"-remotePath",
+		mountPoint,
 	}
 
-	_, err := m.invoker.Invoke(env, "net", checkOptions)
+	logger.Debug("check-mount", lager.Data{
+		"checkMountOptions": checkMountOptions,
+	})
 
+	_, err := m.invoker.Invoke(env, "powershell.exe", checkMountOptions)
 	if err != nil {
 		// Note: Created volumes (with no mounts) will be removed
 		//       since VolumeInfo.Mountpoint will be an empty string
