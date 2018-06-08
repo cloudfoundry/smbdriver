@@ -105,8 +105,10 @@ var _ = Describe("SmbMounter", func() {
 				err = subject.Mount(env, "source", "target", opts)
 			})
 
-			It("should return without error", func() {
+			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
+				_, ok := err.(voldriver.SafeError)
+				Expect(ok).To(BeTrue())
 			})
 		})
 
@@ -134,6 +136,8 @@ var _ = Describe("SmbMounter", func() {
 				It("should error", func() {
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Missing mandatory options"))
+					_, ok := err.(voldriver.SafeError)
+					Expect(ok).To(BeTrue())
 				})
 			})
 
@@ -146,6 +150,8 @@ var _ = Describe("SmbMounter", func() {
 				It("should error", func() {
 					Expect(err).To(HaveOccurred())
 					Expect(err.Error()).To(ContainSubstring("Not allowed options"))
+					_, ok := err.(voldriver.SafeError)
+					Expect(ok).To(BeTrue())
 				})
 			})
 		})
@@ -178,6 +184,8 @@ var _ = Describe("SmbMounter", func() {
 
 			It("should return an error", func() {
 				Expect(err).To(HaveOccurred())
+				_, ok := err.(voldriver.SafeError)
+				Expect(ok).To(BeTrue())
 			})
 		})
 	})

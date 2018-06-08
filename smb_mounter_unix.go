@@ -27,6 +27,13 @@ type smbMounter struct {
 	config  Config
 }
 
+func safeError(e error) error {
+	if e == nil {
+		return nil
+	}
+	return voldriver.SafeError{SafeDescription: e.Error()}
+}
+
 // NewSmbMounter create SMB mounter
 func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) nfsdriver.Mounter {
 	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
@@ -56,7 +63,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 			"given_options": opts,
 			"config_mounts": tempConfig,
 		})
-		return err
+		return safeError(err)
 	}
 
 	mountOptions := []string{
@@ -77,7 +84,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountOptions, ",")})
 	_, err := m.invoker.Invoke(env, "mount", mountOptions)
-	return err
+	return safeError(err)
 }
 
 // Unmount unmount a SMB folder from a local path
@@ -86,7 +93,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	logger.Info("start")
 	defer logger.Info("end")
 	_, err := m.invoker.Invoke(env, "umount", []string{target})
-	return err
+	return safeError(err)
 }
 
 // Check check whether a local path is mounted or not
