@@ -114,6 +114,12 @@ var mountFlagDefault = flag.String(
 	"(optional) - This is a comma separted list of like params:value. This list specify default value of parameters. If parameters has default value and is not in allowed list, this default value become a forced value who's cannot be override",
 )
 
+var uniqueVolumeIds = flag.Bool(
+	"uniqueVolumeIds",
+	false,
+	"Whether the SMB driver should opt-in to unique volumes",
+)
+
 const fsType = "cifs"
 const listenAddress = "127.0.0.1"
 
@@ -147,9 +153,9 @@ func main() {
 	)
 
 	if *transport == "tcp" {
-		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false)
+		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false, false)
 	} else if *transport == "tcp-json" {
-		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true)
+		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true, *uniqueVolumeIds)
 	} else {
 		localDriverServer = createSmbDriverUnixServer(logger, client, *atPort)
 	}
@@ -198,12 +204,12 @@ func processRunnerFor(servers grouper.Members) ifrit.Runner {
 	return sigmon.New(grouper.NewOrdered(os.Interrupt, servers))
 }
 
-func createSmbDriverServer(logger lager.Logger, client voldriver.Driver, atPort int, driversPath string, jsonSpec bool) ifrit.Runner {
+func createSmbDriverServer(logger lager.Logger, client voldriver.Driver, atPort int, driversPath string, jsonSpec bool, uniqueVolumeIds bool) ifrit.Runner {
 	atAddress := listenAddress + ":" + strconv.Itoa(atPort)
 	advertisedUrl := "http://" + atAddress
-	logger.Info("writing-spec-file", lager.Data{"location": driversPath, "name": "smbdriver", "address": advertisedUrl})
+	logger.Info("writing-spec-file", lager.Data{"location": driversPath, "name": "smbdriver", "address": advertisedUrl, "unique-volume-ids": uniqueVolumeIds})
 	if jsonSpec {
-		driverJsonSpec := voldriver.DriverSpec{Name: "smbdriver", Address: advertisedUrl}
+		driverJsonSpec := voldriver.DriverSpec{Name: "smbdriver", Address: advertisedUrl, UniqueVolumeIds: uniqueVolumeIds}
 
 		if *requireSSL {
 			absCaFile, err := filepath.Abs(*caFile)
