@@ -131,9 +131,20 @@ func (m *smbMounter) Purge(env voldriver.Env, path string) {
 
 	for _, fileInfo := range fileInfos {
 		if fileInfo.IsDir() {
-			if err := m.osutil.RemoveAll(filepath.Join(path, fileInfo.Name())); err != nil {
-				logger.Error("purge-cannot-remove-directory", err, lager.Data{"name": fileInfo.Name(), "path": path})
+			mountDir := filepath.Join(path, fileInfo.Name())
+
+			_, err = m.invoker.Invoke(env, "umount", []string{"-l", "-f", mountDir})
+			if err != nil {
+				logger.Error("warning-umount-failed", err)
 			}
+
+			logger.Info("unmount-successful", lager.Data{"path": mountDir})
+
+			if err := m.osutil.Remove(mountDir); err != nil {
+				logger.Error("purge-cannot-remove-directory", err, lager.Data{"name": mountDir, "path": path})
+			}
+
+			logger.Info("remove-directory-successful", lager.Data{"path": mountDir})
 		}
 	}
 }

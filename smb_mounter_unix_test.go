@@ -5,8 +5,6 @@ package smbdriver_test
 import (
 	"context"
 	"fmt"
-	"path/filepath"
-
 	"os"
 	"strings"
 
@@ -223,39 +221,46 @@ var _ = Describe("SmbMounter", func() {
 	})
 
 	Context("#Purge", func() {
-		var (
-			rootPath string
-		)
-
-		BeforeEach(func() {
-			rootPath = filepath.Join("var", "vcap", "data", "some", "path")
-		})
-
 		JustBeforeEach(func() {
-			subject.Purge(env, rootPath)
+			subject.Purge(env, "/var/vcap/data/some/path")
 		})
 
 		Context("when stuff is in the directory", func() {
 			var fakeStuff *ioutil_fake.FakeFileInfo
+
 			BeforeEach(func() {
 				fakeStuff = &ioutil_fake.FakeFileInfo{}
 				fakeStuff.NameReturns("guidy-guid-guid")
 				fakeStuff.IsDirReturns(true)
+
 				fakeIoutil.ReadDirReturns([]os.FileInfo{fakeStuff}, nil)
 			})
 
-			It("should remove stuff", func() {
-				Expect(fakeOs.RemoveAllCallCount()).NotTo(BeZero())
-				path := fakeOs.RemoveAllArgsForCall(0)
-				Expect(path).To(Equal(filepath.Join(rootPath, "guidy-guid-guid")))
+			It("should attempt to unmount the directory", func() {
+				Expect(fakeInvoker.InvokeCallCount()).To(Equal(1))
+
+				_, proc, args := fakeInvoker.InvokeArgsForCall(0)
+				Expect(proc).To(Equal("umount"))
+				Expect(len(args)).To(Equal(3))
+				Expect(args[0]).To(Equal("-l"))
+				Expect(args[1]).To(Equal("-f"))
+				Expect(args[2]).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
+			})
+
+			It("should remove the mount directory", func() {
+				Expect(fakeOs.RemoveCallCount()).To(Equal(1))
+
+				path := fakeOs.RemoveArgsForCall(0)
+				Expect(path).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
 			})
 
 			Context("when the stuff is not a directory", func() {
 				BeforeEach(func() {
 					fakeStuff.IsDirReturns(false)
 				})
+
 				It("should not remove the stuff", func() {
-					Expect(fakeOs.RemoveAllCallCount()).To(BeZero())
+					Expect(fakeOs.RemoveCallCount()).To(BeZero())
 				})
 			})
 		})
