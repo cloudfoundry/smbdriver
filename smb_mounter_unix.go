@@ -5,10 +5,9 @@ package smbdriver
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
-
-	"path/filepath"
 
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
@@ -92,7 +91,9 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 	logger := env.Logger().Session("smb-umount")
 	logger.Info("start")
 	defer logger.Info("end")
-	_, err := m.invoker.Invoke(env, "umount", []string{target})
+
+	_, err := m.invoker.Invoke(env, "umount", []string{"-l", target})
+
 	return safeError(err)
 }
 

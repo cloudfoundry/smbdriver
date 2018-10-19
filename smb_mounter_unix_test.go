@@ -172,7 +172,9 @@ var _ = Describe("SmbMounter", func() {
 			It("should use the passed in variables", func() {
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("umount"))
-				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
+				Expect(len(args)).To(Equal(2))
+				Expect(args[0]).To(Equal("-l"))
+				Expect(args[1]).To(Equal("target"))
 			})
 		})
 
@@ -184,6 +186,7 @@ var _ = Describe("SmbMounter", func() {
 
 			It("should return an error", func() {
 				Expect(err).To(HaveOccurred())
+
 				_, ok := err.(voldriver.SafeError)
 				Expect(ok).To(BeTrue())
 			})
