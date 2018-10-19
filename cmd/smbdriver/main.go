@@ -9,17 +9,14 @@ import (
 
 	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
-	"code.cloudfoundry.org/nfsdriver/oshelper"
-
 	"code.cloudfoundry.org/goshims/filepathshim"
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/nfsdriver"
-
-	"code.cloudfoundry.org/smbdriver"
-
 	"code.cloudfoundry.org/lager/lagerflags"
+	"code.cloudfoundry.org/nfsdriver"
+	"code.cloudfoundry.org/nfsdriver/oshelper"
+	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
 	"code.cloudfoundry.org/voldriver"
@@ -128,7 +125,7 @@ func main() {
 
 	var localDriverServer ifrit.Runner
 
-	logger, logTap := newLogger()
+	logger, logSink := newLogger()
 	logger.Info("start")
 	defer logger.Info("end")
 
@@ -166,7 +163,7 @@ func main() {
 
 	if dbgAddr := cf_debug_server.DebugAddress(flag.CommandLine); dbgAddr != "" {
 		servers = append(grouper.Members{
-			{"debug-server", cf_debug_server.Runner(dbgAddr, logTap)},
+			{"debug-server", cf_debug_server.Runner(dbgAddr, logSink)},
 		}, servers...)
 	}
 
@@ -257,12 +254,10 @@ func createSmbDriverUnixServer(logger lager.Logger, client voldriver.Driver, atP
 }
 
 func newLogger() (lager.Logger, *lager.ReconfigurableSink) {
-	sink, err := lager.NewRedactingWriterSink(os.Stdout, lager.DEBUG, []string{"[Pp]wd", "[Pp]ass", "args"}, nil)
-	if err != nil {
-		panic(err)
-	}
-	logger, reconfigurableSink := lagerflags.NewFromSink("smb-driver-server", sink)
-	return logger, reconfigurableSink
+	lagerConfig := lagerflags.ConfigFromFlags()
+	lagerConfig.RedactSecrets = true
+
+	return lagerflags.NewFromConfig("smb-driver-server", lagerConfig)
 }
 
 func parseCommandLine() {
