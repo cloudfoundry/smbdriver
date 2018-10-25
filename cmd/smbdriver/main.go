@@ -9,6 +9,7 @@ import (
 
 	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
+	"code.cloudfoundry.org/goshims/bufioshim"
 	"code.cloudfoundry.org/goshims/filepathshim"
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
@@ -16,6 +17,7 @@ import (
 	"code.cloudfoundry.org/lager/lagerflags"
 	"code.cloudfoundry.org/nfsdriver"
 	"code.cloudfoundry.org/nfsdriver/oshelper"
+	"code.cloudfoundry.org/nfsdriver/procmounts"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
@@ -144,6 +146,7 @@ func main() {
 		&osshim.OsShim{},
 		&filepathshim.FilepathShim{},
 		&ioutilshim.IoutilShim{},
+		procmounts.NewChecker(&bufioshim.BufioShim{}, &osshim.OsShim{}),
 		*mountDir,
 		mounter,
 		oshelper.NewOsHelper(),
