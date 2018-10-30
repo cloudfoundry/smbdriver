@@ -4,6 +4,7 @@ package smbdriver_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -60,12 +61,10 @@ var _ = Describe("SmbMounter", func() {
 			opts["username"] = "fakeusername"
 			opts["password"] = "fakepassword"
 		})
-
+		JustBeforeEach(func() {
+			err = subject.Mount(env, "source", "target", opts)
+		})
 		Context("when mount succeeds", func() {
-			JustBeforeEach(func() {
-				fakeInvoker.InvokeReturns(nil, nil)
-				err = subject.Mount(env, "source", "target", opts)
-			})
 
 			It("should succeed", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -84,6 +83,10 @@ var _ = Describe("SmbMounter", func() {
 				Expect(args[7]).To(Equal("source"))
 			})
 
+			It("should ensure the target does not exist", func() {
+				Expect(fakeOs.RemoveCallCount()).To(Equal(1))
+			})
+
 			It("should make a symbolic link", func() {
 				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(1)
@@ -99,11 +102,18 @@ var _ = Describe("SmbMounter", func() {
 		Context("when mount errors", func() {
 			BeforeEach(func() {
 				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
-				err = subject.Mount(env, "source", "target", opts)
 			})
-
-			It("should return without error", func() {
+			It("should return the error", func() {
 				Expect(err).To(HaveOccurred())
+			})
+		})
+
+		Context("when Remove fails", func() {
+			BeforeEach(func() {
+				fakeOs.RemoveReturns(errors.New("remove-failed"))
+			})
+			It("should return the remove error", func() {
+				Expect(err).To(MatchError("remove-failed"))
 			})
 		})
 
@@ -119,26 +129,19 @@ var _ = Describe("SmbMounter", func() {
 				fakeInvoker.InvokeReturns(nil, nil)
 			})
 
-			JustBeforeEach(func() {
-				err = subject.Mount(env, "source", "target", opts)
-			})
-
 			Context("when a required option is missing", func() {
 				It("should error", func() {
-					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Missing mandatory options"))
+					Expect(err).To(MatchError("Missing mandatory options : username"))
 				})
 			})
 
 			Context("when a disallowed option is passed", func() {
 				BeforeEach(func() {
-					opts["username"] = "fake-username"
 					opts["uid"] = "uid"
 				})
 
 				It("should error", func() {
-					Expect(err).To(HaveOccurred())
-					Expect(err.Error()).To(ContainSubstring("Not allowed options"))
+					Expect(err).To(MatchError("Not allowed options : uid"))
 				})
 			})
 		})
@@ -242,8 +245,8 @@ var _ = Describe("SmbMounter", func() {
 			})
 
 			It("should remove stuff", func() {
-				Expect(fakeOs.RemoveAllCallCount()).NotTo(BeZero())
-				path := fakeOs.RemoveAllArgsForCall(0)
+				Expect(fakeOs.RemoveCallCount()).NotTo(BeZero())
+				path := fakeOs.RemoveArgsForCall(0)
 				Expect(path).To(Equal(filepath.Join(rootPath, "guidy-guid-guid")))
 			})
 
@@ -252,7 +255,7 @@ var _ = Describe("SmbMounter", func() {
 					fakeStuff.IsDirReturns(false)
 				})
 				It("should not remove the stuff", func() {
-					Expect(fakeOs.RemoveAllCallCount()).To(BeZero())
+					Expect(fakeOs.RemoveCallCount()).To(BeZero())
 				})
 			})
 		})

@@ -16,8 +16,8 @@ import (
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagerflags"
 	"code.cloudfoundry.org/nfsdriver"
+	"code.cloudfoundry.org/nfsdriver/mountchecker"
 	"code.cloudfoundry.org/nfsdriver/oshelper"
-	"code.cloudfoundry.org/nfsdriver/procmounts"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
@@ -146,7 +146,7 @@ func main() {
 		&osshim.OsShim{},
 		&filepathshim.FilepathShim{},
 		&ioutilshim.IoutilShim{},
-		procmounts.NewChecker(&bufioshim.BufioShim{}, &osshim.OsShim{}),
+		mountchecker.NewChecker(&bufioshim.BufioShim{}, &osshim.OsShim{}),
 		*mountDir,
 		mounter,
 		oshelper.NewOsHelper(),

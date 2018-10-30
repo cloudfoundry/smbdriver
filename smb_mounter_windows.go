@@ -87,7 +87,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 		return err
 	}
 
-	err = m.osutil.RemoveAll(target)
+	err = m.osutil.Remove(target)
 	if err != nil {
 		return err
 	}
@@ -176,7 +176,7 @@ func (m *smbMounter) Purge(env voldriver.Env, path string) {
 
 	for _, fileInfo := range fileInfos {
 		if fileInfo.IsDir() {
-			if err := m.osutil.RemoveAll(filepath.Join(path, fileInfo.Name())); err != nil {
+			if err := m.osutil.Remove(filepath.Join(path, fileInfo.Name())); err != nil {
 				logger.Error("purge-cannot-remove-directory", err, lager.Data{"name": fileInfo.Name(), "path": path})
 			}
 		}
