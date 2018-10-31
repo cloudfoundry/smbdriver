@@ -15,15 +15,15 @@ import (
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagerflags"
-	"code.cloudfoundry.org/nfsdriver"
-	"code.cloudfoundry.org/nfsdriver/mountchecker"
-	"code.cloudfoundry.org/nfsdriver/oshelper"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
+	"code.cloudfoundry.org/volumedriver"
+	"code.cloudfoundry.org/volumedriver/mountchecker"
+	"code.cloudfoundry.org/volumedriver/oshelper"
 	"github.com/tedsuo/ifrit"
 	"github.com/tedsuo/ifrit/grouper"
 	"github.com/tedsuo/ifrit/http_server"
@@ -141,7 +141,7 @@ func main() {
 		config,
 	)
 
-	client := nfsdriver.NewNfsDriver(
+	client := volumedriver.NewVolumeDriver(
 		logger,
 		&osshim.OsShim{},
 		&filepathshim.FilepathShim{},

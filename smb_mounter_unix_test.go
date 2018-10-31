@@ -12,11 +12,11 @@ import (
 	"code.cloudfoundry.org/goshims/osshim/os_fake"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
-	"code.cloudfoundry.org/nfsdriver"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/voldriverfakes"
+	"code.cloudfoundry.org/volumedriver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -32,7 +32,7 @@ var _ = Describe("SmbMounter", func() {
 		fakeIoutil  *ioutil_fake.FakeIoutil
 		fakeOs      *os_fake.FakeOs
 
-		subject nfsdriver.Mounter
+		subject volumedriver.Mounter
 
 		opts map[string]interface{}
 	)

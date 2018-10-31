@@ -14,15 +14,15 @@ import (
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/nfsdriver"
 	"code.cloudfoundry.org/voldriver"
 	"code.cloudfoundry.org/voldriver/driverhttp"
 	"code.cloudfoundry.org/voldriver/invoker"
+	"code.cloudfoundry.org/volumedriver"
 )
 
 const ScriptsPath = "C:/var/vcap/jobs/smbdriver-windows/scripts"
 
-// smbMounter represent nfsdriver.Mounter for SMB
+// smbMounter represent volumedriver.Mounter for SMB
 type smbMounter struct {
 	invoker invoker.Invoker
 	osutil  osshim.Os
@@ -31,7 +31,7 @@ type smbMounter struct {
 }
 
 // NewSmbMounter create SMB mounter
-func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) nfsdriver.Mounter {
+func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) volumedriver.Mounter {
 	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
 }
 
