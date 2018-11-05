@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	cf_http_handlers "code.cloudfoundry.org/cfhttp/handlers"
+	"code.cloudfoundry.org/dockerdriver/driverhttp"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/smbdriver/driveradmin"
-	"code.cloudfoundry.org/voldriver/driverhttp"
 	"github.com/tedsuo/rata"
 )
 

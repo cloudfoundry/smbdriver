@@ -2,17 +2,17 @@
 package smbdriverfakes
 
 import (
-	"sync"
+	sync "sync"
 
-	"code.cloudfoundry.org/smbdriver/driveradmin"
-	"code.cloudfoundry.org/voldriver"
+	dockerdriver "code.cloudfoundry.org/dockerdriver"
+	driveradmin "code.cloudfoundry.org/smbdriver/driveradmin"
 )
 
 type FakeDriverAdmin struct {
-	EvacuateStub        func(env voldriver.Env) driveradmin.ErrorResponse
+	EvacuateStub        func(dockerdriver.Env) driveradmin.ErrorResponse
 	evacuateMutex       sync.RWMutex
 	evacuateArgsForCall []struct {
-		env voldriver.Env
+		arg1 dockerdriver.Env
 	}
 	evacuateReturns struct {
 		result1 driveradmin.ErrorResponse
@@ -20,10 +20,10 @@ type FakeDriverAdmin struct {
 	evacuateReturnsOnCall map[int]struct {
 		result1 driveradmin.ErrorResponse
 	}
-	PingStub        func(env voldriver.Env) driveradmin.ErrorResponse
+	PingStub        func(dockerdriver.Env) driveradmin.ErrorResponse
 	pingMutex       sync.RWMutex
 	pingArgsForCall []struct {
-		env voldriver.Env
+		arg1 dockerdriver.Env
 	}
 	pingReturns struct {
 		result1 driveradmin.ErrorResponse
@@ -35,21 +35,22 @@ type FakeDriverAdmin struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeDriverAdmin) Evacuate(env voldriver.Env) driveradmin.ErrorResponse {
+func (fake *FakeDriverAdmin) Evacuate(arg1 dockerdriver.Env) driveradmin.ErrorResponse {
 	fake.evacuateMutex.Lock()
 	ret, specificReturn := fake.evacuateReturnsOnCall[len(fake.evacuateArgsForCall)]
 	fake.evacuateArgsForCall = append(fake.evacuateArgsForCall, struct {
-		env voldriver.Env
-	}{env})
-	fake.recordInvocation("Evacuate", []interface{}{env})
+		arg1 dockerdriver.Env
+	}{arg1})
+	fake.recordInvocation("Evacuate", []interface{}{arg1})
 	fake.evacuateMutex.Unlock()
 	if fake.EvacuateStub != nil {
-		return fake.EvacuateStub(env)
+		return fake.EvacuateStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.evacuateReturns.result1
+	fakeReturns := fake.evacuateReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeDriverAdmin) EvacuateCallCount() int {
@@ -58,13 +59,22 @@ func (fake *FakeDriverAdmin) EvacuateCallCount() int {
 	return len(fake.evacuateArgsForCall)
 }
 
-func (fake *FakeDriverAdmin) EvacuateArgsForCall(i int) voldriver.Env {
+func (fake *FakeDriverAdmin) EvacuateCalls(stub func(dockerdriver.Env) driveradmin.ErrorResponse) {
+	fake.evacuateMutex.Lock()
+	defer fake.evacuateMutex.Unlock()
+	fake.EvacuateStub = stub
+}
+
+func (fake *FakeDriverAdmin) EvacuateArgsForCall(i int) dockerdriver.Env {
 	fake.evacuateMutex.RLock()
 	defer fake.evacuateMutex.RUnlock()
-	return fake.evacuateArgsForCall[i].env
+	argsForCall := fake.evacuateArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeDriverAdmin) EvacuateReturns(result1 driveradmin.ErrorResponse) {
+	fake.evacuateMutex.Lock()
+	defer fake.evacuateMutex.Unlock()
 	fake.EvacuateStub = nil
 	fake.evacuateReturns = struct {
 		result1 driveradmin.ErrorResponse
@@ -72,6 +82,8 @@ func (fake *FakeDriverAdmin) EvacuateReturns(result1 driveradmin.ErrorResponse) 
 }
 
 func (fake *FakeDriverAdmin) EvacuateReturnsOnCall(i int, result1 driveradmin.ErrorResponse) {
+	fake.evacuateMutex.Lock()
+	defer fake.evacuateMutex.Unlock()
 	fake.EvacuateStub = nil
 	if fake.evacuateReturnsOnCall == nil {
 		fake.evacuateReturnsOnCall = make(map[int]struct {
@@ -83,21 +95,22 @@ func (fake *FakeDriverAdmin) EvacuateReturnsOnCall(i int, result1 driveradmin.Er
 	}{result1}
 }
 
-func (fake *FakeDriverAdmin) Ping(env voldriver.Env) driveradmin.ErrorResponse {
+func (fake *FakeDriverAdmin) Ping(arg1 dockerdriver.Env) driveradmin.ErrorResponse {
 	fake.pingMutex.Lock()
 	ret, specificReturn := fake.pingReturnsOnCall[len(fake.pingArgsForCall)]
 	fake.pingArgsForCall = append(fake.pingArgsForCall, struct {
-		env voldriver.Env
-	}{env})
-	fake.recordInvocation("Ping", []interface{}{env})
+		arg1 dockerdriver.Env
+	}{arg1})
+	fake.recordInvocation("Ping", []interface{}{arg1})
 	fake.pingMutex.Unlock()
 	if fake.PingStub != nil {
-		return fake.PingStub(env)
+		return fake.PingStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.pingReturns.result1
+	fakeReturns := fake.pingReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeDriverAdmin) PingCallCount() int {
@@ -106,13 +119,22 @@ func (fake *FakeDriverAdmin) PingCallCount() int {
 	return len(fake.pingArgsForCall)
 }
 
-func (fake *FakeDriverAdmin) PingArgsForCall(i int) voldriver.Env {
+func (fake *FakeDriverAdmin) PingCalls(stub func(dockerdriver.Env) driveradmin.ErrorResponse) {
+	fake.pingMutex.Lock()
+	defer fake.pingMutex.Unlock()
+	fake.PingStub = stub
+}
+
+func (fake *FakeDriverAdmin) PingArgsForCall(i int) dockerdriver.Env {
 	fake.pingMutex.RLock()
 	defer fake.pingMutex.RUnlock()
-	return fake.pingArgsForCall[i].env
+	argsForCall := fake.pingArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeDriverAdmin) PingReturns(result1 driveradmin.ErrorResponse) {
+	fake.pingMutex.Lock()
+	defer fake.pingMutex.Unlock()
 	fake.PingStub = nil
 	fake.pingReturns = struct {
 		result1 driveradmin.ErrorResponse
@@ -120,6 +142,8 @@ func (fake *FakeDriverAdmin) PingReturns(result1 driveradmin.ErrorResponse) {
 }
 
 func (fake *FakeDriverAdmin) PingReturnsOnCall(i int, result1 driveradmin.ErrorResponse) {
+	fake.pingMutex.Lock()
+	defer fake.pingMutex.Unlock()
 	fake.PingStub = nil
 	if fake.pingReturnsOnCall == nil {
 		fake.pingReturnsOnCall = make(map[int]struct {

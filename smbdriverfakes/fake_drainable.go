@@ -2,17 +2,17 @@
 package smbdriverfakes
 
 import (
-	"sync"
+	sync "sync"
 
-	"code.cloudfoundry.org/smbdriver/driveradmin"
-	"code.cloudfoundry.org/voldriver"
+	dockerdriver "code.cloudfoundry.org/dockerdriver"
+	driveradmin "code.cloudfoundry.org/smbdriver/driveradmin"
 )
 
 type FakeDrainable struct {
-	DrainStub        func(env voldriver.Env) error
+	DrainStub        func(dockerdriver.Env) error
 	drainMutex       sync.RWMutex
 	drainArgsForCall []struct {
-		env voldriver.Env
+		arg1 dockerdriver.Env
 	}
 	drainReturns struct {
 		result1 error
@@ -24,21 +24,22 @@ type FakeDrainable struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeDrainable) Drain(env voldriver.Env) error {
+func (fake *FakeDrainable) Drain(arg1 dockerdriver.Env) error {
 	fake.drainMutex.Lock()
 	ret, specificReturn := fake.drainReturnsOnCall[len(fake.drainArgsForCall)]
 	fake.drainArgsForCall = append(fake.drainArgsForCall, struct {
-		env voldriver.Env
-	}{env})
-	fake.recordInvocation("Drain", []interface{}{env})
+		arg1 dockerdriver.Env
+	}{arg1})
+	fake.recordInvocation("Drain", []interface{}{arg1})
 	fake.drainMutex.Unlock()
 	if fake.DrainStub != nil {
-		return fake.DrainStub(env)
+		return fake.DrainStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.drainReturns.result1
+	fakeReturns := fake.drainReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeDrainable) DrainCallCount() int {
@@ -47,13 +48,22 @@ func (fake *FakeDrainable) DrainCallCount() int {
 	return len(fake.drainArgsForCall)
 }
 
-func (fake *FakeDrainable) DrainArgsForCall(i int) voldriver.Env {
+func (fake *FakeDrainable) DrainCalls(stub func(dockerdriver.Env) error) {
+	fake.drainMutex.Lock()
+	defer fake.drainMutex.Unlock()
+	fake.DrainStub = stub
+}
+
+func (fake *FakeDrainable) DrainArgsForCall(i int) dockerdriver.Env {
 	fake.drainMutex.RLock()
 	defer fake.drainMutex.RUnlock()
-	return fake.drainArgsForCall[i].env
+	argsForCall := fake.drainArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeDrainable) DrainReturns(result1 error) {
+	fake.drainMutex.Lock()
+	defer fake.drainMutex.Unlock()
 	fake.DrainStub = nil
 	fake.drainReturns = struct {
 		result1 error
@@ -61,6 +71,8 @@ func (fake *FakeDrainable) DrainReturns(result1 error) {
 }
 
 func (fake *FakeDrainable) DrainReturnsOnCall(i int, result1 error) {
+	fake.drainMutex.Lock()
+	defer fake.drainMutex.Unlock()
 	fake.DrainStub = nil
 	if fake.drainReturnsOnCall == nil {
 		fake.drainReturnsOnCall = make(map[int]struct {

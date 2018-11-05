@@ -11,12 +11,12 @@ import (
 
 	"path/filepath"
 
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/dockerdriver/driverhttp"
+	"code.cloudfoundry.org/dockerdriver/invoker"
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/voldriver"
-	"code.cloudfoundry.org/voldriver/driverhttp"
-	"code.cloudfoundry.org/voldriver/invoker"
 	"code.cloudfoundry.org/volumedriver"
 )
 
@@ -43,7 +43,7 @@ func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.
 // Windows Share Folders:
 //   required: username, password | sec
 //   optional: uid, gid, file_mode, dir_mode, readonly | ro, domain
-func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts map[string]interface{}) error {
+func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, opts map[string]interface{}) error {
 	logger := env.Logger().Session("smb-mount")
 	logger.Info("start")
 	defer logger.Info("end")
@@ -104,7 +104,7 @@ func (m *smbMounter) Mount(env voldriver.Env, source string, target string, opts
 }
 
 // Unmount unmount a SMB folder from a local path
-func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
+func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger := env.Logger().Session("smb-umount")
 	logger.Info("start")
 	defer logger.Info("end")
@@ -133,7 +133,7 @@ func (m *smbMounter) Unmount(env voldriver.Env, target string) error {
 }
 
 // Check check whether a local path is mounted or not
-func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
+func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
 	logger := env.Logger().Session("smb-check-mountpoint")
 	logger.Info("start")
 	defer logger.Info("end")
@@ -163,7 +163,7 @@ func (m *smbMounter) Check(env voldriver.Env, name, mountPoint string) bool {
 }
 
 // Purge delete all files in a local path
-func (m *smbMounter) Purge(env voldriver.Env, path string) {
+func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 	logger := env.Logger().Session("purge")
 	logger.Info("start")
 	defer logger.Info("end")

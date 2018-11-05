@@ -3,13 +3,13 @@ package driveradminlocal_test
 import (
 	"context"
 
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/dockerdriver/driverhttp"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
 	"code.cloudfoundry.org/smbdriver/driveradmin"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
 	"code.cloudfoundry.org/smbdriver/smbdriverfakes"
-	"code.cloudfoundry.org/voldriver"
-	"code.cloudfoundry.org/voldriver/driverhttp"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -17,7 +17,7 @@ import (
 var _ = Describe("Driver Admin Local", func() {
 	var logger lager.Logger
 	var ctx context.Context
-	var env voldriver.Env
+	var env dockerdriver.Env
 	var driverAdminLocal *driveradminlocal.DriverAdminLocal
 	var err driveradmin.ErrorResponse
 
