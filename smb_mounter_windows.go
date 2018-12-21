@@ -71,6 +71,8 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		opts["password"].(string),
 		"-remotePath",
 		source,
+		"-localPath",
+		target,
 	}
 
 	logger.Debug("parse-mount", lager.Data{
@@ -83,23 +85,6 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountOptions, ",")})
 	_, err := m.invoker.Invoke(env, "powershell.exe", mountOptions)
-	if err != nil {
-		return err
-	}
-
-	err = m.osutil.Remove(target)
-	if err != nil {
-		return err
-	}
-
-	mklinkOptions := []string{
-		"/c",
-		"mklink",
-		"/d",
-		target,
-		source,
-	}
-	_, err = m.invoker.Invoke(env, "cmd", mklinkOptions)
 	return err
 }
 
