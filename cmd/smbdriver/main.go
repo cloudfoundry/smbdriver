@@ -161,12 +161,12 @@ func main() {
 	}
 
 	servers := grouper.Members{
-		{"localdriver-server", localDriverServer},
+		{Name: "localdriver-server", Runner: localDriverServer},
 	}
 
 	if dbgAddr := cf_debug_server.DebugAddress(flag.CommandLine); dbgAddr != "" {
 		servers = append(grouper.Members{
-			{"debug-server", cf_debug_server.Runner(dbgAddr, logSink)},
+			{Name: "debug-server", Runner: cf_debug_server.Runner(dbgAddr, logSink)},
 		}, servers...)
 	}
 
@@ -177,7 +177,7 @@ func main() {
 	adminServer := http_server.New(adminAddress, adminHandler)
 
 	servers = append(grouper.Members{
-		{"driveradmin", adminServer},
+		{Name: "driveradmin", Runner: adminServer},
 	}, servers...)
 
 	process := ifrit.Invoke(processRunnerFor(servers))
