@@ -52,13 +52,14 @@ var _ = Describe("SmbMounter", func() {
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
 		fakeOs = &os_fake.FakeOs{}
 
-		configMask := vmo.NewMountOptsMask(
+		configMask, err := vmo.NewMountOptsMask(
 			[]string{"username", "password"},
 			map[string]string{},
 			map[string]string{},
 			[]string{},
 			[]string{},
 		)
+		Expect(err).NotTo(HaveOccurred())
 
 		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 	})
@@ -128,13 +129,14 @@ var _ = Describe("SmbMounter", func() {
 			BeforeEach(func() {
 				opts = map[string]interface{}{}
 
-				configMask := vmo.NewMountOptsMask(
+				configMask, err := vmo.NewMountOptsMask(
 					[]string{"password"},
 					map[string]string{},
 					map[string]string{},
 					[]string{},
 					[]string{"username"},
 				)
+				Expect(err).NotTo(HaveOccurred())
 
 				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 
