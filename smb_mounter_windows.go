@@ -18,6 +18,7 @@ import (
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/volumedriver"
+	vmo "code.cloudfoundry.org/volume-mount-options"
 )
 
 const ScriptsPath = "C:/var/vcap/jobs/smbdriver-windows/scripts"
@@ -27,12 +28,12 @@ type smbMounter struct {
 	invoker invoker.Invoker
 	osutil  osshim.Os
 	ioutil  ioutilshim.Ioutil
-	config  Config
+	configMask  vmo.MountOptsMask
 }
 
 // NewSmbMounter create SMB mounter
-func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) volumedriver.Mounter {
-	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
+func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask) volumedriver.Mounter {
+	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask}
 }
 
 // Reference: https://www.samba.org/samba/docs/man/manpages-3/mount.cifs.8.html
@@ -48,27 +49,24 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	logger.Info("start")
 	defer logger.Info("end")
 
-	// TODO--refactor the config object so that we don't have to make a local copy just to keep
-	// TODO--it from leaking information between mounts.
-	tempConfig := m.config.Copy()
+	mountOpts, err := vmo.NewMountOpts(opts, m.configMask)
 
-	if err := tempConfig.SetEntries(opts, []string{"source"}); err != nil {
+	if err != nil {
 		logger.Debug("error-parse-entries", lager.Data{
 			"given_source":  source,
 			"given_target":  target,
 			"given_options": opts,
-			"config_mounts": tempConfig,
 		})
 		return err
 	}
 
-	mountOptions := []string{
+	mountArgs := []string{
 		"-file",
 		path.Join(ScriptsPath, "mounter.ps1"),
 		"-username",
-		opts["username"].(string),
+		mountOpts["username"],
 		"-password",
-		opts["password"].(string),
+		mountOpts["password"],
 		"-remotePath",
 		source,
 	}
@@ -77,12 +75,11 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"given_source":  source,
 		"given_target":  target,
 		"given_options": opts,
-		"config_mounts": tempConfig,
-		"mountOptions":  mountOptions,
+		"mount_args":  mountArgs,
 	})
 
-	logger.Debug("mount", lager.Data{"params": strings.Join(mountOptions, ",")})
-	_, err := m.invoker.Invoke(env, "powershell.exe", mountOptions)
+	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
+	_, err = m.invoker.Invoke(env, "powershell.exe", mountArgs)
 	if err != nil {
 		return err
 	}
@@ -124,7 +121,7 @@ func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger.Debug("parse-unmount", lager.Data{
 		"given_target": target,
 		"given_source": source,
-		"mountOptions": unmountOptions,
+		"unmount_args": unmountOptions,
 	})
 
 	logger.Debug("unmount", lager.Data{"params": strings.Join(unmountOptions, ",")})

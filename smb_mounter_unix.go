@@ -16,6 +16,8 @@ import (
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/volumedriver"
+	vmo "code.cloudfoundry.org/volume-mount-options"
+	vmou "code.cloudfoundry.org/volume-mount-options/utils"
 )
 
 // smbMounter represent volumedriver.Mounter for SMB
@@ -23,7 +25,7 @@ type smbMounter struct {
 	invoker invoker.Invoker
 	osutil  osshim.Os
 	ioutil  ioutilshim.Ioutil
-	config  Config
+	configMask  vmo.MountOptsMask
 }
 
 func safeError(e error) error {
@@ -34,8 +36,8 @@ func safeError(e error) error {
 }
 
 // NewSmbMounter create SMB mounter
-func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, config *Config) volumedriver.Mounter {
-	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, config: *config}
+func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask) volumedriver.Mounter {
+	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask}
 }
 
 // Reference: https://www.samba.org/samba/docs/man/manpages-3/mount.cifs.8.html
@@ -51,25 +53,21 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	logger.Info("start")
 	defer logger.Info("end")
 
-	// TODO--refactor the config object so that we don't have to make a local copy just to keep
-	// TODO--it from leaking information between mounts.
-	tempConfig := m.config.Copy()
-
-	if err := tempConfig.SetEntries(opts, []string{"source"}); err != nil {
+	mountOpts, err := vmo.NewMountOpts(opts, m.configMask)
+	if err != nil {
 		logger.Debug("error-parse-entries", lager.Data{
 			"given_source":  source,
 			"given_target":  target,
 			"given_options": opts,
-			"config_mounts": tempConfig,
 		})
 		return safeError(err)
 	}
 
-	mountOptions := []string{
+	mountArgs := []string{
 		"-t", "cifs",
 		source,
 		target,
-		"-o", strings.Join(tempConfig.MakeParams(), ","),
+		"-o", vmou.ToKernelMountOptionString(mountOpts),
 		"--verbose",
 	}
 
@@ -77,12 +75,11 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"given_source":  source,
 		"given_target":  target,
 		"given_options": opts,
-		"config_mounts": tempConfig,
-		"mountOptions":  mountOptions,
+		"mountArgs":  mountArgs,
 	})
 
-	logger.Debug("mount", lager.Data{"params": strings.Join(mountOptions, ",")})
-	_, err := m.invoker.Invoke(env, "mount", mountOptions)
+	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
+	_, err = m.invoker.Invoke(env, "mount", mountArgs)
 	return safeError(err)
 }
 

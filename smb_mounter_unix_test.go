@@ -16,7 +16,9 @@ import (
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
 	"code.cloudfoundry.org/smbdriver"
+	vmo "code.cloudfoundry.org/volume-mount-options"
 	"code.cloudfoundry.org/volumedriver"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -47,10 +49,28 @@ var _ = Describe("SmbMounter", func() {
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
 		fakeOs = &os_fake.FakeOs{}
 
-		config := smbdriver.NewSmbConfig()
-		_ = config.ReadConf("username,password,vers,uid,gid,file_mode,dir_mode,readonly,ro", "", []string{})
+		configMask, err := vmo.NewMountOptsMask(
+			[]string{
+				"username",
+				"password",
+				"vers",
+				"uid",
+				"gid",
+				"file_mode",
+				"dir_mode",
+				"readonly",
+				"ro",
+			},
+			map[string]string{},
+			map[string]string{
+				"readonly": "ro",
+			},
+			[]string{},
+			[]string{},
+		)
+		Expect(err).NotTo(HaveOccurred())
 
-		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
+		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 	})
 
 	Context("#Mount", func() {
@@ -118,10 +138,22 @@ var _ = Describe("SmbMounter", func() {
 			BeforeEach(func() {
 				opts = map[string]interface{}{}
 
-				config := smbdriver.NewSmbConfig()
-				_ = config.ReadConf("password,vers,file_mode,dir_mode,readonly", "", []string{"username"})
+				configMask, err := vmo.NewMountOptsMask(
+					[]string{
+						"password",
+						"vers",
+						"file_mode",
+						"dir_mode",
+						"readonly",
+					},
+					map[string]string{},
+					map[string]string{},
+					[]string{},
+					[]string{"username"},
+				)
+				Expect(err).NotTo(HaveOccurred())
 
-				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, config)
+				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 
 				fakeInvoker.InvokeReturns(nil, nil)
 			})

@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
@@ -21,6 +22,8 @@ import (
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
+	vmo "code.cloudfoundry.org/volume-mount-options"
+	vmou "code.cloudfoundry.org/volume-mount-options/utils"
 	"code.cloudfoundry.org/volumedriver"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
 	"code.cloudfoundry.org/volumedriver/oshelper"
@@ -131,14 +134,23 @@ func main() {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	config := smbdriver.NewSmbConfig()
-	config.ReadConf(*mountFlagAllowed, *mountFlagDefault, []string{"username", "password"})
+	configMask, err := vmo.NewMountOptsMask(
+		strings.Split(*mountFlagAllowed, ","),
+		vmou.ParseOptionStringToMap(*mountFlagDefault, ":"),
+		map[string]string{
+			"readonly": "ro",
+			"share":    "source",
+		},
+		[]string{"source"},
+		[]string{"username", "password"},
+	)
+	exitOnFailure(logger, err)
 
 	mounter := smbdriver.NewSmbMounter(
 		invoker.NewRealInvoker(),
 		&osshim.OsShim{},
 		&ioutilshim.IoutilShim{},
-		config,
+		configMask,
 	)
 
 	client := volumedriver.NewVolumeDriver(
