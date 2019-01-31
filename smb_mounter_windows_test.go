@@ -145,7 +145,7 @@ var _ = Describe("SmbMounter", func() {
 
 			Context("when a required option is missing", func() {
 				It("should error", func() {
-					Expect(err).To(MatchError("Missing mandatory options : username"))
+					Expect(err).To(MatchError("Missing mandatory options: username"))
 				})
 			})
 
@@ -155,7 +155,7 @@ var _ = Describe("SmbMounter", func() {
 				})
 
 				It("should error", func() {
-					Expect(err).To(MatchError("Not allowed options : uid"))
+					Expect(err).To(MatchError("Not allowed options: uid"))
 				})
 			})
 		})
