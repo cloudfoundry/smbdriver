@@ -17,18 +17,18 @@ import (
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/volumedriver"
 	vmo "code.cloudfoundry.org/volume-mount-options"
+	"code.cloudfoundry.org/volumedriver"
 )
 
 const ScriptsPath = "C:/var/vcap/jobs/smbdriver-windows/scripts"
 
 // smbMounter represent volumedriver.Mounter for SMB
 type smbMounter struct {
-	invoker invoker.Invoker
-	osutil  osshim.Os
-	ioutil  ioutilshim.Ioutil
-	configMask  vmo.MountOptsMask
+	invoker    invoker.Invoker
+	osutil     osshim.Os
+	ioutil     ioutilshim.Ioutil
+	configMask vmo.MountOptsMask
 }
 
 // NewSmbMounter create SMB mounter
@@ -75,7 +75,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"given_source":  source,
 		"given_target":  target,
 		"given_options": opts,
-		"mount_args":  mountArgs,
+		"mount_args":    mountArgs,
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
