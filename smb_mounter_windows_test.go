@@ -54,7 +54,7 @@ var _ = Describe("SmbMounter", func() {
 
 		configMask, err := vmo.NewMountOptsMask(
 			[]string{"username", "password"},
-			map[string]string{},
+			map[string]interface{}{},
 			map[string]string{},
 			[]string{},
 			[]string{},
@@ -131,7 +131,7 @@ var _ = Describe("SmbMounter", func() {
 
 				configMask, err := vmo.NewMountOptsMask(
 					[]string{"password"},
-					map[string]string{},
+					map[string]interface{}{},
 					map[string]string{},
 					[]string{},
 					[]string{"username"},
