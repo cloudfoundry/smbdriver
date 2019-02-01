@@ -61,7 +61,7 @@ var _ = Describe("SmbMounter", func() {
 				"readonly",
 				"ro",
 			},
-			map[string]string{},
+			map[string]interface{}{},
 			map[string]string{
 				"readonly": "ro",
 			},
@@ -146,7 +146,7 @@ var _ = Describe("SmbMounter", func() {
 						"dir_mode",
 						"readonly",
 					},
-					map[string]string{},
+					map[string]interface{}{},
 					map[string]string{},
 					[]string{},
 					[]string{"username"},
