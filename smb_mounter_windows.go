@@ -64,9 +64,9 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"-file",
 		path.Join(ScriptsPath, "mounter.ps1"),
 		"-username",
-		mountOpts["username"],
+		mountOpts["username"].(string),
 		"-password",
-		mountOpts["password"],
+		mountOpts["password"].(string),
 		"-remotePath",
 		source,
 	}
