@@ -138,7 +138,7 @@ var _ = Describe("SmbMounter", func() {
 			BeforeEach(func() {
 				opts = map[string]interface{}{}
 
-				configMask, err := vmo.NewMountOptsMask(
+				configMask, err2 := vmo.NewMountOptsMask(
 					[]string{
 						"password",
 						"vers",
@@ -151,7 +151,7 @@ var _ = Describe("SmbMounter", func() {
 					[]string{},
 					[]string{"username"},
 				)
-				Expect(err).NotTo(HaveOccurred())
+				Expect(err2).NotTo(HaveOccurred())
 
 				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 
@@ -233,8 +233,8 @@ var _ = Describe("SmbMounter", func() {
 				success = subject.Check(env, "target", "source")
 			})
 			It("uses correct context", func() {
-				env, _, _ := fakeInvoker.InvokeArgsForCall(0)
-				Expect(fmt.Sprintf("%#v", env.Context())).To(ContainSubstring("timerCtx"))
+				invokeEnv, _, _ := fakeInvoker.InvokeArgsForCall(0)
+				Expect(fmt.Sprintf("%#v", invokeEnv.Context())).To(ContainSubstring("timerCtx"))
 			})
 			It("reports valid mountpoint", func() {
 				Expect(success).To(BeTrue())
