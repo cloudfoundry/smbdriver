@@ -146,7 +146,7 @@ func main() {
 	exitOnFailure(logger, err)
 
 	mounter := smbdriver.NewSmbMounter(
-		invoker.NewRealInvoker(),
+		invoker.NewProcessGroupInvoker(),
 		&osshim.OsShim{},
 		&ioutilshim.IoutilShim{},
 		configMask,
