@@ -122,7 +122,6 @@ var uniqueVolumeIds = flag.Bool(
 	"Whether the SMB driver should opt-in to unique volumes",
 )
 
-const fsType = "cifs"
 const listenAddress = "127.0.0.1"
 
 func main() {
@@ -184,7 +183,6 @@ func main() {
 
 	adminClient := driveradminlocal.NewDriverAdminLocal()
 	adminHandler, _ := driveradminhttp.NewHandler(logger, adminClient)
-	// TODO handle error
 	adminAddress := listenAddress + ":" + strconv.Itoa(*adminPort)
 	adminServer := http_server.New(adminAddress, adminHandler)
 
