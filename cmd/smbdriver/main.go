@@ -128,7 +128,7 @@ const listenAddress = "127.0.0.1"
 func main() {
 	parseCommandLine()
 
-	var localDriverServer ifrit.Runner
+	var smbDriverServer ifrit.Runner
 
 	logger, logSink := newLogger()
 	logger.Info("start")
@@ -166,15 +166,15 @@ func main() {
 	)
 
 	if *transport == "tcp" {
-		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false, false)
+		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false, false)
 	} else if *transport == "tcp-json" {
-		localDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true, *uniqueVolumeIds)
+		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true, *uniqueVolumeIds)
 	} else {
-		localDriverServer = createSmbDriverUnixServer(logger, client, *atPort)
+		smbDriverServer = createSmbDriverUnixServer(logger, client, *atPort)
 	}
 
 	servers := grouper.Members{
-		{Name: "localdriver-server", Runner: localDriverServer},
+		{Name: "smbdriver-server", Runner: smbDriverServer},
 	}
 
 	if dbgAddr := cf_debug_server.DebugAddress(flag.CommandLine); dbgAddr != "" {
