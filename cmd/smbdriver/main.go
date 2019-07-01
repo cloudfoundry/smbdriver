@@ -1,6 +1,7 @@
 package main
 
 import (
+	"code.cloudfoundry.org/goshims/timeshim"
 	"encoding/json"
 	"flag"
 	"os"
@@ -157,6 +158,7 @@ func main() {
 		&osshim.OsShim{},
 		&filepathshim.FilepathShim{},
 		&ioutilshim.IoutilShim{},
+		&timeshim.TimeShim{},
 		mountchecker.NewChecker(&bufioshim.BufioShim{}, &osshim.OsShim{}),
 		*mountDir,
 		mounter,
