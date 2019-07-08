@@ -44,30 +44,14 @@ var _ = Describe("SmbMounter", func() {
 		testContext = context.TODO()
 		env = driverhttp.NewHttpDriverEnv(logger, testContext)
 		opts = map[string]interface{}{}
+		opts["mount"] = "/data"
+		opts["source"] = "source-from-opts"
 
 		fakeInvoker = &dockerdriverfakes.FakeInvoker{}
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
 		fakeOs = &os_fake.FakeOs{}
 
-		configMask, err := vmo.NewMountOptsMask(
-			[]string{
-				"username",
-				"password",
-				"vers",
-				"uid",
-				"gid",
-				"file_mode",
-				"dir_mode",
-				"readonly",
-				"ro",
-			},
-			map[string]interface{}{},
-			map[string]string{
-				"readonly": "ro",
-			},
-			[]string{},
-			[]string{},
-		)
+		configMask, err := smbdriver.NewSmbVolumeMountMask("", "")
 		Expect(err).NotTo(HaveOccurred())
 
 		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
@@ -85,10 +69,13 @@ var _ = Describe("SmbMounter", func() {
 			})
 
 			It("should use the passed in variables", func() {
+				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("mount"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("uid=2000"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("gid=2000"))
 			})
 
 			Context("when mounting read only with readonly", func() {
@@ -98,6 +85,7 @@ var _ = Describe("SmbMounter", func() {
 					})
 
 					It("should include the ro flag", func() {
+						Expect(err).NotTo(HaveOccurred())
 						_, _, args := fakeInvoker.InvokeArgsForCall(0)
 						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
 					})
@@ -109,6 +97,7 @@ var _ = Describe("SmbMounter", func() {
 					})
 
 					It("should include the ro flag", func() {
+						Expect(err).NotTo(HaveOccurred())
 						_, _, args := fakeInvoker.InvokeArgsForCall(0)
 						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
 					})

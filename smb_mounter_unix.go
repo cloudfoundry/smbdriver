@@ -15,39 +15,22 @@ import (
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/volumedriver"
 	vmo "code.cloudfoundry.org/volume-mount-options"
 	vmou "code.cloudfoundry.org/volume-mount-options/utils"
+	"code.cloudfoundry.org/volumedriver"
 )
 
-// smbMounter represent volumedriver.Mounter for SMB
 type smbMounter struct {
-	invoker invoker.Invoker
-	osutil  osshim.Os
-	ioutil  ioutilshim.Ioutil
-	configMask  vmo.MountOptsMask
+	invoker    invoker.Invoker
+	osutil     osshim.Os
+	ioutil     ioutilshim.Ioutil
+	configMask vmo.MountOptsMask
 }
 
-func safeError(e error) error {
-	if e == nil {
-		return nil
-	}
-	return dockerdriver.SafeError{SafeDescription: e.Error()}
-}
-
-// NewSmbMounter create SMB mounter
 func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask) volumedriver.Mounter {
 	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask}
 }
 
-// Reference: https://www.samba.org/samba/docs/man/manpages-3/mount.cifs.8.html
-// Mount mount SMB folder to a local path
-// Azure File Service:
-//   required: username, password, vers=3.0
-//   optional: uid, gid, file_mode, dir_mode, readonly | ro
-// Windows Share Folders:
-//   required: username, password | sec
-//   optional: uid, gid, file_mode, dir_mode, readonly | ro, domain
 func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, opts map[string]interface{}) error {
 	logger := env.Logger().Session("smb-mount")
 	logger.Info("start")
@@ -75,7 +58,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"given_source":  source,
 		"given_target":  target,
 		"given_options": opts,
-		"mountArgs":  mountArgs,
+		"mountArgs":     mountArgs,
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
@@ -83,7 +66,6 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	return safeError(err)
 }
 
-// Unmount unmount a SMB folder from a local path
 func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger := env.Logger().Session("smb-umount")
 	logger.Info("start")
@@ -94,7 +76,6 @@ func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	return safeError(err)
 }
 
-// Check check whether a local path is mounted or not
 func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
 	logger := env.Logger().Session("smb-check-mountpoint")
 	logger.Info("start")
@@ -114,7 +95,6 @@ func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
 	return true
 }
 
-// Purge delete all files in a local path
 func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 	logger := env.Logger().Session("purge")
 	logger.Info("start")
@@ -144,4 +124,33 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 			logger.Info("remove-directory-successful", lager.Data{"path": mountDir})
 		}
 	}
+}
+
+func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions string) (vmo.MountOptsMask, error) {
+	allowed := []string{"username", "password", "uid", "gid", "file_mode", "dir_mode", "ro", "domain", "vers", "sec"}
+	allowed = append(allowed, strings.Split(allowedMountOptions, ",")...)
+
+	defaultMap := map[string]interface{}{"uid": "2000", "gid": "2000"}
+	for _, value := range strings.Split(defaultMountOptions, ",") {
+		split := strings.Split(value, ":")
+		if len(split) == 2 {
+			defaultMap[split[0]] = split[1]
+		}
+	}
+
+	return vmo.NewMountOptsMask(
+		allowed,
+		defaultMap,
+		map[string]string{"readonly": "ro"},
+		[]string{"source", "mount"},
+		[]string{},
+	)
+
+}
+
+func safeError(e error) error {
+	if e == nil {
+		return nil
+	}
+	return dockerdriver.SafeError{SafeDescription: e.Error()}
 }
