@@ -60,11 +60,13 @@ var _ = Describe("SmbMounter", func() {
 	})
 
 	Context("#Mount", func() {
+		JustBeforeEach(func() {
+			err = subject.Mount(env, "source", "target", opts)
+		})
 
 		Context("when mount succeeds", func() {
-			JustBeforeEach(func() {
+			BeforeEach(func() {
 				fakeInvoker.InvokeReturns(nil, nil)
-				err = subject.Mount(env, "source", "target", opts)
 			})
 
 			It("should return without error", func() {
@@ -111,8 +113,6 @@ var _ = Describe("SmbMounter", func() {
 		Context("when mount errors", func() {
 			BeforeEach(func() {
 				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
-
-				err = subject.Mount(env, "source", "target", opts)
 			})
 
 			It("should return with error", func() {
@@ -146,10 +146,6 @@ var _ = Describe("SmbMounter", func() {
 				fakeInvoker.InvokeReturns(nil, nil)
 			})
 
-			JustBeforeEach(func() {
-				err = subject.Mount(env, "source", "target", opts)
-			})
-
 			Context("when a required option is missing", func() {
 				It("should error", func() {
 					Expect(err).To(HaveOccurred())
@@ -180,9 +176,6 @@ var _ = Describe("SmbMounter", func() {
 				delete(opts, "username")
 			})
 
-			JustBeforeEach(func() {
-				err = subject.Mount(env, "source", "target", opts)
-			})
 
 			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
@@ -198,9 +191,6 @@ var _ = Describe("SmbMounter", func() {
 				delete(opts, "password")
 			})
 
-			JustBeforeEach(func() {
-				err = subject.Mount(env, "source", "target", opts)
-			})
 
 			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
@@ -209,7 +199,6 @@ var _ = Describe("SmbMounter", func() {
 				Expect(err).To(MatchError("Missing mandatory options: password"))
 			})
 		})
-
 	})
 
 	Context("#Unmount", func() {
