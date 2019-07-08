@@ -4,6 +4,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
+	"time"
 
 	"testing"
 )
@@ -16,6 +17,7 @@ func TestSmbDriver(t *testing.T) {
 var driverPath string
 
 var _ = BeforeSuite(func() {
+	SetDefaultEventuallyTimeout(1 * time.Minute)
 	var err error
 	driverPath, err = Build("code.cloudfoundry.org/smbdriver/cmd/smbdriver")
 	Expect(err).ToNot(HaveOccurred())
