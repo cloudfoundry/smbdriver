@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"github.com/onsi/gomega/gbytes"
 	"io/ioutil"
 	"net"
 	"os"
@@ -14,9 +15,11 @@ import (
 
 var _ = Describe("Main", func() {
 	var (
-		session *gexec.Session
-		command *exec.Cmd
-		dir     string
+		session                *gexec.Session
+		command                *exec.Cmd
+		dir                    string
+		expectedStartOutput    string
+		expectedStartErrOutput string
 	)
 
 	BeforeEach(func() {
@@ -26,6 +29,8 @@ var _ = Describe("Main", func() {
 	JustBeforeEach(func() {
 		var err error
 		session, err = gexec.Start(command, GinkgoWriter, GinkgoWriter)
+		Eventually(session.Out).Should(gbytes.Say(expectedStartOutput))
+		Eventually(session.Err).Should(gbytes.Say(expectedStartErrOutput))
 		Expect(err).ToNot(HaveOccurred())
 	})
 
@@ -82,6 +87,21 @@ var _ = Describe("Main", func() {
 					"TLSConfig": null,
 					"UniqueVolumeIds": true
 				}`))
+			})
+		})
+
+		Context("when invalid args are supplied", func() {
+
+			BeforeEach(func() {
+				command.Args = append(command.Args, "-mountFlagDefault=sloppy_mount:123")
+				expectedStartOutput = "fatal-err-aborting"
+			})
+
+			It("should error", func() {
+				EventuallyWithOffset(1, func() error {
+					_, err := net.Dial("tcp", "0.0.0.0:7595")
+					return err
+				}, 5).Should(HaveOccurred())
 			})
 		})
 	})

@@ -1,14 +1,6 @@
 package main
 
 import (
-	"code.cloudfoundry.org/goshims/timeshim"
-	"encoding/json"
-	"flag"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
-
 	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
 	"code.cloudfoundry.org/dockerdriver"
@@ -18,20 +10,24 @@ import (
 	"code.cloudfoundry.org/goshims/filepathshim"
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
+	"code.cloudfoundry.org/goshims/timeshim"
 	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagerflags"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
-	vmo "code.cloudfoundry.org/volume-mount-options"
-	vmou "code.cloudfoundry.org/volume-mount-options/utils"
 	"code.cloudfoundry.org/volumedriver"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
 	"code.cloudfoundry.org/volumedriver/oshelper"
+	"encoding/json"
+	"flag"
 	"github.com/tedsuo/ifrit"
 	"github.com/tedsuo/ifrit/grouper"
 	"github.com/tedsuo/ifrit/http_server"
 	"github.com/tedsuo/ifrit/sigmon"
+	"os"
+	"path/filepath"
+	"strconv"
 )
 
 var atPort = flag.Int(
@@ -134,16 +130,7 @@ func main() {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	configMask, err := vmo.NewMountOptsMask(
-		strings.Split(*mountFlagAllowed, ","),
-		vmou.ParseOptionStringToMap(*mountFlagDefault, ":"),
-		map[string]string{
-			"readonly": "ro",
-			"share":    "source",
-		},
-		[]string{"source"},
-		[]string{"username", "password"},
-	)
+	configMask, err := smbdriver.NewSmbVolumeMountMask(*mountFlagAllowed, *mountFlagDefault)
 	exitOnFailure(logger, err)
 
 	mounter := smbdriver.NewSmbMounter(
