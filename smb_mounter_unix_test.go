@@ -46,6 +46,8 @@ var _ = Describe("SmbMounter", func() {
 		opts = map[string]interface{}{}
 		opts["mount"] = "/data"
 		opts["source"] = "source-from-opts"
+		opts["username"] = "foo"
+		opts["password"] = "bar"
 
 		fakeInvoker = &dockerdriverfakes.FakeInvoker{}
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
@@ -58,6 +60,7 @@ var _ = Describe("SmbMounter", func() {
 	})
 
 	Context("#Mount", func() {
+
 		Context("when mount succeeds", func() {
 			JustBeforeEach(func() {
 				fakeInvoker.InvokeReturns(nil, nil)
@@ -119,10 +122,6 @@ var _ = Describe("SmbMounter", func() {
 			})
 		})
 
-		Context("when mount is cancelled", func() {
-			// TODO: when we pick up the lager.Context
-		})
-
 		Context("when error occurs", func() {
 			BeforeEach(func() {
 				opts = map[string]interface{}{}
@@ -174,6 +173,43 @@ var _ = Describe("SmbMounter", func() {
 				})
 			})
 		})
+
+		Context("when mandatory username argument is not provided", func() {
+			BeforeEach(func() {
+				opts["password"] = ""
+				delete(opts, "username")
+			})
+
+			JustBeforeEach(func() {
+				err = subject.Mount(env, "source", "target", opts)
+			})
+
+			It("should return with error", func() {
+				Expect(err).To(HaveOccurred())
+				_, ok := err.(dockerdriver.SafeError)
+				Expect(ok).To(BeTrue())
+				Expect(err).To(MatchError("Missing mandatory options: username"))
+			})
+		})
+
+		Context("when mandatory password argument is not provided", func() {
+			BeforeEach(func() {
+				opts["username"] = ""
+				delete(opts, "password")
+			})
+
+			JustBeforeEach(func() {
+				err = subject.Mount(env, "source", "target", opts)
+			})
+
+			It("should return with error", func() {
+				Expect(err).To(HaveOccurred())
+				_, ok := err.(dockerdriver.SafeError)
+				Expect(ok).To(BeTrue())
+				Expect(err).To(MatchError("Missing mandatory options: password"))
+			})
+		})
+
 	})
 
 	Context("#Unmount", func() {
