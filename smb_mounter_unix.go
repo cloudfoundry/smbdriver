@@ -50,7 +50,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"-t", "cifs",
 		source,
 		target,
-		"-o", vmou.ToKernelMountOptionString(mountOpts),
+		"-o", fmt.Sprintf("%s,%s", vmou.ToKernelMountOptionString(mountOpts), "uid=2000,gid=2000"),
 		"--verbose",
 	}
 
@@ -127,10 +127,10 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 }
 
 func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions string) (vmo.MountOptsMask, error) {
-	allowed := []string{"username", "password", "uid", "gid", "file_mode", "dir_mode", "ro", "domain", "vers", "sec"}
+	allowed := []string{"username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec"}
 	allowed = append(allowed, strings.Split(allowedMountOptions, ",")...)
 
-	defaultMap := map[string]interface{}{"uid": "2000", "gid": "2000"}
+	defaultMap := map[string]interface{}{}
 	for _, value := range strings.Split(defaultMountOptions, ",") {
 		split := strings.Split(value, ":")
 		if len(split) == 2 {
