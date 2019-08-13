@@ -23,6 +23,7 @@ var _ = Describe("Main", func() {
 	)
 
 	BeforeEach(func() {
+		expectedStartOutput = "smb-driver-server.started"
 		command = exec.Command(driverPath)
 	})
 
