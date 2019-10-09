@@ -258,6 +258,7 @@ func createSmbDriverUnixServer(logger lager.Logger, client dockerdriver.Driver, 
 func newLogger() (lager.Logger, *lager.ReconfigurableSink) {
 	lagerConfig := lagerflags.ConfigFromFlags()
 	lagerConfig.RedactSecrets = true
+	lagerConfig.RedactPatterns = SmbRedactValuePatterns()
 
 	return lagerflags.NewFromConfig("smb-driver-server", lagerConfig)
 }
@@ -266,4 +267,18 @@ func parseCommandLine() {
 	lagerflags.AddFlags(flag.CommandLine)
 	cf_debug_server.AddFlags(flag.CommandLine)
 	flag.Parse()
+}
+
+
+
+func SmbRedactValuePatterns() []string {
+	nfsPasswordPattern := `.*password.*`
+	awsAccessKeyIDPattern := `AKIA[A-Z0-9]{16}`
+	awsSecretAccessKeyPattern := `KEY["']?\s*(?::|=>|=)\s*["']?[A-Z0-9/\+=]{40}["']?`
+	cryptMD5Pattern := `\$1\$[A-Z0-9./]{1,16}\$[A-Z0-9./]{22}`
+	cryptSHA256Pattern := `\$5\$[A-Z0-9./]{1,16}\$[A-Z0-9./]{43}`
+	cryptSHA512Pattern := `\$6\$[A-Z0-9./]{1,16}\$[A-Z0-9./]{86}`
+	privateKeyHeaderPattern := `-----BEGIN(.*)PRIVATE KEY-----`
+
+	return []string{nfsPasswordPattern, awsAccessKeyIDPattern, awsSecretAccessKeyPattern, cryptMD5Pattern, cryptSHA256Pattern, cryptSHA512Pattern, privateKeyHeaderPattern}
 }
