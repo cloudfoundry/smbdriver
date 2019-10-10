@@ -113,7 +113,7 @@ var _ = Describe("Main", func() {
 
 	Context("smb uses the right redaction patterns", func() {
 		It("should redact 'password'", func() {
-			Expect(SmbRedactValuePatterns()).To(ContainElement(`.*password.*`))
+			Expect(SmbRedactValuePatterns()).To(ContainElement(`.*password=.*`))
 		})
 	})
 })

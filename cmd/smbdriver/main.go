@@ -272,7 +272,7 @@ func parseCommandLine() {
 
 
 func SmbRedactValuePatterns() []string {
-	nfsPasswordPattern := `.*password.*`
+	nfsPasswordValuePattern := `.*password=.*`
 	awsAccessKeyIDPattern := `AKIA[A-Z0-9]{16}`
 	awsSecretAccessKeyPattern := `KEY["']?\s*(?::|=>|=)\s*["']?[A-Z0-9/\+=]{40}["']?`
 	cryptMD5Pattern := `\$1\$[A-Z0-9./]{1,16}\$[A-Z0-9./]{22}`
@@ -280,5 +280,5 @@ func SmbRedactValuePatterns() []string {
 	cryptSHA512Pattern := `\$6\$[A-Z0-9./]{1,16}\$[A-Z0-9./]{86}`
 	privateKeyHeaderPattern := `-----BEGIN(.*)PRIVATE KEY-----`
 
-	return []string{nfsPasswordPattern, awsAccessKeyIDPattern, awsSecretAccessKeyPattern, cryptMD5Pattern, cryptSHA256Pattern, cryptSHA512Pattern, privateKeyHeaderPattern}
+	return []string{nfsPasswordValuePattern, awsAccessKeyIDPattern, awsSecretAccessKeyPattern, cryptMD5Pattern, cryptSHA256Pattern, cryptSHA512Pattern, privateKeyHeaderPattern}
 }
