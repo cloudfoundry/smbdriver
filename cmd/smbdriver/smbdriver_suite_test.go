@@ -19,7 +19,7 @@ var driverPath string
 var _ = BeforeSuite(func() {
 	SetDefaultEventuallyTimeout(1 * time.Minute)
 	var err error
-	driverPath, err = Build("code.cloudfoundry.org/smbdriver/cmd/smbdriver")
+	driverPath, err = Build("code.cloudfoundry.org/smbdriver/cmd/smbdriver", "-mod=vendor")
 	Expect(err).ToNot(HaveOccurred())
 })
 
