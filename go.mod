@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/volume-mount-options v0.0.0-20191011190522-1330f06bfe01
 	code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3
 	github.com/onsi/ginkgo v1.10.3
-	github.com/onsi/gomega v1.7.0
+	github.com/onsi/gomega v1.7.1
 	github.com/tedsuo/ifrit v0.0.0-20191009134036-9a97d0632f00
 	github.com/tedsuo/rata v1.0.0
 )
