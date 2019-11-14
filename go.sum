@@ -14,6 +14,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2a
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106/go.mod h1:VxNwgI63VxUGfSR/F3VzjOpnWLbeH+AB1pQugK1i1bA=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191011190522-1330f06bfe01 h1:gvSWKxLvVCYRGdgkN3OxDeJ3aMdmYhi8DTtKEQe6ULc=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191011190522-1330f06bfe01/go.mod h1:9wXD5/HR3Mkyh7ooV8Tn7J6M6PDC7pRHIj6+ZOvHCHg=
+code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af h1:VfHK+JvyoJ+W/ZZSDysBbZM4IyiA5G2HoRG4Y4ri8DY=
+code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af/go.mod h1:ydxOg1SOONU1OWEORaW1ovk+XYoMmMKB9wgVOiZuFyA=
 code.cloudfoundry.org/volume-mount-options v1.0.0 h1:5UOAbadWb+3eTuiOSJB2h1x7bPbY8RlcdnaeooPV8OU=
 code.cloudfoundry.org/volume-mount-options v1.0.0/go.mod h1:mN++KrULBSjlhHK3WptZzm3S4xi5txyHPQaFlb1H2mU=
 code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3 h1:Z4MbhJGGQ50vTJ4S6PHAQvHMwWTQx9ym/cOksd2W+9g=
@@ -24,6 +26,7 @@ github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
+github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=

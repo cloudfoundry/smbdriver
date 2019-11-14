@@ -30,7 +30,7 @@ code.cloudfoundry.org/lager/lagertest
 code.cloudfoundry.org/lager/lagerctx
 # code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
 code.cloudfoundry.org/tlsconfig
-# code.cloudfoundry.org/volume-mount-options v1.0.0
+# code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
 # code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3

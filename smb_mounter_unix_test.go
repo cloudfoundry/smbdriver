@@ -219,7 +219,7 @@ var _ = Describe("SmbMounter", func() {
 				Expect(err).To(HaveOccurred())
 				_, ok := err.(dockerdriver.SafeError)
 				Expect(ok).To(BeTrue())
-				Expect(err).To(MatchError("Missing mandatory options: username"))
+				Expect(err.Error()).To(ContainSubstring("Missing mandatory options: username"))
 			})
 		})
 
@@ -234,7 +234,7 @@ var _ = Describe("SmbMounter", func() {
 				Expect(err).To(HaveOccurred())
 				_, ok := err.(dockerdriver.SafeError)
 				Expect(ok).To(BeTrue())
-				Expect(err).To(MatchError("Missing mandatory options: password"))
+				Expect(err.Error()).To(ContainSubstring("Missing mandatory options: password"))
 			})
 		})
 	})

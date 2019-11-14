@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+const ValidationFailErrorMessage = "- validation mount options failed: %s"
+const NotAllowedErrorMessage = "- Not allowed options: %s"
+const MissingOptionErrorMessage = "- Missing mandatory options: %s"
+
 type MountOpts map[string]interface{}
 
 func NewMountOpts(userOpts map[string]interface{}, mask MountOptsMask) (MountOpts, error) {
@@ -14,8 +18,7 @@ func NewMountOpts(userOpts map[string]interface{}, mask MountOptsMask) (MountOpt
 		mountOpts[k] = v
 	}
 
-	errorList := []string{}
-
+	allowedErrorList := []string{}
 	for k, v := range userOpts {
 		var canonicalKey string
 		var ok bool
@@ -31,25 +34,49 @@ func NewMountOpts(userOpts map[string]interface{}, mask MountOptsMask) (MountOpt
 			uv := uniformKeyData(canonicalKey, v)
 			mountOpts[canonicalKey] = uv
 		} else if !mask.SloppyMount {
-			errorList = append(errorList, k)
+			allowedErrorList = append(allowedErrorList, k)
 		}
 	}
 
-	if len(errorList) > 0 {
-		return MountOpts{}, fmt.Errorf("Not allowed options: %s", strings.Join(errorList, ", "))
+	var validationErrorList []string
+	if mask.ValidationFunc != nil {
+		for key, val := range mountOpts {
+			for _, validationFunc := range mask.ValidationFunc {
+				err := validationFunc.Validate(key, fmt.Sprintf("%v", val))
+				if err != nil {
+					validationErrorList = append(validationErrorList, err.Error())
+				}
+			}
+		}
 	}
 
+	var mandatoryErrorList []string
 	for _, k := range mask.Mandatory {
 		if _, ok := mountOpts[k]; !ok {
-			errorList = append(errorList, k)
+			mandatoryErrorList = append(mandatoryErrorList, k)
 		}
 	}
 
-	if len(errorList) > 0 {
-		return MountOpts{}, fmt.Errorf("Missing mandatory options: %s", strings.Join(errorList, ", "))
+	errorString := buildErrorMessage(validationErrorList, ValidationFailErrorMessage)
+	errorString += buildErrorMessage(allowedErrorList, NotAllowedErrorMessage)
+	errorString += buildErrorMessage(mandatoryErrorList, MissingOptionErrorMessage)
+
+	if hasErrors(allowedErrorList, validationErrorList, mandatoryErrorList) {
+		return MountOpts{}, fmt.Errorf(errorString)
 	}
 
 	return mountOpts, nil
+}
+
+func hasErrors(allowedErrorList []string, validationErrorList []string, mandatoryErrorList []string) bool {
+	return len(allowedErrorList) > 0 || len(validationErrorList) > 0 || len(mandatoryErrorList) > 0
+}
+
+func buildErrorMessage(validationErrorList []string, errorDesc string) string {
+	if len(validationErrorList) > 0 {
+		return fmt.Sprintln(fmt.Sprintf(errorDesc, strings.Join(validationErrorList, ", ")))
+	}
+	return ""
 }
 
 func inArray(list []string, key string) bool {
