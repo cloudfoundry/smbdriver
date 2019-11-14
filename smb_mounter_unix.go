@@ -16,7 +16,6 @@ import (
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
 	vmo "code.cloudfoundry.org/volume-mount-options"
-	vmou "code.cloudfoundry.org/volume-mount-options/utils"
 	"code.cloudfoundry.org/volumedriver"
 )
 
@@ -50,7 +49,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		"-t", "cifs",
 		source,
 		target,
-		"-o", fmt.Sprintf("%s,%s", vmou.ToKernelMountOptionString(mountOpts), "uid=2000,gid=2000"),
+		"-o", fmt.Sprintf("%s,%s", ToKernelMountOptionString(mountOpts), "uid=2000,gid=2000"),
 		"--verbose",
 	}
 
@@ -127,7 +126,7 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 }
 
 func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions string) (vmo.MountOptsMask, error) {
-	allowed := []string{"username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec"}
+	allowed := []string{"username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec", "version"}
 	allowed = append(allowed, strings.Split(allowedMountOptions, ",")...)
 
 	defaultMap := map[string]interface{}{}

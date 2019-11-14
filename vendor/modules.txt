@@ -45,8 +45,9 @@ github.com/hpcloud/tail/ratelimiter
 github.com/hpcloud/tail/util
 github.com/hpcloud/tail/watch
 github.com/hpcloud/tail/winfile
-# github.com/onsi/ginkgo v1.10.2
+# github.com/onsi/ginkgo v1.10.3
 github.com/onsi/ginkgo
+github.com/onsi/ginkgo/extensions/table
 github.com/onsi/ginkgo/config
 github.com/onsi/ginkgo/internal/codelocation
 github.com/onsi/ginkgo/internal/failer
