@@ -14,6 +14,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2a
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106/go.mod h1:VxNwgI63VxUGfSR/F3VzjOpnWLbeH+AB1pQugK1i1bA=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191011190522-1330f06bfe01 h1:gvSWKxLvVCYRGdgkN3OxDeJ3aMdmYhi8DTtKEQe6ULc=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191011190522-1330f06bfe01/go.mod h1:9wXD5/HR3Mkyh7ooV8Tn7J6M6PDC7pRHIj6+ZOvHCHg=
+code.cloudfoundry.org/volume-mount-options v1.0.0 h1:5UOAbadWb+3eTuiOSJB2h1x7bPbY8RlcdnaeooPV8OU=
+code.cloudfoundry.org/volume-mount-options v1.0.0/go.mod h1:mN++KrULBSjlhHK3WptZzm3S4xi5txyHPQaFlb1H2mU=
 code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3 h1:Z4MbhJGGQ50vTJ4S6PHAQvHMwWTQx9ym/cOksd2W+9g=
 code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3/go.mod h1:1wPX/9QKKW6yFDf3K6jjQ90oMSmlzgK9D5Rlu/DjZjc=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 h1:y4B3+GPxKlrigF1ha5FFErxK+sr6sWxQovRMzwMhejo=
@@ -33,6 +35,8 @@ github.com/onsi/ginkgo v1.10.3 h1:OoxbjfXVZyod1fmWYhI7SEyaD8B00ynP3T+D5GiyHOY=
 github.com/onsi/ginkgo v1.10.3/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.7.0 h1:XPnZz8VVBHjVsy1vzJmRwIcSwiUO+JFfrv/xGiigmME=
 github.com/onsi/gomega v1.7.0/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
+github.com/onsi/gomega v1.7.1 h1:K0jcRCwNQM3vFGh1ppMtDh/+7ApJrjldlX8fA0jDTLQ=
+github.com/onsi/gomega v1.7.1/go.mod h1:XdKZgCCFLUoM/7CFJVPcG8C1xQ1AJ0vpAezJrB7JYyY=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/square/certstrap v1.1.2-0.20181030173000-b612375892a7 h1:AUbF3PNK5UAg9tPJHqcRN7nRkrRK/mRWqkiqlQRN9Fk=
@@ -57,3 +61,5 @@ gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 h1:uRGJdciOHaEIrze2W8Q3AKkep
 gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7/go.mod h1:dt/ZhP58zS4L8KSrWDmTeBkI65Dw0HsyUHuEVlX15mw=
 gopkg.in/yaml.v2 v2.2.1 h1:mUhvW9EsL+naU5Q3cakzfE91YhliOondGd6ZrsDBHQE=
 gopkg.in/yaml.v2 v2.2.1/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+gopkg.in/yaml.v2 v2.2.4 h1:/eiJrUcujPVeJ3xlSWaiNi3uSVmDGBK1pDHUHAnao1I=
+gopkg.in/yaml.v2 v2.2.4/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
