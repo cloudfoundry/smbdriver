@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -x -e
+
+sed -i 's/main $@//' /usr/local/bin/start-bosh
+source /usr/local/bin/start-bosh
+export certs_dir=$(mktemp -d)
+export OUTER_CONTAINER_IP=$(ruby -rsocket -e 'puts Socket.ip_address_list
+                          .reject { |addr| !addr.ip? || addr.ipv4_loopback? || addr.ipv6? }
+                          .map { |addr| addr.ip_address }')
+
+export DOCKER_HOST="tcp://${OUTER_CONTAINER_IP}:4243"
+
+start_docker "${certs_dir}"
+
+SMB_REMOTE_PATH="//localhost/example1"
+SMB_USERNAME="example1"
+SMB_PASSWORD="badpass"
+
+docker --tlsverify --tlscacert=${certs_dir}/ca.pem --tlscert=${certs_dir}/cert.pem --tlskey=${certs_dir}/key.pem \
+            run -it -p 139:139 -p 445:445 -d dperson/samba -p \
+            -u "$SMB_USERNAME;$SMB_PASSWORD" \
+            -s "$SMB_USERNAME;/$SMB_USERNAME;no;no;no;$SMB_USERNAME" \
+            -p \
+            -S
+
+apt-get update
+apt-get -y install cifs-utils realpath
+export GOROOT=/usr/local/go
+export PATH=$GOROOT/bin:/root/go/bin/:$PATH
+go get -u github.com/onsi/ginkgo/ginkgo
+
+pushd smbdriver
+  listen_port=8589
+  listen_address="0.0.0.0:${listen_port}"
+  driver_address="http://${listen_address}"
+
+  mkdir -p ~/voldriver_plugins
+  drivers_path="$(realpath ~/voldriver_plugins)"
+
+  export FIXTURE_FILENAME=/tmp/fixture.json
+
+  echo "{
+    \"volman_driver_path\": \"~/voldriver_plugins\",
+    \"driver_address\": \"${driver_address}\",
+    \"driver_name\": \"smbdriver\",
+    \"create_config\": {
+      \"Name\": \"smb-volume-name\",
+      \"Opts\": {\"source\":\"${SMB_REMOTE_PATH}\",\"username\":\"${SMB_USERNAME}\",\"password\":\"${SMB_PASSWORD}\"}
+    }
+  } " > "${FIXTURE_FILENAME}"
+
+  go build -mod=vendor -o "/tmp/smbdriver" "cmd/smbdriver/main.go"
+
+  mountDir="/tmp/mountdir"
+  mkdir -p "${mountDir}"
+
+  export DRIVER_CMD="/tmp/smbdriver"
+  export DRIVER_OPTS="-listenPort="${listen_port}",-transport="tcp",-driversPath="${drivers_path}",--mountDir="${mountDir}""
+
+popd
+
+pushd ${TEST_PACKAGE}
+  ginkgo -v -keepGoing . -race
+popd
