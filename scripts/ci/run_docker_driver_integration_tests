@@ -61,5 +61,5 @@ pushd smbdriver
 popd
 
 pushd ${TEST_PACKAGE}
-  ginkgo -v -keepGoing . -race
+  ginkgo -mod vendor -v -keepGoing . -race
 popd
