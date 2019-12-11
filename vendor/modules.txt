@@ -9,8 +9,8 @@ code.cloudfoundry.org/debugserver
 # code.cloudfoundry.org/dockerdriver v0.0.0-20190430182539-d20038a36dd2
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
-code.cloudfoundry.org/dockerdriver/invoker
 code.cloudfoundry.org/dockerdriver/dockerdriverfakes
+code.cloudfoundry.org/dockerdriver/invoker
 # code.cloudfoundry.org/goshims v0.0.0-20190529192408-bb24d2ef71ff
 code.cloudfoundry.org/goshims/ioutilshim
 code.cloudfoundry.org/goshims/osshim
@@ -18,10 +18,10 @@ code.cloudfoundry.org/goshims/bufioshim
 code.cloudfoundry.org/goshims/filepathshim
 code.cloudfoundry.org/goshims/timeshim
 code.cloudfoundry.org/goshims/http_wrap
-code.cloudfoundry.org/goshims/execshim
-code.cloudfoundry.org/goshims/syscallshim
 code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake
 code.cloudfoundry.org/goshims/osshim/os_fake
+code.cloudfoundry.org/goshims/execshim
+code.cloudfoundry.org/goshims/syscallshim
 # code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 code.cloudfoundry.org/lager
 code.cloudfoundry.org/lager/lagerflags
@@ -33,10 +33,12 @@ code.cloudfoundry.org/tlsconfig
 # code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.0.0-20191011183734-858742c3deb3
+# code.cloudfoundry.org/volumedriver v0.0.0-20191210184105-9be69cb9dca0
 code.cloudfoundry.org/volumedriver
+code.cloudfoundry.org/volumedriver/invoker
 code.cloudfoundry.org/volumedriver/mountchecker
 code.cloudfoundry.org/volumedriver/oshelper
+code.cloudfoundry.org/volumedriver/invokerfakes
 # github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40
 github.com/bmizerany/pat
 # github.com/hpcloud/tail v1.0.0

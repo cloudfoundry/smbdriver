@@ -11,12 +11,12 @@ import (
 
 	"code.cloudfoundry.org/dockerdriver"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
-	"code.cloudfoundry.org/dockerdriver/invoker"
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/lager"
 	vmo "code.cloudfoundry.org/volume-mount-options"
 	"code.cloudfoundry.org/volumedriver"
+	"code.cloudfoundry.org/volumedriver/invoker"
 )
 
 type smbMounter struct {
@@ -61,8 +61,12 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
-	_, err = m.invoker.Invoke(env, "mount", mountArgs)
-	return safeError(err)
+	invokeResult, err := m.invoker.Invoke(env, "mount", mountArgs)
+	if err != nil {
+		return safeError(err)
+	}
+
+	return safeError(invokeResult.Wait())
 }
 
 func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
@@ -70,9 +74,16 @@ func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	_, err := m.invoker.Invoke(env, "umount", []string{"-l", target})
+	invokeResult, err := m.invoker.Invoke(env, "umount", []string{"-l", target})
+	if err != nil {
+		return safeError(err)
+	}
 
-	return safeError(err)
+	err = invokeResult.Wait()
+	if err != nil {
+		return safeError(err)
+	}
+	return nil
 }
 
 func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
@@ -83,11 +94,17 @@ func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
 	ctx, cancel := context.WithDeadline(context.TODO(), time.Now().Add(time.Second*5))
 	defer cancel()
 	env = driverhttp.EnvWithContext(ctx, env)
-	_, err := m.invoker.Invoke(env, "mountpoint", []string{"-q", mountPoint})
+	invokeResult, err := m.invoker.Invoke(env, "mountpoint", []string{"-q", mountPoint})
 
 	if err != nil {
 		// Note: Created volumes (with no mounts) will be removed
 		//       since VolumeInfo.Mountpoint will be an empty string
+		logger.Info(fmt.Sprintf("unable to verify volume %s (%s)", name, err.Error()))
+		return false
+	}
+
+	err = invokeResult.Wait()
+	if err != nil {
 		logger.Info(fmt.Sprintf("unable to verify volume %s (%s)", name, err.Error()))
 		return false
 	}
@@ -109,12 +126,17 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 		if fileInfo.IsDir() {
 			mountDir := filepath.Join(path, fileInfo.Name())
 
-			_, err = m.invoker.Invoke(env, "umount", []string{"-l", "-f", mountDir})
+			invokeResult, err := m.invoker.Invoke(env, "umount", []string{"-l", "-f", mountDir})
 			if err != nil {
 				logger.Error("warning-umount-failed", err)
+			} else {
+				err = invokeResult.Wait()
+				if err != nil {
+					logger.Error("warning-umount-failed", err)
+				} else {
+					logger.Info("unmount-successful", lager.Data{"path": mountDir})
+				}
 			}
-
-			logger.Info("unmount-successful", lager.Data{"path": mountDir})
 
 			if err := m.osutil.Remove(mountDir); err != nil {
 				logger.Error("purge-cannot-remove-directory", err, lager.Data{"name": mountDir, "path": path})

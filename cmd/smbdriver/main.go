@@ -5,7 +5,6 @@ import (
 	cf_debug_server "code.cloudfoundry.org/debugserver"
 	"code.cloudfoundry.org/dockerdriver"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
-	"code.cloudfoundry.org/dockerdriver/invoker"
 	"code.cloudfoundry.org/goshims/bufioshim"
 	"code.cloudfoundry.org/goshims/filepathshim"
 	"code.cloudfoundry.org/goshims/ioutilshim"
@@ -17,6 +16,7 @@ import (
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
 	"code.cloudfoundry.org/volumedriver"
+	"code.cloudfoundry.org/volumedriver/invoker"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
 	"code.cloudfoundry.org/volumedriver/oshelper"
 	"encoding/json"
@@ -268,8 +268,6 @@ func parseCommandLine() {
 	cf_debug_server.AddFlags(flag.CommandLine)
 	flag.Parse()
 }
-
-
 
 func SmbRedactValuePatterns() []string {
 	nfsPasswordValuePattern := `.*password=.*`

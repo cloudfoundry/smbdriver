@@ -12,13 +12,13 @@ type FakeProcess struct {
 	ReadyStub        func() <-chan struct{}
 	readyMutex       sync.RWMutex
 	readyArgsForCall []struct{}
-	readyReturns struct {
+	readyReturns     struct {
 		result1 <-chan struct{}
 	}
 	WaitStub        func() <-chan error
 	waitMutex       sync.RWMutex
 	waitArgsForCall []struct{}
-	waitReturns struct {
+	waitReturns     struct {
 		result1 <-chan error
 	}
 	SignalStub        func(os.Signal)

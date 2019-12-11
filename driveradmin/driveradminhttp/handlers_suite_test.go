@@ -35,4 +35,3 @@ func (errCloser) Read(p []byte) (n int, err error) { return 0, fmt.Errorf("any")
 type stringCloser struct{ io.Reader }
 
 func (stringCloser) Close() error { return nil }
-

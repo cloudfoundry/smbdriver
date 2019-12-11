@@ -3,22 +3,21 @@
 package smbdriver_test
 
 import (
-	"code.cloudfoundry.org/smbdriver"
-	"context"
-	"fmt"
-	"os"
-	"strings"
-
 	"code.cloudfoundry.org/dockerdriver"
-	"code.cloudfoundry.org/dockerdriver/dockerdriverfakes"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
 	"code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake"
 	"code.cloudfoundry.org/goshims/osshim/os_fake"
-	"code.cloudfoundry.org/lager"
 	"code.cloudfoundry.org/lager/lagertest"
+	"code.cloudfoundry.org/smbdriver"
 	vmo "code.cloudfoundry.org/volume-mount-options"
 	"code.cloudfoundry.org/volumedriver"
+	"code.cloudfoundry.org/volumedriver/invokerfakes"
+	"context"
+	"fmt"
 	"github.com/onsi/ginkgo/extensions/table"
+	"github.com/onsi/gomega/gbytes"
+	"os"
+	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -26,14 +25,15 @@ import (
 
 var _ = Describe("SmbMounter", func() {
 	var (
-		logger      lager.Logger
+		logger      *lagertest.TestLogger
 		testContext context.Context
 		env         dockerdriver.Env
 		err         error
 
-		fakeInvoker *dockerdriverfakes.FakeInvoker
-		fakeIoutil  *ioutil_fake.FakeIoutil
-		fakeOs      *os_fake.FakeOs
+		fakeInvoker      *invokerfakes.FakeInvoker
+		fakeInvokeResult *invokerfakes.FakeInvokeResult
+		fakeIoutil       *ioutil_fake.FakeIoutil
+		fakeOs           *os_fake.FakeOs
 
 		subject volumedriver.Mounter
 
@@ -51,7 +51,12 @@ var _ = Describe("SmbMounter", func() {
 		opts["password"] = "bar"
 		opts["version"] = "2.0"
 
-		fakeInvoker = &dockerdriverfakes.FakeInvoker{}
+		fakeInvoker = &invokerfakes.FakeInvoker{}
+		fakeInvokeResult = &invokerfakes.FakeInvokeResult{}
+		fakeInvoker.InvokeReturns(fakeInvokeResult, nil)
+
+		fakeInvokeResult.WaitReturns(nil)
+		fakeInvokeResult.WaitForReturns(nil)
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
 		fakeOs = &os_fake.FakeOs{}
 
@@ -67,9 +72,6 @@ var _ = Describe("SmbMounter", func() {
 		})
 
 		Context("when mount succeeds", func() {
-			BeforeEach(func() {
-				fakeInvoker.InvokeReturns(nil, nil)
-			})
 
 			It("should return without error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -86,9 +88,11 @@ var _ = Describe("SmbMounter", func() {
 				Expect(strings.Join(args, " ")).To(ContainSubstring("vers=2.0"))
 			})
 
-			Context("smb versions", func(){
-				JustBeforeEach(func(){
-					fakeInvoker = &dockerdriverfakes.FakeInvoker{}
+			Context("smb versions", func() {
+				JustBeforeEach(func() {
+					fakeInvoker = &invokerfakes.FakeInvoker{}
+					fakeInvokeResult = &invokerfakes.FakeInvokeResult{}
+					fakeInvoker.InvokeReturns(fakeInvokeResult, nil)
 
 					configMask, err := smbdriver.NewSmbVolumeMountMask("", "")
 					Expect(err).NotTo(HaveOccurred())
@@ -96,8 +100,7 @@ var _ = Describe("SmbMounter", func() {
 					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
 				})
 
-
-				table.DescribeTable("when passed smb versions", func(version string, containsVers bool){
+				table.DescribeTable("when passed smb versions", func(version string, containsVers bool) {
 					opts["version"] = version
 					err = subject.Mount(env, "source", "target", opts)
 					Expect(err).NotTo(HaveOccurred())
@@ -110,7 +113,6 @@ var _ = Describe("SmbMounter", func() {
 						Expect(strings.Join(args, " ")).NotTo(ContainSubstring("vers"))
 					}
 
-
 				},
 					table.Entry("1.0", "1.0", true),
 					table.Entry("2.0", "2.0", true),
@@ -119,7 +121,6 @@ var _ = Describe("SmbMounter", func() {
 					table.Entry("nil", nil, false),
 				)
 			})
-
 
 			Context("when mounting read only with readonly", func() {
 				Context("and readonly is passed", func() {
@@ -148,15 +149,28 @@ var _ = Describe("SmbMounter", func() {
 			})
 		})
 
-		Context("when mount errors", func() {
+		Context("when mount invoke errors", func() {
 			BeforeEach(func() {
-				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
+				fakeInvoker.InvokeReturns(fakeInvokeResult, fmt.Errorf("error"))
 			})
 
 			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
 				_, ok := err.(dockerdriver.SafeError)
 				Expect(ok).To(BeTrue())
+			})
+		})
+
+		Context("when mount cmd errors", func() {
+			BeforeEach(func() {
+				fakeInvokeResult.WaitReturns(fmt.Errorf("mount error"))
+			})
+
+			It("should return with error", func() {
+				Expect(err).To(HaveOccurred())
+				_, ok := err.(dockerdriver.SafeError)
+				Expect(ok).To(BeTrue())
+				Expect(err).To(MatchError("mount error"))
 			})
 		})
 
@@ -180,8 +194,6 @@ var _ = Describe("SmbMounter", func() {
 				Expect(err2).NotTo(HaveOccurred())
 
 				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
-
-				fakeInvoker.InvokeReturns(nil, nil)
 			})
 
 			Context("when a required option is missing", func() {
@@ -214,7 +226,6 @@ var _ = Describe("SmbMounter", func() {
 				delete(opts, "username")
 			})
 
-
 			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
 				_, ok := err.(dockerdriver.SafeError)
@@ -229,7 +240,6 @@ var _ = Describe("SmbMounter", func() {
 				delete(opts, "password")
 			})
 
-
 			It("should return with error", func() {
 				Expect(err).To(HaveOccurred())
 				_, ok := err.(dockerdriver.SafeError)
@@ -242,8 +252,6 @@ var _ = Describe("SmbMounter", func() {
 	Context("#Unmount", func() {
 		Context("when mount succeeds", func() {
 			BeforeEach(func() {
-				fakeInvoker.InvokeReturns(nil, nil)
-
 				err = subject.Unmount(env, "target")
 			})
 
@@ -252,6 +260,8 @@ var _ = Describe("SmbMounter", func() {
 			})
 
 			It("should use the passed in variables", func() {
+				Expect(fakeInvoker.InvokeCallCount()).To(Equal(1))
+				Expect(fakeInvokeResult.WaitCallCount()).To(Equal(1))
 				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("umount"))
 				Expect(len(args)).To(Equal(2))
@@ -260,9 +270,9 @@ var _ = Describe("SmbMounter", func() {
 			})
 		})
 
-		Context("when unmount fails", func() {
+		Context("when unmount invoke fails", func() {
 			BeforeEach(func() {
-				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
+				fakeInvoker.InvokeReturns(fakeInvokeResult, fmt.Errorf("umount invoke"))
 				err = subject.Unmount(env, "target")
 			})
 
@@ -271,8 +281,25 @@ var _ = Describe("SmbMounter", func() {
 
 				_, ok := err.(dockerdriver.SafeError)
 				Expect(ok).To(BeTrue())
+				Expect(err).To(MatchError("umount invoke"))
 			})
 		})
+
+		Context("when unmount cmd fails", func() {
+			BeforeEach(func() {
+				fakeInvokeResult.WaitReturns(fmt.Errorf("umount cmd"))
+				err = subject.Unmount(env, "target")
+			})
+
+			It("should return an error", func() {
+				Expect(err).To(HaveOccurred())
+
+				_, ok := err.(dockerdriver.SafeError)
+				Expect(ok).To(BeTrue())
+				Expect(err).To(MatchError("umount cmd"))
+			})
+		})
+
 	})
 
 	Context("#Check", func() {
@@ -293,15 +320,28 @@ var _ = Describe("SmbMounter", func() {
 			})
 		})
 
-		Context("when check fails", func() {
+		Context("when check invoke fails", func() {
 			BeforeEach(func() {
-				fakeInvoker.InvokeReturns([]byte("error"), fmt.Errorf("error"))
+				fakeInvoker.InvokeReturns(fakeInvokeResult, fmt.Errorf("mountpoint invoke error"))
 				success = subject.Check(env, "target", "source")
 			})
 			It("reports invalid mountpoint", func() {
+				Expect(logger.Buffer()).To(gbytes.Say("unable to verify volume target.*mountpoint invoke error"))
 				Expect(success).To(BeFalse())
 			})
 		})
+
+		Context("when check cmd fails", func() {
+			BeforeEach(func() {
+				fakeInvokeResult.WaitReturns(fmt.Errorf("mountpoint cmd error"))
+				success = subject.Check(env, "target", "source")
+			})
+			It("reports invalid mountpoint", func() {
+				Expect(logger.Buffer()).To(gbytes.Say("unable to verify volume target.*mountpoint cmd error"))
+				Expect(success).To(BeFalse())
+			})
+		})
+
 	})
 
 	Context("#Purge", func() {
@@ -322,6 +362,7 @@ var _ = Describe("SmbMounter", func() {
 
 			It("should attempt to unmount the directory", func() {
 				Expect(fakeInvoker.InvokeCallCount()).To(Equal(1))
+				Expect(fakeInvokeResult.WaitCallCount()).To(Equal(1))
 
 				_, proc, args := fakeInvoker.InvokeArgsForCall(0)
 				Expect(proc).To(Equal("umount"))
@@ -329,6 +370,64 @@ var _ = Describe("SmbMounter", func() {
 				Expect(args[0]).To(Equal("-l"))
 				Expect(args[1]).To(Equal("-f"))
 				Expect(args[2]).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
+				Eventually(logger.Buffer()).Should(gbytes.Say("unmount-successful"))
+			})
+
+			Context("with multiple directories", func() {
+				var fakeStuff2 *ioutil_fake.FakeFileInfo
+
+				BeforeEach(func() {
+					fakeStuff2 = &ioutil_fake.FakeFileInfo{}
+					fakeStuff2.NameReturns("guidy-guid-guid2")
+					fakeStuff2.IsDirReturns(true)
+
+					fakeIoutil.ReadDirReturns([]os.FileInfo{fakeStuff, fakeStuff2}, nil)
+				})
+				It("should attempt to unmount each directory", func() {
+					Expect(fakeInvoker.InvokeCallCount()).To(Equal(2))
+					Expect(fakeInvokeResult.WaitCallCount()).To(Equal(2))
+
+					_, proc, args := fakeInvoker.InvokeArgsForCall(0)
+					Expect(proc).To(Equal("umount"))
+					Expect(len(args)).To(Equal(3))
+					Expect(args[0]).To(Equal("-l"))
+					Expect(args[1]).To(Equal("-f"))
+					Expect(args[2]).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
+					Eventually(logger.Buffer()).Should(gbytes.Say("unmount-successful"))
+
+					_, proc, args = fakeInvoker.InvokeArgsForCall(1)
+					Expect(proc).To(Equal("umount"))
+					Expect(len(args)).To(Equal(3))
+					Expect(args[0]).To(Equal("-l"))
+					Expect(args[1]).To(Equal("-f"))
+					Expect(args[2]).To(Equal("/var/vcap/data/some/path/guidy-guid-guid2"))
+					Eventually(logger.Buffer()).Should(gbytes.Say("unmount-successful"))
+				})
+
+			})
+
+			Context("umount invoke fails", func() {
+				BeforeEach(func() {
+					fakeInvoker.InvokeReturns(fakeInvokeResult, fmt.Errorf("umount invoke error"))
+				})
+
+				It("returns", func() {
+					Expect(fakeInvokeResult.WaitCallCount()).To(BeZero())
+					Expect(logger.Buffer()).To(gbytes.Say("warning-umount-failed.*umount invoke error"))
+					Consistently(logger.Buffer()).ShouldNot(gbytes.Say("unmount-successful"))
+				})
+			})
+
+			Context("umount cmd fails", func() {
+				BeforeEach(func() {
+					fakeInvokeResult.WaitReturns(fmt.Errorf("umount cmd error"))
+				})
+
+				It("returns", func() {
+					Expect(fakeInvokeResult.WaitCallCount()).To(Equal(1))
+					Expect(logger.Buffer()).To(gbytes.Say("warning-umount-failed.*umount cmd error"))
+					Consistently(logger.Buffer()).ShouldNot(gbytes.Say("unmount-successful"))
+				})
 			})
 
 			It("should remove the mount directory", func() {
@@ -344,6 +443,8 @@ var _ = Describe("SmbMounter", func() {
 				})
 
 				It("should not remove the stuff", func() {
+					Expect(fakeInvoker.InvokeCallCount()).To(Equal(0))
+					Expect(fakeInvokeResult.WaitCallCount()).To(Equal(0))
 					Expect(fakeOs.RemoveCallCount()).To(BeZero())
 				})
 			})
