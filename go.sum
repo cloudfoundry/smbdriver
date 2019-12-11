@@ -14,8 +14,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2a
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106/go.mod h1:VxNwgI63VxUGfSR/F3VzjOpnWLbeH+AB1pQugK1i1bA=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af h1:VfHK+JvyoJ+W/ZZSDysBbZM4IyiA5G2HoRG4Y4ri8DY=
 code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af/go.mod h1:ydxOg1SOONU1OWEORaW1ovk+XYoMmMKB9wgVOiZuFyA=
-code.cloudfoundry.org/volumedriver v0.0.0-20191210184105-9be69cb9dca0 h1:UXVuggk/wznV6p1PJeleX55WI6btrcTY9jqKYGuKzG8=
-code.cloudfoundry.org/volumedriver v0.0.0-20191210184105-9be69cb9dca0/go.mod h1:1wPX/9QKKW6yFDf3K6jjQ90oMSmlzgK9D5Rlu/DjZjc=
+code.cloudfoundry.org/volumedriver v0.0.0-20191211215918-b03d4e5ffb80 h1:v/OnQ1i+3wko8OkP4blXKgWITsW8jR6nay3eeT4U42s=
+code.cloudfoundry.org/volumedriver v0.0.0-20191211215918-b03d4e5ffb80/go.mod h1:1wPX/9QKKW6yFDf3K6jjQ90oMSmlzgK9D5Rlu/DjZjc=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 h1:y4B3+GPxKlrigF1ha5FFErxK+sr6sWxQovRMzwMhejo=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40/go.mod h1:8rLXio+WjiTceGBHIoTvn60HIbs7Hm7bcHjyrSqYB9c=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=

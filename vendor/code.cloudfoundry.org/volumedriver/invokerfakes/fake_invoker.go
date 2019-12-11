@@ -9,12 +9,13 @@ import (
 )
 
 type FakeInvoker struct {
-	InvokeStub        func(dockerdriver.Env, string, []string) (invoker.InvokeResult, error)
+	InvokeStub        func(dockerdriver.Env, string, []string, ...string) (invoker.InvokeResult, error)
 	invokeMutex       sync.RWMutex
 	invokeArgsForCall []struct {
 		arg1 dockerdriver.Env
 		arg2 string
 		arg3 []string
+		arg4 []string
 	}
 	invokeReturns struct {
 		result1 invoker.InvokeResult
@@ -28,7 +29,7 @@ type FakeInvoker struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []string) (invoker.InvokeResult, error) {
+func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []string, arg4 ...string) (invoker.InvokeResult, error) {
 	var arg3Copy []string
 	if arg3 != nil {
 		arg3Copy = make([]string, len(arg3))
@@ -40,11 +41,12 @@ func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []strin
 		arg1 dockerdriver.Env
 		arg2 string
 		arg3 []string
-	}{arg1, arg2, arg3Copy})
-	fake.recordInvocation("Invoke", []interface{}{arg1, arg2, arg3Copy})
+		arg4 []string
+	}{arg1, arg2, arg3Copy, arg4})
+	fake.recordInvocation("Invoke", []interface{}{arg1, arg2, arg3Copy, arg4})
 	fake.invokeMutex.Unlock()
 	if fake.InvokeStub != nil {
-		return fake.InvokeStub(arg1, arg2, arg3)
+		return fake.InvokeStub(arg1, arg2, arg3, arg4...)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -59,17 +61,17 @@ func (fake *FakeInvoker) InvokeCallCount() int {
 	return len(fake.invokeArgsForCall)
 }
 
-func (fake *FakeInvoker) InvokeCalls(stub func(dockerdriver.Env, string, []string) (invoker.InvokeResult, error)) {
+func (fake *FakeInvoker) InvokeCalls(stub func(dockerdriver.Env, string, []string, ...string) (invoker.InvokeResult, error)) {
 	fake.invokeMutex.Lock()
 	defer fake.invokeMutex.Unlock()
 	fake.InvokeStub = stub
 }
 
-func (fake *FakeInvoker) InvokeArgsForCall(i int) (dockerdriver.Env, string, []string) {
+func (fake *FakeInvoker) InvokeArgsForCall(i int) (dockerdriver.Env, string, []string, []string) {
 	fake.invokeMutex.RLock()
 	defer fake.invokeMutex.RUnlock()
 	argsForCall := fake.invokeArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
 }
 
 func (fake *FakeInvoker) InvokeReturns(result1 invoker.InvokeResult, result2 error) {

@@ -20,7 +20,7 @@ type InvokeResult interface {
 
 //go:generate counterfeiter -o ../invokerfakes/fake_invoker.go . Invoker
 type Invoker interface {
-	Invoke(env dockerdriver.Env, executable string, args []string) (InvokeResult, error)
+	Invoke(env dockerdriver.Env, executable string, args []string, envVars ...string) (InvokeResult, error)
 }
 
 type invokeResult struct {

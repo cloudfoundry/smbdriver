@@ -79,7 +79,7 @@ var _ = Describe("SmbMounter", func() {
 
 			It("should use the passed in variables", func() {
 				Expect(err).NotTo(HaveOccurred())
-				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
+				_, cmd, args, _ := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("mount"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("source"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("target"))
@@ -104,7 +104,7 @@ var _ = Describe("SmbMounter", func() {
 					opts["version"] = version
 					err = subject.Mount(env, "source", "target", opts)
 					Expect(err).NotTo(HaveOccurred())
-					_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
+					_, cmd, args, _ := fakeInvoker.InvokeArgsForCall(0)
 					Expect(cmd).To(Equal("mount"))
 
 					if containsVers {
@@ -122,6 +122,16 @@ var _ = Describe("SmbMounter", func() {
 				)
 			})
 
+			It("should not pass username or password", func(){
+				Expect(err).NotTo(HaveOccurred())
+				_, cmd, args, envVars := fakeInvoker.InvokeArgsForCall(0)
+				Expect(cmd).To(Equal("mount"))
+				Expect(strings.Join(args, " ")).NotTo(ContainSubstring("username"))
+				Expect(strings.Join(args, " ")).NotTo(ContainSubstring("password"))
+				Expect(strings.Join(envVars, " ")).To(ContainSubstring("USER=foo"))
+				Expect(strings.Join(envVars, " ")).To(ContainSubstring("PASSWD=bar"))
+			})
+
 			Context("when mounting read only with readonly", func() {
 				Context("and readonly is passed", func() {
 					BeforeEach(func() {
@@ -130,7 +140,7 @@ var _ = Describe("SmbMounter", func() {
 
 					It("should include the ro flag", func() {
 						Expect(err).NotTo(HaveOccurred())
-						_, _, args := fakeInvoker.InvokeArgsForCall(0)
+						_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
 						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
 					})
 				})
@@ -142,7 +152,7 @@ var _ = Describe("SmbMounter", func() {
 
 					It("should include the ro flag", func() {
 						Expect(err).NotTo(HaveOccurred())
-						_, _, args := fakeInvoker.InvokeArgsForCall(0)
+						_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
 						Expect(strings.Join(args, " ")).To(ContainSubstring("ro"))
 					})
 				})
@@ -262,7 +272,7 @@ var _ = Describe("SmbMounter", func() {
 			It("should use the passed in variables", func() {
 				Expect(fakeInvoker.InvokeCallCount()).To(Equal(1))
 				Expect(fakeInvokeResult.WaitCallCount()).To(Equal(1))
-				_, cmd, args := fakeInvoker.InvokeArgsForCall(0)
+				_, cmd, args, _ := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("umount"))
 				Expect(len(args)).To(Equal(2))
 				Expect(args[0]).To(Equal("-l"))
@@ -312,7 +322,7 @@ var _ = Describe("SmbMounter", func() {
 				success = subject.Check(env, "target", "source")
 			})
 			It("uses correct context", func() {
-				invokeEnv, _, _ := fakeInvoker.InvokeArgsForCall(0)
+				invokeEnv, _, _, _ := fakeInvoker.InvokeArgsForCall(0)
 				Expect(fmt.Sprintf("%#v", invokeEnv.Context())).To(ContainSubstring("timerCtx"))
 			})
 			It("reports valid mountpoint", func() {
@@ -364,7 +374,7 @@ var _ = Describe("SmbMounter", func() {
 				Expect(fakeInvoker.InvokeCallCount()).To(Equal(1))
 				Expect(fakeInvokeResult.WaitCallCount()).To(Equal(1))
 
-				_, proc, args := fakeInvoker.InvokeArgsForCall(0)
+				_, proc, args, _ := fakeInvoker.InvokeArgsForCall(0)
 				Expect(proc).To(Equal("umount"))
 				Expect(len(args)).To(Equal(3))
 				Expect(args[0]).To(Equal("-l"))
@@ -387,7 +397,7 @@ var _ = Describe("SmbMounter", func() {
 					Expect(fakeInvoker.InvokeCallCount()).To(Equal(2))
 					Expect(fakeInvokeResult.WaitCallCount()).To(Equal(2))
 
-					_, proc, args := fakeInvoker.InvokeArgsForCall(0)
+					_, proc, args, _ := fakeInvoker.InvokeArgsForCall(0)
 					Expect(proc).To(Equal("umount"))
 					Expect(len(args)).To(Equal(3))
 					Expect(args[0]).To(Equal("-l"))
@@ -395,7 +405,7 @@ var _ = Describe("SmbMounter", func() {
 					Expect(args[2]).To(Equal("/var/vcap/data/some/path/guidy-guid-guid"))
 					Eventually(logger.Buffer()).Should(gbytes.Say("unmount-successful"))
 
-					_, proc, args = fakeInvoker.InvokeArgsForCall(1)
+					_, proc, args, _ = fakeInvoker.InvokeArgsForCall(1)
 					Expect(proc).To(Equal("umount"))
 					Expect(len(args)).To(Equal(3))
 					Expect(args[0]).To(Equal("-l"))

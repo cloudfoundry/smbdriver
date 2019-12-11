@@ -45,11 +45,12 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 		return safeError(err)
 	}
 
+	mountFlags, mountEnvVars := ToKernelMountOptionFlagsAndEnvVars(mountOpts)
 	mountArgs := []string{
 		"-t", "cifs",
 		source,
 		target,
-		"-o", fmt.Sprintf("%s,%s", ToKernelMountOptionString(mountOpts), "uid=2000,gid=2000"),
+		"-o", fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000"),
 		"--verbose",
 	}
 
@@ -61,7 +62,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
-	invokeResult, err := m.invoker.Invoke(env, "mount", mountArgs)
+	invokeResult, err := m.invoker.Invoke(env, "mount", mountArgs, mountEnvVars...)
 	if err != nil {
 		return safeError(err)
 	}

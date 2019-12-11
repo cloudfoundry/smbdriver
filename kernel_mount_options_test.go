@@ -10,10 +10,11 @@ import (
 )
 
 var _ = Describe("KernelMountOptions", func() {
-	Describe("#ToKernelMountOptionString", func() {
+	Describe("#ToKernelMountOptionFlagsAndEnvVars", func() {
 		var (
 			mountOpts          map[string]interface{}
 			kernelMountOptions string
+			kernelMountEnvVars []string
 		)
 
 		BeforeEach(func() {
@@ -21,12 +22,13 @@ var _ = Describe("KernelMountOptions", func() {
 		})
 
 		JustBeforeEach(func() {
-			kernelMountOptions = smbdriver.ToKernelMountOptionString(mountOpts)
+			kernelMountOptions, kernelMountEnvVars = smbdriver.ToKernelMountOptionFlagsAndEnvVars(mountOpts)
 		})
 
 		Context("given an empty mount opts", func() {
-			It("should return an empty mount opts string", func() {
+			It("should return an empty mount opts string and empty env vars", func() {
 				Expect(kernelMountOptions).To(BeEmpty())
+				Expect(kernelMountEnvVars).To(BeEmpty())
 			})
 		})
 
@@ -40,6 +42,7 @@ var _ = Describe("KernelMountOptions", func() {
 
 			It("should return a valid mount opts string", func() {
 				Expect(kernelMountOptions).To(Equal("opt1=val1,opt2=val2"))
+				Expect(kernelMountEnvVars).To(BeEmpty())
 			})
 		})
 
@@ -114,6 +117,23 @@ var _ = Describe("KernelMountOptions", func() {
 
 			It("omits the mount option", func() {
 				Expect(kernelMountOptions).NotTo(ContainSubstring("domain"))
+			})
+		})
+
+		Context("username and password", func(){
+			BeforeEach(func() {
+				mountOpts = map[string]interface{}{
+					"ro": "true",
+					"username": "user",
+					"password": "secret",
+				}
+			})
+
+			It("converts them to environment variables", func() {
+				Expect(kernelMountOptions).To(ContainSubstring("ro"))
+				Expect(kernelMountOptions).NotTo(ContainSubstring("username"))
+				Expect(kernelMountOptions).NotTo(ContainSubstring("password"))
+				Expect(kernelMountEnvVars).To(Equal([]string{"PASSWD=secret", "USER=user"}))
 			})
 		})
 
