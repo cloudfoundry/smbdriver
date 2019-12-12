@@ -6,7 +6,7 @@ code.cloudfoundry.org/cfhttp/unix_transport
 code.cloudfoundry.org/clock
 # code.cloudfoundry.org/debugserver v0.0.0-20180612203758-a3ba348dfede
 code.cloudfoundry.org/debugserver
-# code.cloudfoundry.org/dockerdriver v0.0.0-20190430182539-d20038a36dd2
+# code.cloudfoundry.org/dockerdriver v0.0.0-20191212003739-aa77eeea8c23
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
 # code.cloudfoundry.org/goshims v0.0.0-20190529192408-bb24d2ef71ff
@@ -29,7 +29,7 @@ code.cloudfoundry.org/tlsconfig
 # code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.0.0-20191211215918-b03d4e5ffb80
+# code.cloudfoundry.org/volumedriver v0.0.0-20191212004417-ff6c0a47c125
 code.cloudfoundry.org/volumedriver
 code.cloudfoundry.org/volumedriver/invoker
 code.cloudfoundry.org/volumedriver/mountchecker

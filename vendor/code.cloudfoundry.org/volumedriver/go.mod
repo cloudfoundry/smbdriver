@@ -3,7 +3,7 @@ module code.cloudfoundry.org/volumedriver
 require (
 	code.cloudfoundry.org/cfhttp v2.0.0+incompatible // indirect
 	code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c // indirect
-	code.cloudfoundry.org/dockerdriver v0.0.0-20190430182539-d20038a36dd2
+	code.cloudfoundry.org/dockerdriver v0.0.0-20191212003739-aa77eeea8c23
 	code.cloudfoundry.org/goshims v0.0.0-20190529192408-bb24d2ef71ff
 	code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 	code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 // indirect
