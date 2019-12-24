@@ -40,7 +40,12 @@ func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs 
 
 	if err != nil {
 		logger.Error("command-start-failed", err, lager.Data{"exe": executable, "output": stdOutBuffer.String()})
-		return invokeResult{invokeErr: err}
+		return invokeResult{
+			invokeErr: err,
+			outputBuffer: &stdOutBuffer,
+			errorBuffer:  &stdErrBuffer,
+			logger:       logger,
+		}
 	}
 	var cmdDone = false
 

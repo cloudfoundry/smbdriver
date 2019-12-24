@@ -29,7 +29,7 @@ code.cloudfoundry.org/tlsconfig
 # code.cloudfoundry.org/volume-mount-options v0.0.0-20191114202258-e09e839f17af
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.0.0-20191224183039-2215e751862c
+# code.cloudfoundry.org/volumedriver v0.0.0-20191224192222-67dcd662553b
 code.cloudfoundry.org/volumedriver
 code.cloudfoundry.org/volumedriver/invoker
 code.cloudfoundry.org/volumedriver/mountchecker
