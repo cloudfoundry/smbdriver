@@ -9,7 +9,7 @@ import (
 )
 
 type FakeInvoker struct {
-	InvokeStub        func(dockerdriver.Env, string, []string, ...string) (invoker.InvokeResult, error)
+	InvokeStub        func(dockerdriver.Env, string, []string, ...string) invoker.InvokeResult
 	invokeMutex       sync.RWMutex
 	invokeArgsForCall []struct {
 		arg1 dockerdriver.Env
@@ -19,17 +19,15 @@ type FakeInvoker struct {
 	}
 	invokeReturns struct {
 		result1 invoker.InvokeResult
-		result2 error
 	}
 	invokeReturnsOnCall map[int]struct {
 		result1 invoker.InvokeResult
-		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []string, arg4 ...string) (invoker.InvokeResult, error) {
+func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []string, arg4 ...string) invoker.InvokeResult {
 	var arg3Copy []string
 	if arg3 != nil {
 		arg3Copy = make([]string, len(arg3))
@@ -49,10 +47,10 @@ func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []strin
 		return fake.InvokeStub(arg1, arg2, arg3, arg4...)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1
 	}
 	fakeReturns := fake.invokeReturns
-	return fakeReturns.result1, fakeReturns.result2
+	return fakeReturns.result1
 }
 
 func (fake *FakeInvoker) InvokeCallCount() int {
@@ -61,7 +59,7 @@ func (fake *FakeInvoker) InvokeCallCount() int {
 	return len(fake.invokeArgsForCall)
 }
 
-func (fake *FakeInvoker) InvokeCalls(stub func(dockerdriver.Env, string, []string, ...string) (invoker.InvokeResult, error)) {
+func (fake *FakeInvoker) InvokeCalls(stub func(dockerdriver.Env, string, []string, ...string) invoker.InvokeResult) {
 	fake.invokeMutex.Lock()
 	defer fake.invokeMutex.Unlock()
 	fake.InvokeStub = stub
@@ -74,30 +72,27 @@ func (fake *FakeInvoker) InvokeArgsForCall(i int) (dockerdriver.Env, string, []s
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
 }
 
-func (fake *FakeInvoker) InvokeReturns(result1 invoker.InvokeResult, result2 error) {
+func (fake *FakeInvoker) InvokeReturns(result1 invoker.InvokeResult) {
 	fake.invokeMutex.Lock()
 	defer fake.invokeMutex.Unlock()
 	fake.InvokeStub = nil
 	fake.invokeReturns = struct {
 		result1 invoker.InvokeResult
-		result2 error
-	}{result1, result2}
+	}{result1}
 }
 
-func (fake *FakeInvoker) InvokeReturnsOnCall(i int, result1 invoker.InvokeResult, result2 error) {
+func (fake *FakeInvoker) InvokeReturnsOnCall(i int, result1 invoker.InvokeResult) {
 	fake.invokeMutex.Lock()
 	defer fake.invokeMutex.Unlock()
 	fake.InvokeStub = nil
 	if fake.invokeReturnsOnCall == nil {
 		fake.invokeReturnsOnCall = make(map[int]struct {
 			result1 invoker.InvokeResult
-			result2 error
 		})
 	}
 	fake.invokeReturnsOnCall[i] = struct {
 		result1 invoker.InvokeResult
-		result2 error
-	}{result1, result2}
+	}{result1}
 }
 
 func (fake *FakeInvoker) Invocations() map[string][][]interface{} {

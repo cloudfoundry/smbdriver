@@ -16,7 +16,7 @@ func NewProcessGroupInvoker() Invoker {
 	return &pgroupInvoker{}
 }
 
-func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs []string, envVars... string) (InvokeResult, error) {
+func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs []string, envVars... string) InvokeResult {
 	logger := env.Logger().Session("invoking-command-pgroup", lager.Data{"executable": executable, "args": cmdArgs})
 	logger.Info("start")
 	defer logger.Info("end")
@@ -40,7 +40,7 @@ func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs 
 
 	if err != nil {
 		logger.Error("command-start-failed", err, lager.Data{"exe": executable, "output": stdOutBuffer.String()})
-		return invokeResult{}, err
+		return invokeResult{invokeErr: err}
 	}
 	var cmdDone = false
 
@@ -68,5 +68,5 @@ func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs 
 		cmd:          cmdHandle,
 		outputBuffer: &stdOutBuffer,
 		errorBuffer:  &stdErrBuffer,
-		logger:       logger}, nil
+		logger:       logger}
 }

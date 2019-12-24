@@ -62,11 +62,7 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	})
 
 	logger.Debug("mount", lager.Data{"params": strings.Join(mountArgs, ",")})
-	invokeResult, err := m.invoker.Invoke(env, "mount", mountArgs, mountEnvVars...)
-	if err != nil {
-		return safeError(err)
-	}
-
+	invokeResult := m.invoker.Invoke(env, "mount", mountArgs, mountEnvVars...)
 	return safeError(invokeResult.Wait())
 }
 
@@ -75,12 +71,8 @@ func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	invokeResult, err := m.invoker.Invoke(env, "umount", []string{"-l", target})
-	if err != nil {
-		return safeError(err)
-	}
-
-	err = invokeResult.Wait()
+	invokeResult:= m.invoker.Invoke(env, "umount", []string{"-l", target})
+	err := invokeResult.Wait()
 	if err != nil {
 		return safeError(err)
 	}
@@ -95,17 +87,11 @@ func (m *smbMounter) Check(env dockerdriver.Env, name, mountPoint string) bool {
 	ctx, cancel := context.WithDeadline(context.TODO(), time.Now().Add(time.Second*5))
 	defer cancel()
 	env = driverhttp.EnvWithContext(ctx, env)
-	invokeResult, err := m.invoker.Invoke(env, "mountpoint", []string{"-q", mountPoint})
-
+	invokeResult := m.invoker.Invoke(env, "mountpoint", []string{"-q", mountPoint})
+	err := invokeResult.Wait()
 	if err != nil {
 		// Note: Created volumes (with no mounts) will be removed
 		//       since VolumeInfo.Mountpoint will be an empty string
-		logger.Info(fmt.Sprintf("unable to verify volume %s (%s)", name, err.Error()))
-		return false
-	}
-
-	err = invokeResult.Wait()
-	if err != nil {
 		logger.Info(fmt.Sprintf("unable to verify volume %s (%s)", name, err.Error()))
 		return false
 	}
@@ -127,16 +113,11 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 		if fileInfo.IsDir() {
 			mountDir := filepath.Join(path, fileInfo.Name())
 
-			invokeResult, err := m.invoker.Invoke(env, "umount", []string{"-l", "-f", mountDir})
+			err = m.invoker.Invoke(env, "umount", []string{"-l", "-f", mountDir}).Wait()
 			if err != nil {
 				logger.Error("warning-umount-failed", err)
 			} else {
-				err = invokeResult.Wait()
-				if err != nil {
-					logger.Error("warning-umount-failed", err)
-				} else {
-					logger.Info("unmount-successful", lager.Data{"path": mountDir})
-				}
+				logger.Info("unmount-successful", lager.Data{"path": mountDir})
 			}
 
 			if err := m.osutil.Remove(mountDir); err != nil {
