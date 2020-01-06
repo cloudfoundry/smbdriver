@@ -65,10 +65,6 @@ func sanitizeMountFlags(mountOpts map[string]interface{}) (map[string]interface{
 			result["USER"] = v
 		} else if strings.ToLower(k) == "password" {
 			result["PASSWD"] = v
-		} else if strings.ToLower(k) == "version" {
-			if v != "" {
-				result["vers"] = v
-			}
 		} else if strings.ToLower(k) == "domain" {
 			if v != "" {
 				result["domain"] = v

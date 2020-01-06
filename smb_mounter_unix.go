@@ -144,7 +144,7 @@ func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions strin
 	return vmo.NewMountOptsMask(
 		allowed,
 		defaultMap,
-		map[string]string{"readonly": "ro"},
+		map[string]string{"readonly": "ro", "version": "vers"},
 		[]string{"source", "mount"},
 		[]string{"username", "password"},
 	)

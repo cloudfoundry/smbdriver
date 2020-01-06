@@ -120,7 +120,6 @@ var _ = Describe("SmbMounter", func() {
 					table.Entry("2.0", "2.0", true),
 					table.Entry("2.1", "2.1", true),
 					table.Entry("3.0", "3.0", true),
-					table.Entry("nil", nil, false),
 				)
 			})
 
