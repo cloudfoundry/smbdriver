@@ -149,7 +149,7 @@ var _ = Describe("KernelMountOptions", func() {
 		})
 
 		Context("given a mfsymlinks mount option with a string boolean value", func() {
-			Context("true", func(){
+			Context("true", func() {
 				BeforeEach(func() {
 					mountOpts = map[string]interface{}{
 						"mfsymlinks": "true",
@@ -162,7 +162,7 @@ var _ = Describe("KernelMountOptions", func() {
 				})
 			})
 
-			Context("false", func(){
+			Context("false", func() {
 				BeforeEach(func() {
 					mountOpts = map[string]interface{}{
 						"mfsymlinks": "false",
