@@ -10,13 +10,13 @@ import (
 func ToKernelMountOptionFlagsAndEnvVars(mountOpts map[string]interface{}) (string, []string) {
 	mountFlags, mountEnvVars := separateFlagsAndEnvVars(mountOpts)
 
-	kernelMountOptions := convertToStringArr(renameMountFlags(mountFlags))
-	kernelMountEnvVars := convertToStringArr(renameMountFlags(mountEnvVars))
+	kernelMountOptions := convertToStringArr(sanitizeMountFlags(mountFlags))
+	kernelMountEnvVars := convertToStringArr(sanitizeMountFlags(mountEnvVars))
 
 	return strings.Join(kernelMountOptions, ","), kernelMountEnvVars
 }
 
-func convertToStringArr(mountOpts map[string]interface{}) []string {
+func convertToStringArr(mountOpts map[string]interface{}, valueless []string) []string {
 	paramList := []string{}
 
 	for k, v := range mountOpts {
@@ -24,8 +24,6 @@ func convertToStringArr(mountOpts map[string]interface{}) []string {
 		case string:
 			if val, err := strconv.ParseInt(v.(string), 10, 16); err == nil {
 				paramList = append(paramList, fmt.Sprintf("%s=%d", k, val))
-			} else if v == "" {
-				paramList = append(paramList, k)
 			} else {
 				paramList = append(paramList, fmt.Sprintf("%s=%s", k, v))
 			}
@@ -36,6 +34,7 @@ func convertToStringArr(mountOpts map[string]interface{}) []string {
 		}
 	}
 
+	paramList = append(paramList, valueless...)
 	sort.Strings(paramList)
 	return paramList
 }
@@ -57,8 +56,9 @@ func separateFlagsAndEnvVars(mountOpts map[string]interface{}) (map[string]inter
 	return flagList, envVarList
 }
 
-func renameMountFlags(mountOpts map[string]interface{}) map[string]interface{} {
+func sanitizeMountFlags(mountOpts map[string]interface{}) (map[string]interface{}, []string) {
 	result := make(map[string]interface{})
+	valueless := []string{}
 
 	for k, v := range mountOpts {
 		if strings.ToLower(k) == "username" {
@@ -73,9 +73,15 @@ func renameMountFlags(mountOpts map[string]interface{}) map[string]interface{} {
 			if v != "" {
 				result["domain"] = v
 			}
+		} else if strings.ToLower(k) == "mfsymlinks" {
+			if v == "true" {
+				valueless = append(valueless, "mfsymlinks")
+			}
+		} else if v == "" {
+			valueless = append(valueless, k)
 		} else {
 			result[k] = v
 		}
 	}
-	return result
+	return result, valueless
 }

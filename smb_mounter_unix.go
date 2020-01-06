@@ -71,7 +71,7 @@ func (m *smbMounter) Unmount(env dockerdriver.Env, target string) error {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	invokeResult:= m.invoker.Invoke(env, "umount", []string{"-l", target})
+	invokeResult := m.invoker.Invoke(env, "umount", []string{"-l", target})
 	err := invokeResult.Wait()
 	if err != nil {
 		return safeError(err)
@@ -130,7 +130,7 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 }
 
 func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions string) (vmo.MountOptsMask, error) {
-	allowed := []string{"username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec", "version"}
+	allowed := []string{"mfsymlinks", "username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec", "version"}
 	allowed = append(allowed, strings.Split(allowedMountOptions, ",")...)
 
 	defaultMap := map[string]interface{}{}

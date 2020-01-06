@@ -50,6 +50,7 @@ var _ = Describe("SmbMounter", func() {
 		opts["username"] = "foo"
 		opts["password"] = "bar"
 		opts["version"] = "2.0"
+		opts["mfsymlinks"] = true
 
 		fakeInvoker = &invokerfakes.FakeInvoker{}
 		fakeInvokeResult = &invokerfakes.FakeInvokeResult{}
@@ -86,6 +87,7 @@ var _ = Describe("SmbMounter", func() {
 				Expect(strings.Join(args, " ")).To(ContainSubstring("uid=2000"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("gid=2000"))
 				Expect(strings.Join(args, " ")).To(ContainSubstring("vers=2.0"))
+				Expect(strings.Join(args, " ")).To(ContainSubstring("mfsymlinks"))
 			})
 
 			Context("smb versions", func() {
@@ -122,7 +124,7 @@ var _ = Describe("SmbMounter", func() {
 				)
 			})
 
-			It("should not pass username or password", func(){
+			It("should not pass username or password", func() {
 				Expect(err).NotTo(HaveOccurred())
 				_, cmd, args, envVars := fakeInvoker.InvokeArgsForCall(0)
 				Expect(cmd).To(Equal("mount"))
@@ -157,6 +159,35 @@ var _ = Describe("SmbMounter", func() {
 					})
 				})
 			})
+
+			Context("when mounting with mfsymlinks option", func() {
+				Context("and mfsymlinks is true", func() {
+					BeforeEach(func() {
+						opts["mfsymlinks"] = true
+					})
+
+					It("should include the mfsymlinks flag", func() {
+						Expect(err).NotTo(HaveOccurred())
+						_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+						Expect(strings.Join(args, " ")).To(ContainSubstring("mfsymlinks"))
+						Expect(strings.Join(args, " ")).NotTo(ContainSubstring("mfsymlinks=true"))
+					})
+				})
+
+				Context("and mfsymlinks is false", func() {
+					BeforeEach(func() {
+						opts["mfsymlinks"] = false
+					})
+
+					It("should not include the mfsymlinks flag", func() {
+						Expect(err).NotTo(HaveOccurred())
+						_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+						Expect(strings.Join(args, " ")).NotTo(ContainSubstring("mfsymlinks"))
+					})
+				})
+
+			})
+
 		})
 
 		Context("when mount cmd errors", func() {

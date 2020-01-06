@@ -3,10 +3,9 @@ package smbdriver_test
 import (
 	"code.cloudfoundry.org/smbdriver"
 	"fmt"
-	"math"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"math"
 )
 
 var _ = Describe("KernelMountOptions", func() {
@@ -65,7 +64,7 @@ var _ = Describe("KernelMountOptions", func() {
 				}
 			})
 
-			It("strips the leading zero from the mount option string", func() {
+			It("should convert the integer to a string", func() {
 				Expect(kernelMountOptions).To(Equal(fmt.Sprintf("opt1=%d", math.MaxInt64)))
 			})
 		})
@@ -120,10 +119,10 @@ var _ = Describe("KernelMountOptions", func() {
 			})
 		})
 
-		Context("username and password", func(){
+		Context("username and password", func() {
 			BeforeEach(func() {
 				mountOpts = map[string]interface{}{
-					"ro": "true",
+					"ro":       "true",
 					"username": "user",
 					"password": "secret",
 				}
@@ -148,6 +147,35 @@ var _ = Describe("KernelMountOptions", func() {
 				Expect(kernelMountOptions).To(ContainSubstring("ro"))
 			})
 		})
+
+		Context("given a mfsymlinks mount option with a string boolean value", func() {
+			Context("true", func(){
+				BeforeEach(func() {
+					mountOpts = map[string]interface{}{
+						"mfsymlinks": "true",
+					}
+				})
+
+				It("includes the mount option", func() {
+					Expect(kernelMountOptions).To(ContainSubstring("mfsymlinks"))
+					Expect(kernelMountOptions).NotTo(ContainSubstring("mfsymlinks=true"))
+				})
+			})
+
+			Context("false", func(){
+				BeforeEach(func() {
+					mountOpts = map[string]interface{}{
+						"mfsymlinks": "false",
+					}
+				})
+
+				It("includes the mount option", func() {
+					Expect(kernelMountOptions).NotTo(ContainSubstring("mfsymlinks"))
+				})
+			})
+
+		})
+
 	})
 
 })
