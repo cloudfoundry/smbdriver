@@ -27,10 +27,6 @@ func convertToStringArr(mountOpts map[string]interface{}, valueless []string) []
 			} else {
 				paramList = append(paramList, fmt.Sprintf("%s=%s", k, v))
 			}
-		case int, int8, int16, int32, int64:
-			paramList = append(paramList, fmt.Sprintf("%s=%d", k, v))
-		case bool:
-			paramList = append(paramList, fmt.Sprintf("%s=%t", k, v))
 		}
 	}
 

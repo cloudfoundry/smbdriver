@@ -2,10 +2,8 @@ package smbdriver_test
 
 import (
 	"code.cloudfoundry.org/smbdriver"
-	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"math"
 )
 
 var _ = Describe("KernelMountOptions", func() {
@@ -54,18 +52,6 @@ var _ = Describe("KernelMountOptions", func() {
 
 			It("strips the leading zero from the mount option string", func() {
 				Expect(kernelMountOptions).To(Equal("opt1=123"))
-			})
-		})
-
-		Context("given an integer option value", func() {
-			BeforeEach(func() {
-				mountOpts = map[string]interface{}{
-					"opt1": math.MaxInt64,
-				}
-			})
-
-			It("should convert the integer to a string", func() {
-				Expect(kernelMountOptions).To(Equal(fmt.Sprintf("opt1=%d", math.MaxInt64)))
 			})
 		})
 
@@ -177,5 +163,4 @@ var _ = Describe("KernelMountOptions", func() {
 		})
 
 	})
-
 })
