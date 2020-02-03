@@ -4,7 +4,6 @@ import (
 	"github.com/onsi/gomega/gbytes"
 	"io/ioutil"
 	"net"
-	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -66,38 +65,14 @@ var _ = Describe("Main", func() {
 				"Name": "smbdriver",
 				"Addr": "http://127.0.0.1:8589",
 				"TLSConfig": null,
-				"UniqueVolumeIds": false
+				"UniqueVolumeIds": true
 			}`))
-			})
-
-			Context("with unique volume IDs enabled", func() {
-				BeforeEach(func() {
-					command.Args = append(command.Args, "-uniqueVolumeIds")
-				})
-
-				It("sets the uniqueVolumeIds flag in the spec file", func() {
-					specFile := filepath.Join(dir, "smbdriver.json")
-					Eventually(func() error {
-						_, err := os.Stat(specFile)
-						return err
-					}, 5).ShouldNot(HaveOccurred())
-
-					specFileContents, err := ioutil.ReadFile(specFile)
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(string(specFileContents)).To(MatchJSON(`{
-					"Name": "smbdriver",
-					"Addr": "http://127.0.0.1:8589",
-					"TLSConfig": null,
-					"UniqueVolumeIds": true
-				}`))
-				})
 			})
 
 			Context("when invalid args are supplied", func() {
 
 				BeforeEach(func() {
-					command.Args = append(command.Args, "-mountFlagDefault=sloppy_mount:123")
+					command.Args = []string{"invalidargs",}
 					expectedStartOutput = "fatal-err-aborting"
 				})
 

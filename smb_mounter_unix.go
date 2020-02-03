@@ -129,17 +129,9 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 	}
 }
 
-func NewSmbVolumeMountMask(allowedMountOptions string, defaultMountOptions string) (vmo.MountOptsMask, error) {
+func NewSmbVolumeMountMask() (vmo.MountOptsMask, error) {
 	allowed := []string{"mfsymlinks", "username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec", "version"}
-	allowed = append(allowed, strings.Split(allowedMountOptions, ",")...)
-
 	defaultMap := map[string]interface{}{}
-	for _, value := range strings.Split(defaultMountOptions, ",") {
-		split := strings.Split(value, ":")
-		if len(split) == 2 {
-			defaultMap[split[0]] = split[1]
-		}
-	}
 
 	return vmo.NewMountOptsMask(
 		allowed,

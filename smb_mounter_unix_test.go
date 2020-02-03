@@ -61,7 +61,7 @@ var _ = Describe("SmbMounter", func() {
 		fakeIoutil = &ioutil_fake.FakeIoutil{}
 		fakeOs = &os_fake.FakeOs{}
 
-		configMask, err := smbdriver.NewSmbVolumeMountMask("", "")
+		configMask, err := smbdriver.NewSmbVolumeMountMask()
 		Expect(err).NotTo(HaveOccurred())
 
 		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
@@ -96,7 +96,7 @@ var _ = Describe("SmbMounter", func() {
 					fakeInvokeResult = &invokerfakes.FakeInvokeResult{}
 					fakeInvoker.InvokeReturns(fakeInvokeResult)
 
-					configMask, err := smbdriver.NewSmbVolumeMountMask("", "")
+					configMask, err := smbdriver.NewSmbVolumeMountMask()
 					Expect(err).NotTo(HaveOccurred())
 
 					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)

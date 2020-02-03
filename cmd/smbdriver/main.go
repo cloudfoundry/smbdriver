@@ -101,24 +101,6 @@ var insecureSkipVerify = flag.Bool(
 	"Whether SSL communication should skip verification of server IP addresses in the certificate",
 )
 
-var mountFlagAllowed = flag.String(
-	"mountFlagAllowed",
-	"",
-	"[REQUIRED] - This is a comma separted list of parameters allowed to be send in extra config. Each of this parameters can be specify by brokers",
-)
-
-var mountFlagDefault = flag.String(
-	"mountFlagDefault",
-	"",
-	"(optional) - This is a comma separted list of like params:value. This list specify default value of parameters. If parameters has default value and is not in allowed list, this default value become a forced value who's cannot be override",
-)
-
-var uniqueVolumeIds = flag.Bool(
-	"uniqueVolumeIds",
-	false,
-	"Whether the SMB driver should opt-in to unique volumes",
-)
-
 const listenAddress = "127.0.0.1"
 
 func main() {
@@ -130,7 +112,7 @@ func main() {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	configMask, err := smbdriver.NewSmbVolumeMountMask(*mountFlagAllowed, *mountFlagDefault)
+	configMask, err := smbdriver.NewSmbVolumeMountMask()
 	exitOnFailure(logger, err)
 
 	mounter := smbdriver.NewSmbMounter(
@@ -153,9 +135,9 @@ func main() {
 	)
 
 	if *transport == "tcp" {
-		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false, false)
+		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, false)
 	} else if *transport == "tcp-json" {
-		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true, *uniqueVolumeIds)
+		smbDriverServer = createSmbDriverServer(logger, client, *atPort, *driversPath, true)
 	} else {
 		smbDriverServer = createSmbDriverUnixServer(logger, client, *atPort)
 	}
@@ -203,12 +185,12 @@ func processRunnerFor(servers grouper.Members) ifrit.Runner {
 	return sigmon.New(grouper.NewOrdered(os.Interrupt, servers))
 }
 
-func createSmbDriverServer(logger lager.Logger, client dockerdriver.Driver, atPort int, driversPath string, jsonSpec bool, uniqueVolumeIds bool) ifrit.Runner {
+func createSmbDriverServer(logger lager.Logger, client dockerdriver.Driver, atPort int, driversPath string, jsonSpec bool) ifrit.Runner {
 	atAddress := listenAddress + ":" + strconv.Itoa(atPort)
 	advertisedUrl := "http://" + atAddress
-	logger.Info("writing-spec-file", lager.Data{"location": driversPath, "name": "smbdriver", "address": advertisedUrl, "unique-volume-ids": uniqueVolumeIds})
+	logger.Info("writing-spec-file", lager.Data{"location": driversPath, "name": "smbdriver", "address": advertisedUrl, "unique-volume-ids": true})
 	if jsonSpec {
-		driverJsonSpec := dockerdriver.DriverSpec{Name: "smbdriver", Address: advertisedUrl, UniqueVolumeIds: uniqueVolumeIds}
+		driverJsonSpec := dockerdriver.DriverSpec{Name: "smbdriver", Address: advertisedUrl, UniqueVolumeIds: true}
 
 		if *requireSSL {
 			absCaFile, err := filepath.Abs(*caFile)
