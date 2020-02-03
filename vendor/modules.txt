@@ -26,7 +26,7 @@ code.cloudfoundry.org/lager/lagerflags
 code.cloudfoundry.org/lager/lagertest
 # code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
 code.cloudfoundry.org/tlsconfig
-# code.cloudfoundry.org/volume-mount-options v1.0.1-0.20200123185836-689a2edb28f2
+# code.cloudfoundry.org/volume-mount-options v1.0.1-0.20200203224637-172b961d5e4b
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
 # code.cloudfoundry.org/volumedriver v0.0.0-20191224192222-67dcd662553b
@@ -43,7 +43,7 @@ github.com/hpcloud/tail/ratelimiter
 github.com/hpcloud/tail/util
 github.com/hpcloud/tail/watch
 github.com/hpcloud/tail/winfile
-# github.com/onsi/ginkgo v1.11.0
+# github.com/onsi/ginkgo v1.12.0
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
 github.com/onsi/ginkgo/extensions/table
@@ -63,7 +63,7 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.8.1
+# github.com/onsi/gomega v1.9.0
 github.com/onsi/gomega
 github.com/onsi/gomega/format
 github.com/onsi/gomega/gbytes
@@ -92,7 +92,7 @@ github.com/tedsuo/rata
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb
+# golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/encoding
