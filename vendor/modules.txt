@@ -9,7 +9,7 @@ code.cloudfoundry.org/debugserver
 # code.cloudfoundry.org/dockerdriver v0.0.0-20191212003739-aa77eeea8c23
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
-# code.cloudfoundry.org/goshims v0.0.0-20190529192408-bb24d2ef71ff
+# code.cloudfoundry.org/goshims v0.1.0
 code.cloudfoundry.org/goshims/ioutilshim
 code.cloudfoundry.org/goshims/osshim
 code.cloudfoundry.org/goshims/bufioshim
@@ -88,7 +88,7 @@ github.com/tedsuo/ifrit/sigmon
 github.com/tedsuo/ifrit/ginkgomon
 # github.com/tedsuo/rata v1.0.0
 github.com/tedsuo/rata
-# golang.org/x/net v0.0.0-20190628185345-da137c7871d7
+# golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 golang.org/x/net/html/charset
 golang.org/x/net/html
 golang.org/x/net/html/atom
