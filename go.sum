@@ -19,6 +19,8 @@ code.cloudfoundry.org/volume-mount-options v0.1.0 h1:uhlyyzeWEZ+6ot2KC8Tc7ebyIgM
 code.cloudfoundry.org/volume-mount-options v0.1.0/go.mod h1:XcdZIipZa0sb3viibTDhGWWfxqP7mt8lkWpQ8vE1HwE=
 code.cloudfoundry.org/volumedriver v0.1.0 h1:13sR7y81xEuCpIQXu4Et5Nnl3Wpr7myupA3Bx7wXzIQ=
 code.cloudfoundry.org/volumedriver v0.1.0/go.mod h1:LZtcR9/P262Bvn1M9IIx4Eu2N8sczH1g3qg/p5mT38Q=
+code.cloudfoundry.org/volumedriver v0.3.0 h1:lgFqDp+gQZB/Ws71bYl6DWmiqG+L/YacDcPzwP8jDM4=
+code.cloudfoundry.org/volumedriver v0.3.0/go.mod h1:jD+YS97Fr/F5XX//cYQLnKsKYmrwcTCPEKAwPGC13j0=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 h1:y4B3+GPxKlrigF1ha5FFErxK+sr6sWxQovRMzwMhejo=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40/go.mod h1:8rLXio+WjiTceGBHIoTvn60HIbs7Hm7bcHjyrSqYB9c=
