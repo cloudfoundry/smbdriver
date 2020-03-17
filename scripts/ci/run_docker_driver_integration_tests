@@ -24,6 +24,8 @@ docker --tlsverify --tlscacert=${certs_dir}/ca.pem --tlscert=${certs_dir}/cert.p
             -p \
             -S
 
+sed -i 's!https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/binary-amd64/Packages!#https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/binary-amd64/Packages!' /etc/apt/sources.list
+
 apt-get update
 apt-get -y install cifs-utils realpath
 export GOROOT=/usr/local/go
