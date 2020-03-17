@@ -5,8 +5,6 @@ code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c h1:5eeuG0BHx1+DHe
 code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c/go.mod h1:QD9Lzhd/ux6eNQVUDVRJX/RKTigpewimNYBi7ivZKY8=
 code.cloudfoundry.org/clock v1.0.0 h1:kFXWQM4bxYvdBw2X8BbBeXwQNgfoWv1vqAk2ZZyBN2o=
 code.cloudfoundry.org/clock v1.0.0/go.mod h1:QD9Lzhd/ux6eNQVUDVRJX/RKTigpewimNYBi7ivZKY8=
-code.cloudfoundry.org/debugserver v0.0.0-20180612203758-a3ba348dfede h1:/vMWnzgjJi8Bdl6LGArCYj+J3ZsxkcQ5vOuOHvUFbSY=
-code.cloudfoundry.org/debugserver v0.0.0-20180612203758-a3ba348dfede/go.mod h1:TotxfVIqTDwSnfxRc2ksk8uFZs5vhIN8Ooy3RdbsQF8=
 code.cloudfoundry.org/debugserver v0.0.0-20200131002057-141d5fa0e064 h1:FqYe1G3/W/ukk/wsIMor+2moGZ7roj34fcUvL07cgEY=
 code.cloudfoundry.org/debugserver v0.0.0-20200131002057-141d5fa0e064/go.mod h1:TotxfVIqTDwSnfxRc2ksk8uFZs5vhIN8Ooy3RdbsQF8=
 code.cloudfoundry.org/dockerdriver v0.0.0-20191212003739-aa77eeea8c23 h1:Mz3lFoatJW9CJkGxFOFYBBOjKkcLnLhlvbwaCIn5UUQ=
@@ -23,8 +21,6 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2a
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106/go.mod h1:VxNwgI63VxUGfSR/F3VzjOpnWLbeH+AB1pQugK1i1bA=
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 h1:2Qal+q+tw/DmDOoJBWwDCPE3lIJNj/1o7oMkkb2c5SI=
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3/go.mod h1:eTbFJpyXRGuFVyg5+oaj9B2eIbIc+0/kZjH8ftbtdew=
-code.cloudfoundry.org/volume-mount-options v0.3.0 h1:8NxWuveD1ds+rG6KhCH67a0Mq+5UXM+rC7jTPrj6jtw=
-code.cloudfoundry.org/volume-mount-options v0.3.0/go.mod h1:jYveqE1DELyeimEDe3KYAs+4sSC/bLZ3dA8/uEyIyZE=
 code.cloudfoundry.org/volume-mount-options v1.1.0 h1:75hyXkRqPfNASxidauhpNCho9vsXwbU5c2ck8hFoNPI=
 code.cloudfoundry.org/volume-mount-options v1.1.0/go.mod h1:jYveqE1DELyeimEDe3KYAs+4sSC/bLZ3dA8/uEyIyZE=
 code.cloudfoundry.org/volumedriver v0.3.0 h1:lgFqDp+gQZB/Ws71bYl6DWmiqG+L/YacDcPzwP8jDM4=

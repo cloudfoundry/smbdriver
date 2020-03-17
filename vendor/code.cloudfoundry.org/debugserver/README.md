@@ -5,6 +5,10 @@
 A helper function for running a pre-configured
 [pprof](http://golang.org/pkg/net/http/pprof/) server in go.
 
+## Reporting issues and requesting features
+
+Please report all issues and feature requests in [cloudfoundry/diego-release](https://github.com/cloudfoundry/diego-release/issues).
+
 ## Endpoints
 
 - `/log-level`
@@ -51,6 +55,10 @@ Responds with the pprof-formatted execution trace for n seconds.
 - `/debug/pprof/goroutine?debug=2`
 
  Responds with the full goroutine stack dump.
+
+- `/debug/pprof/<tracename>`
+
+ Responds with the trace specified by `tracename`. See: https://golang.org/pkg/net/http/pprof/#Index
 
 ## Remote debugging
 

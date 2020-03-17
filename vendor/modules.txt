@@ -2,11 +2,11 @@
 code.cloudfoundry.org/cfhttp
 code.cloudfoundry.org/cfhttp/handlers
 code.cloudfoundry.org/cfhttp/unix_transport
-# code.cloudfoundry.org/clock v0.0.0-20180518195852-02e53af36e6c
+# code.cloudfoundry.org/clock v1.0.0
 code.cloudfoundry.org/clock
-# code.cloudfoundry.org/debugserver v0.0.0-20180612203758-a3ba348dfede
+# code.cloudfoundry.org/debugserver v0.0.0-20200131002057-141d5fa0e064
 code.cloudfoundry.org/debugserver
-# code.cloudfoundry.org/dockerdriver v0.0.0-20191212003739-aa77eeea8c23
+# code.cloudfoundry.org/dockerdriver v0.0.0-20200131001834-1b34132928c1
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
 # code.cloudfoundry.org/goshims v0.1.0
@@ -24,9 +24,9 @@ code.cloudfoundry.org/lager/internal/truncate
 code.cloudfoundry.org/lager/lagerctx
 code.cloudfoundry.org/lager/lagerflags
 code.cloudfoundry.org/lager/lagertest
-# code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
+# code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 code.cloudfoundry.org/tlsconfig
-# code.cloudfoundry.org/volume-mount-options v0.3.0
+# code.cloudfoundry.org/volume-mount-options v1.1.0
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
 # code.cloudfoundry.org/volumedriver v0.3.0
@@ -92,7 +92,7 @@ github.com/tedsuo/rata
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527
+# golang.org/x/sys v0.0.0-20200317113312-5766fd39f98d
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/encoding
