@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 // indirect
 	code.cloudfoundry.org/volume-mount-options v1.1.0
-	code.cloudfoundry.org/volumedriver v0.3.0
+	code.cloudfoundry.org/volumedriver v0.5.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/onsi/ginkgo v1.12.0
