@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 	code.cloudfoundry.org/volume-mount-options v1.1.0
 	code.cloudfoundry.org/volumedriver v0.10.0
-	github.com/onsi/ginkgo v1.14.0
+	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
 	github.com/tedsuo/ifrit v0.0.0-20191009134036-9a97d0632f00
 	github.com/tedsuo/rata v1.0.0
