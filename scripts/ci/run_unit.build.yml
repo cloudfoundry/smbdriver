@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: harbor-repo.vmware.com/dockerhub-proxy-cache/cfpersi/smb-unit-tests
+    repository: cfpersi/smb-unit-tests
     tag: latest
 
 inputs:
