@@ -4,7 +4,7 @@ require (
 	code.cloudfoundry.org/cfhttp v2.0.0+incompatible
 	code.cloudfoundry.org/debugserver v0.0.0-20200131002057-141d5fa0e064
 	code.cloudfoundry.org/dockerdriver v0.0.0-20200131001834-1b34132928c1
-	code.cloudfoundry.org/goshims v0.4.0
+	code.cloudfoundry.org/goshims v0.5.0
 	code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 	code.cloudfoundry.org/volume-mount-options v1.1.0
 	code.cloudfoundry.org/volumedriver v0.15.0
