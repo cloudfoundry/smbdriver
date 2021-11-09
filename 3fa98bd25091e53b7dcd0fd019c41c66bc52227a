@@ -1,0 +1,7 @@
+{
+  "pr": "68",
+  "repository": "cloudfoundry/smbdriver",
+  "base_branch": "master",
+  "head_branch": "dependabot/go_modules/github.com/onsi/gomega-1.17.0",
+  "branch_tip": "3fa98bd25091e53b7dcd0fd019c41c66bc52227a"
+}
