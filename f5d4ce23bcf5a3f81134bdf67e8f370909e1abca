@@ -1,0 +1,7 @@
+{
+  "pr": "70",
+  "repository": "cloudfoundry/smbdriver",
+  "base_branch": "master",
+  "head_branch": "dependabot/go_modules/github.com/onsi/ginkgo-1.16.5",
+  "branch_tip": "f5d4ce23bcf5a3f81134bdf67e8f370909e1abca"
+}
