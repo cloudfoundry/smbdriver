@@ -1,0 +1,7 @@
+{
+  "pr": "71",
+  "repository": "cloudfoundry/smbdriver",
+  "base_branch": "master",
+  "head_branch": "dependabot/go_modules/code.cloudfoundry.org/volumedriver-0.29.0",
+  "branch_tip": "1f97005f069617e603d5fbf3c217acb9a529bcb5"
+}
