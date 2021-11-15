@@ -6,7 +6,7 @@ require (
 	code.cloudfoundry.org/cfhttp v2.0.0+incompatible // indirect
 	code.cloudfoundry.org/clock v1.0.0 // indirect
 	code.cloudfoundry.org/dockerdriver v0.0.0-20200131001834-1b34132928c1
-	code.cloudfoundry.org/goshims v0.7.0
+	code.cloudfoundry.org/goshims v0.10.0
 	code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 // indirect
 	github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 // indirect
