@@ -30,7 +30,7 @@ apt-get update
 apt-get -y install cifs-utils realpath
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:/root/go/bin/:$PATH
-go get -u github.com/onsi/ginkgo/ginkgo
+go install github.com/onsi/ginkgo/ginkgo@latest
 
 pushd smbdriver
   listen_port=8589
