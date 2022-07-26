@@ -27,7 +27,7 @@ docker --tlsverify --tlscacert=${certs_dir}/ca.pem --tlscert=${certs_dir}/cert.p
 sed -i 's!deb https://apt.dockerproject.org/repo/ ubuntu-xenial main!#deb https://apt.dockerproject.org/repo/ ubuntu-xenial main!' /etc/apt/sources.list
 
 apt-get update
-apt-get -y install cifs-utils realpath
+apt-get -y install cifs-utils 
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:/root/go/bin/:$PATH
 go install github.com/onsi/ginkgo/ginkgo@latest
