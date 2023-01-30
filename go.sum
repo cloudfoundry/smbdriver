@@ -15,8 +15,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 h1:2Qal+q+tw/
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3/go.mod h1:eTbFJpyXRGuFVyg5+oaj9B2eIbIc+0/kZjH8ftbtdew=
 code.cloudfoundry.org/volume-mount-options v1.1.0 h1:75hyXkRqPfNASxidauhpNCho9vsXwbU5c2ck8hFoNPI=
 code.cloudfoundry.org/volume-mount-options v1.1.0/go.mod h1:jYveqE1DELyeimEDe3KYAs+4sSC/bLZ3dA8/uEyIyZE=
-code.cloudfoundry.org/volumedriver v0.41.0 h1:1GtaZdCUQ6ZSkeYkvjmiI3rlcaraleJn5ReHS+jfmwE=
-code.cloudfoundry.org/volumedriver v0.41.0/go.mod h1:rxgWCaweBw+fPYtWJmAxrimLezc2JfpTDm3o4FySzLI=
+code.cloudfoundry.org/volumedriver v0.42.0 h1:MoSS+p5cqFA4+NoUs3U5ZZEvwUF5sbIlvoZ/7FKZYkU=
+code.cloudfoundry.org/volumedriver v0.42.0/go.mod h1:zeKvYtUaMliYlkd5rX8dd9rFOn3AqaWr1BhcaAHb3BA=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 h1:y4B3+GPxKlrigF1ha5FFErxK+sr6sWxQovRMzwMhejo=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40/go.mod h1:8rLXio+WjiTceGBHIoTvn60HIbs7Hm7bcHjyrSqYB9c=
