@@ -1,3 +1,4 @@
+//go:build linux || darwin
 // +build linux darwin
 
 package smbdriver_test
@@ -64,7 +65,7 @@ var _ = Describe("SmbMounter", func() {
 		configMask, err := smbdriver.NewSmbVolumeMountMask()
 		Expect(err).NotTo(HaveOccurred())
 
-		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
+		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
 	})
 
 	Context("#Mount", func() {
@@ -99,7 +100,7 @@ var _ = Describe("SmbMounter", func() {
 					configMask, err := smbdriver.NewSmbVolumeMountMask()
 					Expect(err).NotTo(HaveOccurred())
 
-					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
+					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
 				})
 
 				table.DescribeTable("when passed smb versions", func(version string, containsVers bool) {
@@ -187,6 +188,39 @@ var _ = Describe("SmbMounter", func() {
 
 			})
 
+			Context("when configured without forceNoserverino", func() {
+				It("should not pass the noserverino mount flag", func() {
+					Expect(err).NotTo(HaveOccurred())
+					_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+					Expect(strings.Join(args, " ")).NotTo(ContainSubstring("noserverino"))
+				})
+			})
+
+			Context("when configured with forceNoserverino", func() {
+				// The forceNoserverino option was added on 2023-04-15.
+				//
+				// We had seen a large deployment in which upgrading from xenial to jammy
+				// stemcells caused all apps using SMB mounts to fail with "Stale file handle"
+				// errors. This turned out to be because the SMB server was suggesting inode
+				// numbers, instead of allowing the client to generate temporary inode numbers.
+				//
+				// The fix was to re-bind the SMB service with the mount parameter
+				// "noserverino". This option was intended to allow the platform operator to
+				// apply that fix across the whole foundation, rather than relying on
+				// application authors to re-bind their SMB services.
+				It("should pass the noserverino mount flag", func() {
+					fakeInvoker = &invokerfakes.FakeInvoker{}
+					fakeInvoker.InvokeReturns(fakeInvokeResult)
+					configMask, err := smbdriver.NewSmbVolumeMountMask()
+					Expect(err).NotTo(HaveOccurred())
+
+					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, true)
+					Expect(subject.Mount(env, "source", "target", opts)).To(Succeed())
+
+					_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+					Expect(strings.Join(args, " ")).To(ContainSubstring("noserverino"))
+				})
+			})
 		})
 
 		Context("when mount cmd errors", func() {
@@ -221,7 +255,7 @@ var _ = Describe("SmbMounter", func() {
 				)
 				Expect(err2).NotTo(HaveOccurred())
 
-				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask)
+				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
 			})
 
 			Context("when a required option is missing", func() {

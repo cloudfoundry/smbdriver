@@ -101,6 +101,23 @@ var insecureSkipVerify = flag.Bool(
 	"Whether SSL communication should skip verification of server IP addresses in the certificate",
 )
 
+// The forceNoserverino flag was added on 2023-04-15.
+//
+// We had seen a large deployment in which upgrading from xenial to jammy
+// stemcells caused all apps using SMB mounts to fail with "Stale file handle"
+// errors. This turned out to be because the SMB server was suggesting inode
+// numbers, instead of allowing the client to generate temporary inode numbers.
+//
+// The fix was to re-bind the SMB service with the mount parameter
+// "noserverino". This flag was intended to allow the platform operator to
+// apply that fix across the whole foundation, rather than relying on
+// application authors to re-bind their SMB services.
+var forceNoserverino = flag.Bool(
+	"forceNoserverino",
+	false,
+	"Force all SMB mounts to use the 'noserverino' mount flag, regardless of what the service binding asks for",
+)
+
 const listenAddress = "127.0.0.1"
 
 func main() {
@@ -120,6 +137,7 @@ func main() {
 		&osshim.OsShim{},
 		&ioutilshim.IoutilShim{},
 		configMask,
+		*forceNoserverino,
 	)
 
 	client := volumedriver.NewVolumeDriver(
