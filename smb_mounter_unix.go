@@ -1,3 +1,4 @@
+//go:build linux || darwin
 // +build linux darwin
 
 package smbdriver
@@ -20,14 +21,15 @@ import (
 )
 
 type smbMounter struct {
-	invoker    invoker.Invoker
-	osutil     osshim.Os
-	ioutil     ioutilshim.Ioutil
-	configMask vmo.MountOptsMask
+	invoker          invoker.Invoker
+	osutil           osshim.Os
+	ioutil           ioutilshim.Ioutil
+	configMask       vmo.MountOptsMask
+	forceNoserverino bool
 }
 
-func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask) volumedriver.Mounter {
-	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask}
+func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask, forceNoserverino bool) volumedriver.Mounter {
+	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask, forceNoserverino: forceNoserverino}
 }
 
 func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, opts map[string]interface{}) error {
@@ -46,11 +48,16 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	}
 
 	mountFlags, mountEnvVars := ToKernelMountOptionFlagsAndEnvVars(mountOpts)
+	if m.forceNoserverino {
+		mountFlags = fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000,noserverino")
+	} else {
+		mountFlags = fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000")
+	}
 	mountArgs := []string{
 		"-t", "cifs",
 		source,
 		target,
-		"-o", fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000"),
+		"-o", mountFlags,
 		"--verbose",
 	}
 
