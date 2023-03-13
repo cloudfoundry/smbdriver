@@ -9,8 +9,8 @@ code.cloudfoundry.org/dockerdriver v0.0.0-20200131001834-1b34132928c1 h1:S+A25dv
 code.cloudfoundry.org/dockerdriver v0.0.0-20200131001834-1b34132928c1/go.mod h1:LHp3o0peO3VemcRBZc8OqppAvEjauYfZuqx5Z0Y+sJ8=
 code.cloudfoundry.org/goshims v0.13.0 h1:CThhqi6wjaQgpdXtsnvgUjoKH1vurDImZjmP3Ur34+Y=
 code.cloudfoundry.org/goshims v0.13.0/go.mod h1:suPSRMV+aKnZGRHo8jV58Z8Vq0PTnieY5Esdya5c+Co=
-code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be h1:rnGRgbKlOPKbI9N/PscJ78Ug5Iw+o1kE7aDW01V+0FM=
-code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be/go.mod h1:O2sS7gKP3HM2iemG+EnwvyNQK7pTSC6Foi4QiMp9sSk=
+code.cloudfoundry.org/lager v2.0.0+incompatible h1:WZwDKDB2PLd/oL+USK4b4aEjUymIej9My2nUQ9oWEwQ=
+code.cloudfoundry.org/lager v2.0.0+incompatible/go.mod h1:O2sS7gKP3HM2iemG+EnwvyNQK7pTSC6Foi4QiMp9sSk=
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3 h1:2Qal+q+tw/DmDOoJBWwDCPE3lIJNj/1o7oMkkb2c5SI=
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3/go.mod h1:eTbFJpyXRGuFVyg5+oaj9B2eIbIc+0/kZjH8ftbtdew=
 code.cloudfoundry.org/volume-mount-options v1.1.0 h1:75hyXkRqPfNASxidauhpNCho9vsXwbU5c2ck8hFoNPI=
