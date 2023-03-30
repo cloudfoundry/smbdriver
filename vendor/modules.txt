@@ -23,10 +23,9 @@ code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake
 code.cloudfoundry.org/goshims/osshim
 code.cloudfoundry.org/goshims/osshim/os_fake
 code.cloudfoundry.org/goshims/timeshim
-# code.cloudfoundry.org/lager v1.1.1-0.20191008172124-a9afc05ee5be
+# code.cloudfoundry.org/lager v2.0.0+incompatible
 ## explicit
 code.cloudfoundry.org/lager
-code.cloudfoundry.org/lager/internal/truncate
 code.cloudfoundry.org/lager/lagerctx
 code.cloudfoundry.org/lager/lagerflags
 code.cloudfoundry.org/lager/lagertest
@@ -37,7 +36,7 @@ code.cloudfoundry.org/tlsconfig
 ## explicit; go 1.13
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.45.0
+# code.cloudfoundry.org/volumedriver v0.50.0
 ## explicit; go 1.19
 code.cloudfoundry.org/volumedriver
 code.cloudfoundry.org/volumedriver/invoker
