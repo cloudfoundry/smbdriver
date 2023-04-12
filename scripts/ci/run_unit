@@ -2,11 +2,7 @@
 
 set -e -x
 
-cd smbdriver/
-
-export GOROOT=/usr/local/go
-export PATH=$GOROOT/bin:$PATH
-
-go install github.com/onsi/ginkgo/ginkgo@latest
-
-ginkgo -mod vendor -r -keepGoing -p -trace -randomizeAllSpecs -progress --race
+pushd smbdriver
+  export PATH=/usr/local/go/bin:$PATH
+  go run github.com/onsi/ginkgo/v2/ginkgo --mod=vendor -r --keep-going -p --trace --randomize-all --race
+popd

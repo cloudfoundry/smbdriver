@@ -2,10 +2,10 @@
 package smbdriverfakes
 
 import (
-	sync "sync"
+	"sync"
 
-	dockerdriver "code.cloudfoundry.org/dockerdriver"
-	driveradmin "code.cloudfoundry.org/smbdriver/driveradmin"
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/smbdriver/driveradmin"
 )
 
 type FakeDriverAdmin struct {
@@ -41,15 +41,16 @@ func (fake *FakeDriverAdmin) Evacuate(arg1 dockerdriver.Env) driveradmin.ErrorRe
 	fake.evacuateArgsForCall = append(fake.evacuateArgsForCall, struct {
 		arg1 dockerdriver.Env
 	}{arg1})
+	stub := fake.EvacuateStub
+	fakeReturns := fake.evacuateReturns
 	fake.recordInvocation("Evacuate", []interface{}{arg1})
 	fake.evacuateMutex.Unlock()
-	if fake.EvacuateStub != nil {
-		return fake.EvacuateStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.evacuateReturns
 	return fakeReturns.result1
 }
 
@@ -101,15 +102,16 @@ func (fake *FakeDriverAdmin) Ping(arg1 dockerdriver.Env) driveradmin.ErrorRespon
 	fake.pingArgsForCall = append(fake.pingArgsForCall, struct {
 		arg1 dockerdriver.Env
 	}{arg1})
+	stub := fake.PingStub
+	fakeReturns := fake.pingReturns
 	fake.recordInvocation("Ping", []interface{}{arg1})
 	fake.pingMutex.Unlock()
-	if fake.PingStub != nil {
-		return fake.PingStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.pingReturns
 	return fakeReturns.result1
 }
 
