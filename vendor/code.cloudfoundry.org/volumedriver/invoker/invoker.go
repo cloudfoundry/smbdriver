@@ -1,13 +1,14 @@
 package invoker
 
 import (
-	"code.cloudfoundry.org/dockerdriver"
-	"code.cloudfoundry.org/lager"
 	"errors"
 	"os/exec"
 	"strings"
 	"syscall"
 	"time"
+
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/lager/v3"
 )
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ../invokerfakes/fake_invoke_result.go . InvokeResult
