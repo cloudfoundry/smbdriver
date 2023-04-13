@@ -1,7 +1,6 @@
 package main
 
 import (
-	cf_http "code.cloudfoundry.org/cfhttp"
 	cf_debug_server "code.cloudfoundry.org/debugserver"
 	"code.cloudfoundry.org/dockerdriver"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
@@ -10,11 +9,12 @@ import (
 	"code.cloudfoundry.org/goshims/ioutilshim"
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/goshims/timeshim"
-	"code.cloudfoundry.org/lager"
-	"code.cloudfoundry.org/lager/lagerflags"
+	"code.cloudfoundry.org/lager/v3"
+	"code.cloudfoundry.org/lager/v3/lagerflags"
 	"code.cloudfoundry.org/smbdriver"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminlocal"
+	"code.cloudfoundry.org/tlsconfig"
 	"code.cloudfoundry.org/volumedriver"
 	"code.cloudfoundry.org/volumedriver/invoker"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
@@ -236,7 +236,12 @@ func createSmbDriverServer(logger lager.Logger, client dockerdriver.Driver, atPo
 
 	var server ifrit.Runner
 	if *requireSSL {
-		tlsConfig, err := cf_http.NewTLSConfig(*certFile, *keyFile, *caFile)
+		tlsConfig, err := tlsconfig.
+			Build(
+				tlsconfig.WithIdentityFromFile(*certFile, *keyFile),
+				tlsconfig.WithInternalServiceDefaults(),
+			).
+			Server(tlsconfig.WithClientAuthenticationFromFile(*caFile))
 		if err != nil {
 			logger.Fatal("tls-configuration-failed", err)
 		}

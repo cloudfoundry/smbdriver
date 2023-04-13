@@ -1,12 +1,13 @@
 package invoker
 
 import (
-	"code.cloudfoundry.org/dockerdriver"
-	"code.cloudfoundry.org/lager"
 	"context"
 	"os"
 	"os/exec"
 	"syscall"
+
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/lager/v3"
 )
 
 type pgroupInvoker struct {
@@ -16,7 +17,7 @@ func NewProcessGroupInvoker() Invoker {
 	return &pgroupInvoker{}
 }
 
-func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs []string, envVars... string) InvokeResult {
+func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs []string, envVars ...string) InvokeResult {
 	logger := env.Logger().Session("invoking-command-pgroup", lager.Data{"executable": executable, "args": cmdArgs})
 	logger.Info("start")
 	defer logger.Info("end")
@@ -41,7 +42,7 @@ func (r *pgroupInvoker) Invoke(env dockerdriver.Env, executable string, cmdArgs 
 	if err != nil {
 		logger.Error("command-start-failed", err, lager.Data{"exe": executable, "output": stdOutBuffer.String()})
 		return invokeResult{
-			invokeErr: err,
+			invokeErr:    err,
 			outputBuffer: &stdOutBuffer,
 			errorBuffer:  &stdErrBuffer,
 			logger:       logger,

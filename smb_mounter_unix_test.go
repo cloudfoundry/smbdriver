@@ -4,24 +4,23 @@
 package smbdriver_test
 
 import (
+	"context"
+	"fmt"
+	"os"
+	"strings"
+
 	"code.cloudfoundry.org/dockerdriver"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
 	"code.cloudfoundry.org/goshims/ioutilshim/ioutil_fake"
 	"code.cloudfoundry.org/goshims/osshim/os_fake"
-	"code.cloudfoundry.org/lager/lagertest"
+	"code.cloudfoundry.org/lager/v3/lagertest"
 	"code.cloudfoundry.org/smbdriver"
 	vmo "code.cloudfoundry.org/volume-mount-options"
 	"code.cloudfoundry.org/volumedriver"
 	"code.cloudfoundry.org/volumedriver/invokerfakes"
-	"context"
-	"fmt"
-	"github.com/onsi/ginkgo/extensions/table"
-	"github.com/onsi/gomega/gbytes"
-	"os"
-	"strings"
-
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/gbytes"
 )
 
 var _ = Describe("SmbMounter", func() {
@@ -103,7 +102,7 @@ var _ = Describe("SmbMounter", func() {
 					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
 				})
 
-				table.DescribeTable("when passed smb versions", func(version string, containsVers bool) {
+				DescribeTable("when passed smb versions", func(version string, containsVers bool) {
 					opts["version"] = version
 					err = subject.Mount(env, "source", "target", opts)
 					Expect(err).NotTo(HaveOccurred())
@@ -117,10 +116,10 @@ var _ = Describe("SmbMounter", func() {
 					}
 
 				},
-					table.Entry("1.0", "1.0", true),
-					table.Entry("2.0", "2.0", true),
-					table.Entry("2.1", "2.1", true),
-					table.Entry("3.0", "3.0", true),
+					Entry("1.0", "1.0", true),
+					Entry("2.0", "2.0", true),
+					Entry("2.1", "2.1", true),
+					Entry("3.0", "3.0", true),
 				)
 			})
 

@@ -2,10 +2,10 @@
 package smbdriverfakes
 
 import (
-	sync "sync"
+	"sync"
 
-	dockerdriver "code.cloudfoundry.org/dockerdriver"
-	driveradmin "code.cloudfoundry.org/smbdriver/driveradmin"
+	"code.cloudfoundry.org/dockerdriver"
+	"code.cloudfoundry.org/smbdriver/driveradmin"
 )
 
 type FakeDrainable struct {
@@ -30,15 +30,16 @@ func (fake *FakeDrainable) Drain(arg1 dockerdriver.Env) error {
 	fake.drainArgsForCall = append(fake.drainArgsForCall, struct {
 		arg1 dockerdriver.Env
 	}{arg1})
+	stub := fake.DrainStub
+	fakeReturns := fake.drainReturns
 	fake.recordInvocation("Drain", []interface{}{arg1})
 	fake.drainMutex.Unlock()
-	if fake.DrainStub != nil {
-		return fake.DrainStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.drainReturns
 	return fakeReturns.result1
 }
 

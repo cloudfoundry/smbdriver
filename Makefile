@@ -1,3 +1,2 @@
 test:
-	go get github.com/onsi/ginkgo/ginkgo
-	ginkgo -r --keepGoing
+	go run github.com/onsi/ginkgo/v2/ginkgo -r --keep-going

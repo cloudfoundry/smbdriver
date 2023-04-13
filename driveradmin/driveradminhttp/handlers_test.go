@@ -2,17 +2,16 @@ package driveradminhttp_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 
-	"fmt"
-
-	"code.cloudfoundry.org/lager/lagertest"
+	"code.cloudfoundry.org/lager/v3/lagertest"
 	"code.cloudfoundry.org/smbdriver/driveradmin"
 	"code.cloudfoundry.org/smbdriver/driveradmin/driveradminhttp"
 	"code.cloudfoundry.org/smbdriver/smbdriverfakes"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
