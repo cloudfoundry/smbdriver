@@ -1,10 +1,10 @@
 package volume_mount_options
 
 import (
-	"fmt"
 	"strconv"
 
 	"code.cloudfoundry.org/volume-mount-options/utils"
+	"github.com/pkg/errors"
 )
 
 type MountOptsMask struct {
@@ -17,8 +17,7 @@ type MountOptsMask struct {
 	ValidationFunc []UserOptsValidation
 }
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
-//counterfeiter:generate . UserOptsValidation
+//go:generate counterfeiter . UserOptsValidation
 type UserOptsValidation interface {
 	Validate(string, string) error
 }
@@ -54,7 +53,7 @@ func NewMountOptsMask(allowed []string,
 		mask.SloppyMount, err = strconv.ParseBool(vc)
 
 		if err != nil {
-			return MountOptsMask{}, fmt.Errorf("Invalid sloppy_mount option: %w", err)
+			return MountOptsMask{}, errors.Wrap(err, "Invalid sloppy_mount option")
 		}
 	}
 

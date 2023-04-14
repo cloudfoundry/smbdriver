@@ -33,8 +33,8 @@ code.cloudfoundry.org/lager/v3/lagertest
 # code.cloudfoundry.org/tlsconfig v0.0.0-20230320190829-8f91c367795b
 ## explicit; go 1.19
 code.cloudfoundry.org/tlsconfig
-# code.cloudfoundry.org/volume-mount-options v0.53.0
-## explicit; go 1.20
+# code.cloudfoundry.org/volume-mount-options v1.1.0
+## explicit; go 1.13
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
 # code.cloudfoundry.org/volumedriver v0.53.0
@@ -110,6 +110,9 @@ github.com/onsi/gomega/types
 ## explicit; go 1.18
 github.com/openzipkin/zipkin-go/idgenerator
 github.com/openzipkin/zipkin-go/model
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
 # github.com/tedsuo/ifrit v0.0.0-20230330192023-5cba443a66c4
 ## explicit
 github.com/tedsuo/ifrit
