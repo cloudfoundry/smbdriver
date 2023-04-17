@@ -60,15 +60,16 @@ func (fake *FakeInvokeResult) StdError() string {
 	ret, specificReturn := fake.stdErrorReturnsOnCall[len(fake.stdErrorArgsForCall)]
 	fake.stdErrorArgsForCall = append(fake.stdErrorArgsForCall, struct {
 	}{})
+	stub := fake.StdErrorStub
+	fakeReturns := fake.stdErrorReturns
 	fake.recordInvocation("StdError", []interface{}{})
 	fake.stdErrorMutex.Unlock()
-	if fake.StdErrorStub != nil {
-		return fake.StdErrorStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.stdErrorReturns
 	return fakeReturns.result1
 }
 
@@ -112,15 +113,16 @@ func (fake *FakeInvokeResult) StdOutput() string {
 	ret, specificReturn := fake.stdOutputReturnsOnCall[len(fake.stdOutputArgsForCall)]
 	fake.stdOutputArgsForCall = append(fake.stdOutputArgsForCall, struct {
 	}{})
+	stub := fake.StdOutputStub
+	fakeReturns := fake.stdOutputReturns
 	fake.recordInvocation("StdOutput", []interface{}{})
 	fake.stdOutputMutex.Unlock()
-	if fake.StdOutputStub != nil {
-		return fake.StdOutputStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.stdOutputReturns
 	return fakeReturns.result1
 }
 
@@ -164,15 +166,16 @@ func (fake *FakeInvokeResult) Wait() error {
 	ret, specificReturn := fake.waitReturnsOnCall[len(fake.waitArgsForCall)]
 	fake.waitArgsForCall = append(fake.waitArgsForCall, struct {
 	}{})
+	stub := fake.WaitStub
+	fakeReturns := fake.waitReturns
 	fake.recordInvocation("Wait", []interface{}{})
 	fake.waitMutex.Unlock()
-	if fake.WaitStub != nil {
-		return fake.WaitStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.waitReturns
 	return fakeReturns.result1
 }
 
@@ -218,15 +221,16 @@ func (fake *FakeInvokeResult) WaitFor(arg1 string, arg2 time.Duration) error {
 		arg1 string
 		arg2 time.Duration
 	}{arg1, arg2})
+	stub := fake.WaitForStub
+	fakeReturns := fake.waitForReturns
 	fake.recordInvocation("WaitFor", []interface{}{arg1, arg2})
 	fake.waitForMutex.Unlock()
-	if fake.WaitForStub != nil {
-		return fake.WaitForStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.waitForReturns
 	return fakeReturns.result1
 }
 
