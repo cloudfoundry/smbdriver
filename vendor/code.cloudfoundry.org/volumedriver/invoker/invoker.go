@@ -11,7 +11,8 @@ import (
 	"code.cloudfoundry.org/lager/v3"
 )
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ../invokerfakes/fake_invoke_result.go . InvokeResult
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+//counterfeiter:generate -o ../invokerfakes/fake_invoke_result.go . InvokeResult
 type InvokeResult interface {
 	StdError() string
 	StdOutput() string
@@ -19,7 +20,7 @@ type InvokeResult interface {
 	WaitFor(string, time.Duration) error
 }
 
-//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -o ../invokerfakes/fake_invoker.go . Invoker
+//counterfeiter:generate -o ../invokerfakes/fake_invoker.go . Invoker
 type Invoker interface {
 	Invoke(env dockerdriver.Env, executable string, args []string, envVars ...string) InvokeResult
 }

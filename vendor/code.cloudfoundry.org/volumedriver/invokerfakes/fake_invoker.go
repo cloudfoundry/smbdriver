@@ -41,15 +41,16 @@ func (fake *FakeInvoker) Invoke(arg1 dockerdriver.Env, arg2 string, arg3 []strin
 		arg3 []string
 		arg4 []string
 	}{arg1, arg2, arg3Copy, arg4})
+	stub := fake.InvokeStub
+	fakeReturns := fake.invokeReturns
 	fake.recordInvocation("Invoke", []interface{}{arg1, arg2, arg3Copy, arg4})
 	fake.invokeMutex.Unlock()
-	if fake.InvokeStub != nil {
-		return fake.InvokeStub(arg1, arg2, arg3, arg4...)
+	if stub != nil {
+		return stub(arg1, arg2, arg3, arg4...)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.invokeReturns
 	return fakeReturns.result1
 }
 
