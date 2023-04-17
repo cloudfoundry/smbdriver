@@ -1,6 +1,12 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
+	"os"
+	"path/filepath"
+	"strconv"
+
 	cf_debug_server "code.cloudfoundry.org/debugserver"
 	"code.cloudfoundry.org/dockerdriver"
 	"code.cloudfoundry.org/dockerdriver/driverhttp"
@@ -19,15 +25,10 @@ import (
 	"code.cloudfoundry.org/volumedriver/invoker"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
 	"code.cloudfoundry.org/volumedriver/oshelper"
-	"encoding/json"
-	"flag"
 	"github.com/tedsuo/ifrit"
 	"github.com/tedsuo/ifrit/grouper"
 	"github.com/tedsuo/ifrit/http_server"
 	"github.com/tedsuo/ifrit/sigmon"
-	"os"
-	"path/filepath"
-	"strconv"
 )
 
 var atPort = flag.Int(
