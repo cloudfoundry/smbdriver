@@ -7,7 +7,7 @@ require (
 	code.cloudfoundry.org/lager/v3 v3.0.1
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230320190829-8f91c367795b
 	code.cloudfoundry.org/volume-mount-options v0.55.0
-	code.cloudfoundry.org/volumedriver v0.54.0
+	code.cloudfoundry.org/volumedriver v0.55.0
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.6.1
 	github.com/onsi/ginkgo/v2 v2.9.4
 	github.com/onsi/gomega v1.27.6
