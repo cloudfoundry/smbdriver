@@ -1,2 +1,2 @@
 # a volman driver for NFS
-This driver is intended for test purposes only.  Watch this space in case that changes...
+This template volume driver provides common function used in the [NFS driver](https://github.com/cloudfoundry/nfsv3driver) and [SMB driver](https://github.com/cloudfoundry/smbdriver).
