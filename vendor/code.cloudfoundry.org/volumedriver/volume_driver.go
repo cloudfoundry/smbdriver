@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 
 	"code.cloudfoundry.org/dockerdriver"
@@ -17,14 +16,13 @@ import (
 	"code.cloudfoundry.org/goshims/osshim"
 	"code.cloudfoundry.org/goshims/timeshim"
 	"code.cloudfoundry.org/lager/v3"
+	"code.cloudfoundry.org/volumedriver/internal/syncmap"
 	"code.cloudfoundry.org/volumedriver/mountchecker"
 )
 
 type NfsVolumeInfo struct {
 	Opts                    map[string]interface{} `json:"-"` // don't store opts
-	wg                      sync.WaitGroup
-	mountError              string
-	dockerdriver.VolumeInfo // see dockerdriver.resources.go
+	dockerdriver.VolumeInfo                        // see dockerdriver.resources.go
 }
 
 type OsHelper interface {
@@ -32,8 +30,7 @@ type OsHelper interface {
 }
 
 type VolumeDriver struct {
-	volumes       map[string]*NfsVolumeInfo
-	volumesLock   sync.RWMutex
+	volumes       *syncmap.SyncMap[NfsVolumeInfo]
 	os            osshim.Os
 	filepath      filepathshim.Filepath
 	ioutil        ioutilshim.Ioutil
@@ -46,7 +43,7 @@ type VolumeDriver struct {
 
 func NewVolumeDriver(logger lager.Logger, os osshim.Os, filepath filepathshim.Filepath, ioutil ioutilshim.Ioutil, time timeshim.Time, mountChecker mountchecker.MountChecker, mountPathRoot string, mounter Mounter, oshelper OsHelper) *VolumeDriver {
 	d := &VolumeDriver{
-		volumes:       map[string]*NfsVolumeInfo{},
+		volumes:       syncmap.New[NfsVolumeInfo](),
 		os:            os,
 		filepath:      filepath,
 		ioutil:        ioutil,
@@ -97,17 +94,11 @@ func (d *VolumeDriver) Create(env dockerdriver.Env, createRequest dockerdriver.C
 			Opts:       createRequest.Opts,
 		}
 
-		d.volumesLock.Lock()
-		defer d.volumesLock.Unlock()
-
-		d.volumes[createRequest.Name] = &volInfo
+		d.volumes.Put(createRequest.Name, volInfo)
 	} else {
 		existing.Opts = createRequest.Opts
 
-		d.volumesLock.Lock()
-		defer d.volumesLock.Unlock()
-
-		d.volumes[createRequest.Name] = existing
+		d.volumes.Put(createRequest.Name, existing)
 	}
 
 	err = d.persistState(driverhttp.EnvWithLogger(logger, env))
@@ -120,15 +111,12 @@ func (d *VolumeDriver) Create(env dockerdriver.Env, createRequest dockerdriver.C
 }
 
 func (d *VolumeDriver) List(_ dockerdriver.Env) dockerdriver.ListResponse {
-	d.volumesLock.RLock()
-	defer d.volumesLock.RUnlock()
-
 	listResponse := dockerdriver.ListResponse{
 		Volumes: []dockerdriver.VolumeInfo{},
 	}
 
-	for _, volume := range d.volumes {
-		listResponse.Volumes = append(listResponse.Volumes, volume.VolumeInfo)
+	for _, val := range d.volumes.Values() {
+		listResponse.Volumes = append(listResponse.Volumes, val.VolumeInfo)
 	}
 	listResponse.Err = ""
 	return listResponse
@@ -143,57 +131,30 @@ func (d *VolumeDriver) Mount(env dockerdriver.Env, mountRequest dockerdriver.Mou
 		return dockerdriver.MountResponse{Err: "Missing mandatory 'volume_name'"}
 	}
 
-	var doMount bool
-	var opts map[string]interface{}
-	var mountPath string
-	var wg *sync.WaitGroup
+	volume, ok := d.volumes.Get(mountRequest.Name)
+	if !ok {
+		return dockerdriver.MountResponse{Err: fmt.Sprintf("Volume '%s' must be created before being mounted", mountRequest.Name)}
+	}
 
-	ret := func() dockerdriver.MountResponse {
+	mountPath := d.mountPath(driverhttp.EnvWithLogger(logger, env), volume.Name)
+	volume.Mountpoint = mountPath
+	logger.Info("mounting-volume", lager.Data{"id": volume.Name, "mountpoint": mountPath})
+	logger.Info("mount-source", lager.Data{"source": volume.Opts["source"].(string)})
 
-		d.volumesLock.Lock()
-		defer d.volumesLock.Unlock()
+	doMount := volume.MountCount < 1
+	volume.MountCount++
+	logger.Info("volume-ref-count-incremented", lager.Data{"name": volume.Name, "count": volume.MountCount})
 
-		volume := d.volumes[mountRequest.Name]
-		if volume == nil {
-			return dockerdriver.MountResponse{Err: fmt.Sprintf("Volume '%s' must be created before being mounted", mountRequest.Name)}
-		}
-
-		mountPath = d.mountPath(driverhttp.EnvWithLogger(logger, env), volume.Name)
-
-		logger.Info("mounting-volume", lager.Data{"id": volume.Name, "mountpoint": mountPath})
-		logger.Info("mount-source", lager.Data{"source": volume.Opts["source"].(string)})
-
-		if volume.MountCount < 1 {
-			doMount = true
-			volume.wg.Add(1)
-			opts = map[string]interface{}{}
-			for k, v := range volume.Opts {
-				opts[k] = v
-			}
-		}
-
-		volume.Mountpoint = mountPath
-		volume.MountCount++
-
-		logger.Info("volume-ref-count-incremented", lager.Data{"name": volume.Name, "count": volume.MountCount})
-
-		if err := d.persistState(driverhttp.EnvWithLogger(logger, env)); err != nil {
-			logger.Error("persist-state-failed", err)
-			return dockerdriver.MountResponse{Err: fmt.Sprintf("persist state failed when mounting: %s", err.Error())}
-		}
-
-		wg = &volume.wg
-		return dockerdriver.MountResponse{Mountpoint: volume.Mountpoint}
-	}()
-
-	if ret.Err != "" {
-		return ret
+	d.volumes.Put(mountRequest.Name, volume)
+	if err := d.persistState(driverhttp.EnvWithLogger(logger, env)); err != nil {
+		logger.Error("persist-state-failed", err)
+		return dockerdriver.MountResponse{Err: fmt.Sprintf("persist state failed when mounting: %s", err.Error())}
 	}
 
 	if doMount {
 		mountStartTime := d.time.Now()
 
-		err := d.mount(driverhttp.EnvWithLogger(logger, env), opts, mountPath)
+		err := d.mount(driverhttp.EnvWithLogger(logger, env), copyOpts(volume.Opts), mountPath)
 
 		mountEndTime := d.time.Now()
 		mountDuration := mountEndTime.Sub(mountStartTime)
@@ -201,54 +162,29 @@ func (d *VolumeDriver) Mount(env dockerdriver.Env, mountRequest dockerdriver.Mou
 			logger.Error("mount-duration-too-high", nil, lager.Data{"mount-duration-in-second": mountDuration / time.Second, "warning": "This may result in container creation failure!"})
 		}
 
-		func() {
-			d.volumesLock.Lock()
-			defer d.volumesLock.Unlock()
-
-			volume := d.volumes[mountRequest.Name]
-			if volume == nil {
-				ret = dockerdriver.MountResponse{Err: fmt.Sprintf("Volume '%s' not found", mountRequest.Name)}
-			} else if err != nil {
-				if _, ok := err.(dockerdriver.SafeError); ok {
-					errBytes, m_err := json.Marshal(err)
-					if m_err != nil {
-						logger.Error("failed-to-marshal-safeerror", m_err)
-						volume.mountError = err.Error()
-					}
-					volume.mountError = string(errBytes)
-				} else {
-					volume.mountError = err.Error()
-				}
-			}
-		}()
-
-		wg.Done()
-	}
-
-	wg.Wait()
-
-	return func() dockerdriver.MountResponse {
-		d.volumesLock.Lock()
-		defer d.volumesLock.Unlock()
-
-		volume := d.volumes[mountRequest.Name]
-		if volume == nil {
-			return dockerdriver.MountResponse{Err: fmt.Sprintf("Volume '%s' not found", mountRequest.Name)}
-		} else if volume.mountError != "" {
-			return dockerdriver.MountResponse{Err: volume.mountError}
-		} else {
-			// Check the volume to make sure it's still mounted before handing it out again.
-			if !doMount && !d.mounter.Check(driverhttp.EnvWithLogger(logger, env), volume.Name, volume.Mountpoint) {
-				wg.Add(1)
-				defer wg.Done()
-				if err := d.mount(driverhttp.EnvWithLogger(logger, env), volume.Opts, mountPath); err != nil {
-					logger.Error("remount-volume-failed", err)
-					return dockerdriver.MountResponse{Err: fmt.Sprintf("Error remounting volume: %s", err.Error())}
-				}
-			}
+		switch err.(type) {
+		case nil:
 			return dockerdriver.MountResponse{Mountpoint: volume.Mountpoint}
+		case dockerdriver.SafeError:
+			errBytes, mErr := json.Marshal(err)
+			if mErr != nil {
+				logger.Error("failed-to-marshal-safeerror", mErr)
+				return dockerdriver.MountResponse{Err: err.Error()}
+			}
+			return dockerdriver.MountResponse{Err: string(errBytes)}
+		default:
+			return dockerdriver.MountResponse{Err: err.Error()}
 		}
-	}()
+	} else {
+		// Check the volume to make sure it's still mounted before handing it out again.
+		if !d.mounter.Check(driverhttp.EnvWithLogger(logger, env), volume.Name, volume.Mountpoint) {
+			if err := d.mount(driverhttp.EnvWithLogger(logger, env), volume.Opts, mountPath); err != nil {
+				logger.Error("remount-volume-failed", err)
+				return dockerdriver.MountResponse{Err: fmt.Sprintf("Error remounting volume: %s", err.Error())}
+			}
+		}
+		return dockerdriver.MountResponse{Mountpoint: volume.Mountpoint}
+	}
 }
 
 func (d *VolumeDriver) Path(env dockerdriver.Env, pathRequest dockerdriver.PathRequest) dockerdriver.PathResponse {
@@ -276,15 +212,14 @@ func (d *VolumeDriver) Path(env dockerdriver.Env, pathRequest dockerdriver.PathR
 
 func (d *VolumeDriver) Unmount(env dockerdriver.Env, unmountRequest dockerdriver.UnmountRequest) dockerdriver.ErrorResponse {
 	logger := env.Logger().Session("unmount", lager.Data{"volume": unmountRequest.Name})
+	logger.Info("start")
+	defer logger.Info("end")
 
 	if unmountRequest.Name == "" {
 		return dockerdriver.ErrorResponse{Err: "Missing mandatory 'volume_name'"}
 	}
 
-	d.volumesLock.Lock()
-	defer d.volumesLock.Unlock()
-
-	volume, ok := d.volumes[unmountRequest.Name]
+	volume, ok := d.volumes.Get(unmountRequest.Name)
 	if !ok {
 		logger.Error("failed-no-such-volume-found", fmt.Errorf("could not find volume %s", unmountRequest.Name))
 
@@ -306,8 +241,11 @@ func (d *VolumeDriver) Unmount(env dockerdriver.Env, unmountRequest dockerdriver
 	volume.MountCount--
 	logger.Info("volume-ref-count-decremented", lager.Data{"name": volume.Name, "count": volume.MountCount})
 
-	if volume.MountCount < 1 {
-		delete(d.volumes, unmountRequest.Name)
+	switch volume.MountCount {
+	case 0:
+		d.volumes.Delete(unmountRequest.Name)
+	default:
+		d.volumes.Put(unmountRequest.Name, volume)
 	}
 
 	if err := d.persistState(driverhttp.EnvWithLogger(logger, env)); err != nil {
@@ -341,9 +279,7 @@ func (d *VolumeDriver) Remove(env dockerdriver.Env, removeRequest dockerdriver.R
 
 	logger.Info("removing-volume", lager.Data{"name": removeRequest.Name})
 
-	d.volumesLock.Lock()
-	defer d.volumesLock.Unlock()
-	delete(d.volumes, removeRequest.Name)
+	d.volumes.Delete(removeRequest.Name)
 
 	if err := d.persistState(driverhttp.EnvWithLogger(logger, env)); err != nil {
 		return dockerdriver.ErrorResponse{Err: fmt.Sprintf("failed to persist state when removing: %s", err.Error())}
@@ -366,17 +302,15 @@ func (d *VolumeDriver) Get(env dockerdriver.Env, getRequest dockerdriver.GetRequ
 	}
 }
 
-func (d *VolumeDriver) getVolume(env dockerdriver.Env, volumeName string) (*NfsVolumeInfo, error) {
+func (d *VolumeDriver) getVolume(env dockerdriver.Env, volumeName string) (NfsVolumeInfo, error) {
 	logger := env.Logger().Session("get-volume")
-	d.volumesLock.RLock()
-	defer d.volumesLock.RUnlock()
 
-	if vol, ok := d.volumes[volumeName]; ok {
+	if vol, ok := d.volumes.Get(volumeName); ok {
 		logger.Info("getting-volume", lager.Data{"name": volumeName})
 		return vol, nil
 	}
 
-	return &NfsVolumeInfo{}, errors.New("Volume not found")
+	return NfsVolumeInfo{}, errors.New("Volume not found")
 }
 
 func (d *VolumeDriver) Capabilities(env dockerdriver.Env) dockerdriver.CapabilitiesResponse {
@@ -483,21 +417,13 @@ func (d *VolumeDriver) restoreState(env dockerdriver.Env) {
 		logger.Info("failed-to-read-state-file", lager.Data{"err": err, "stateFile": stateFile})
 		return
 	}
+	logger.Info("state", lager.Data{"state": string(stateData)})
 
-	state := map[string]*NfsVolumeInfo{}
-	err = json.Unmarshal(stateData, &state)
-
-	logger.Info("state", lager.Data{"state": state})
-
-	if err != nil {
+	if err := json.Unmarshal(stateData, d.volumes); err != nil {
 		logger.Error("failed-to-unmarshall-state", err, lager.Data{"stateFile": stateFile})
 		return
 	}
 	logger.Info("state-restored", lager.Data{"state-file": stateFile})
-
-	d.volumesLock.Lock()
-	defer d.volumesLock.Unlock()
-	d.volumes = state
 }
 
 func (d *VolumeDriver) unmount(env dockerdriver.Env, name string, mountPath string) error {
@@ -547,9 +473,10 @@ func (d *VolumeDriver) checkMounts(env dockerdriver.Env) {
 	logger.Info("start")
 	defer logger.Info("end")
 
-	for key, mount := range d.volumes {
-		if !d.mounter.Check(driverhttp.EnvWithLogger(logger, env), key, mount.VolumeInfo.Mountpoint) {
-			delete(d.volumes, key)
+	for _, key := range d.volumes.Keys() {
+		mount, ok := d.volumes.Get(key)
+		if ok && !d.mounter.Check(driverhttp.EnvWithLogger(logger, env), key, mount.VolumeInfo.Mountpoint) {
+			d.volumes.Delete(key)
 		}
 	}
 }
@@ -560,17 +487,27 @@ func (d *VolumeDriver) Drain(env dockerdriver.Env) error {
 	defer logger.Info("end")
 
 	// flush any volumes that are still in our map
-	for key, mount := range d.volumes {
-		if mount.Mountpoint != "" && mount.MountCount > 0 {
-			err := d.unmount(env, mount.Name, mount.Mountpoint)
-			if err != nil {
-				logger.Error("drain-unmount-failed", err, lager.Data{"mount-name": mount.Name, "mount-point": mount.Mountpoint})
+	for _, key := range d.volumes.Keys() {
+		if mount, ok := d.volumes.Get(key); ok {
+			if mount.Mountpoint != "" && mount.MountCount > 0 {
+				err := d.unmount(env, mount.Name, mount.Mountpoint)
+				if err != nil {
+					logger.Error("drain-unmount-failed", err, lager.Data{"mount-name": mount.Name, "mount-point": mount.Mountpoint})
+				}
 			}
+			d.volumes.Delete(key)
 		}
-		delete(d.volumes, key)
 	}
 
 	d.mounter.Purge(env, d.mountPathRoot)
 
 	return nil
+}
+
+func copyOpts(input map[string]any) map[string]any {
+	output := make(map[string]any)
+	for k, v := range input {
+		output[k] = v
+	}
+	return output
 }
