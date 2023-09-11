@@ -14,8 +14,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20230320190829-8f91c367795b h1:FjTuGbVBKe
 code.cloudfoundry.org/tlsconfig v0.0.0-20230320190829-8f91c367795b/go.mod h1:C8SxvGRSutmgzV2FxH8Zwqz2Q8HsaAITQRQFKhlDzPw=
 code.cloudfoundry.org/volume-mount-options v0.66.0 h1:VP85P1pHZH2yy5nZcHH2t0fdjwsXEl84SbWJDxCBHxU=
 code.cloudfoundry.org/volume-mount-options v0.66.0/go.mod h1:rGiN0FtoBv5RkjymJ3XbRu/7GOpn6nR5aczitFpeaJI=
-code.cloudfoundry.org/volumedriver v0.68.0 h1:eguurJwsHtvVwQa5RL7bK9SORaFX8DKmmH/Z6p9MZMQ=
-code.cloudfoundry.org/volumedriver v0.68.0/go.mod h1:+3B5aFhb1qUvGGkD8yqaArgpTlMRrVkQb1OXA94hrrc=
+code.cloudfoundry.org/volumedriver v0.69.0 h1:pQcihpFcyfpj+eWV90OakSVYdIU3u3lutEDA61tRIa0=
+code.cloudfoundry.org/volumedriver v0.69.0/go.mod h1:+3B5aFhb1qUvGGkD8yqaArgpTlMRrVkQb1OXA94hrrc=
 filippo.io/edwards25519 v1.0.0-rc.1 h1:m0VOOB23frXZvAOK44usCgLWvtsxIoMCTBGJZlpmGfU=
 filippo.io/edwards25519 v1.0.0-rc.1/go.mod h1:N1IkdkCkiLB6tki+MYJoSx2JTY9NUlxZE7eHn5EwJns=
 github.com/bmizerany/pat v0.0.0-20210406213842-e4b6760bdd6f h1:gOO/tNZMjjvTKZWpY7YnXC72ULNLErRtp94LountVE8=
