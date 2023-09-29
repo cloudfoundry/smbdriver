@@ -10,7 +10,7 @@ require (
 	code.cloudfoundry.org/volumedriver v0.72.0
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.7.0
 	github.com/onsi/ginkgo/v2 v2.12.1
-	github.com/onsi/gomega v1.27.10
+	github.com/onsi/gomega v1.28.0
 	github.com/tedsuo/ifrit v0.0.0-20230330192023-5cba443a66c4
 	github.com/tedsuo/rata v1.0.0
 )
