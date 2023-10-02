@@ -10,3 +10,4 @@ was actually a chronological downgrade.
 
 As a result, the `v1.0.0` and `v1.1.0` had [retract directives](https://go.dev/ref/mod#go-mod-file-retract)
 added, so builds that rely on these versions will still work, but you should not get an update to them.
+
