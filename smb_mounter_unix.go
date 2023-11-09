@@ -138,7 +138,7 @@ func (m *smbMounter) Purge(env dockerdriver.Env, path string) {
 
 func NewSmbVolumeMountMask() (vmo.MountOptsMask, error) {
 	allowed := []string{"mfsymlinks", "username", "password", "file_mode", "dir_mode", "ro", "domain", "vers", "sec", "version",
-		"noserverino", "forceuid", "noforceuid", "forcegid", "noforcegid"}
+		"noserverino", "forceuid", "noforceuid", "forcegid", "noforcegid", "nodfs"}
 	defaultMap := map[string]interface{}{}
 
 	return vmo.NewMountOptsMask(
