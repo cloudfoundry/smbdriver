@@ -134,6 +134,46 @@ var _ = Describe("KernelMountOptions", func() {
 			})
 		})
 
+		Context("given a nodfs mount option with an empty string value", func() {
+			Context("true", func() {
+				BeforeEach(func() {
+					mountOpts = map[string]interface{}{
+						"nodfs": "",
+					}
+				})
+
+				It("includes the mount option", func() {
+					Expect(kernelMountOptions).To(ContainSubstring("nodfs"))
+					Expect(kernelMountOptions).NotTo(ContainSubstring("nodfs="))
+				})
+			})
+		})
+		Context("given a nodfs mount option with a string boolean value", func() {
+			Context("true", func() {
+				BeforeEach(func() {
+					mountOpts = map[string]interface{}{
+						"nodfs": "true",
+					}
+				})
+
+				It("includes the mount option", func() {
+					Expect(kernelMountOptions).To(ContainSubstring("nodfs"))
+					Expect(kernelMountOptions).NotTo(ContainSubstring("nodfs=true"))
+				})
+			})
+
+			Context("false", func() {
+				BeforeEach(func() {
+					mountOpts = map[string]interface{}{
+						"nodfs": "false",
+					}
+				})
+
+				It("does not include the mount option", func() {
+					Expect(kernelMountOptions).NotTo(ContainSubstring("nodfs"))
+				})
+			})
+		})
 		Context("given a mfsymlinks mount option with a string boolean value", func() {
 			Context("true", func() {
 				BeforeEach(func() {

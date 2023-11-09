@@ -66,11 +66,13 @@ func sanitizeMountFlags(mountOpts map[string]interface{}) (map[string]interface{
 				result["domain"] = v
 			}
 		} else if strings.ToLower(k) == "mfsymlinks" {
-			if v == "true" {
+			if v == "true" || v == "" {
 				valueless = append(valueless, "mfsymlinks")
 			}
-		} else if v == "" {
-			valueless = append(valueless, k)
+		} else if strings.ToLower(k) == "nodfs" {
+			if v == "true" || v == "" {
+				valueless = append(valueless, "nodfs")
+			}
 		} else {
 			result[k] = v
 		}
