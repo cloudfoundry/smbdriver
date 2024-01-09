@@ -119,6 +119,24 @@ var forceNoserverino = flag.Bool(
 	"Force all SMB mounts to use the 'noserverino' mount flag, regardless of what the service binding asks for",
 )
 
+// The forceNoDfs option was added on 2024-01-09.
+//
+// We had seen a large deployment in which upgrading beyond jammy v1.199
+// stemcells caused all apps using SMB mounts to fail with:
+// "CIFS: VFS: cifs_mount failed w/return code = -19"
+// errors. This turned out to be because the kernel had a regression around
+// CIFS DFS handling.
+//
+// The fix was to re-bind the SMB service with the mount parameter
+// "nodfs". This option was intended to allow the platform operator to
+// apply that fix across the whole foundation, rather than relying on
+// application authors to re-bind their SMB services.
+var forceNoDfs = flag.Bool(
+	"forceNoDfs",
+	false,
+	"Force all smb mounts to use the 'nodfs' mount flag, regardless of what the service binding asks for",
+)
+
 const listenAddress = "127.0.0.1"
 
 func main() {
@@ -139,6 +157,7 @@ func main() {
 		&ioutilshim.IoutilShim{},
 		configMask,
 		*forceNoserverino,
+		*forceNoDfs,
 	)
 
 	client := volumedriver.NewVolumeDriver(
