@@ -26,10 +26,11 @@ type smbMounter struct {
 	ioutil           ioutilshim.Ioutil
 	configMask       vmo.MountOptsMask
 	forceNoserverino bool
+	forceNoDfs       bool
 }
 
-func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask, forceNoserverino bool) volumedriver.Mounter {
-	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask, forceNoserverino: forceNoserverino}
+func NewSmbMounter(invoker invoker.Invoker, osutil osshim.Os, ioutil ioutilshim.Ioutil, configMask vmo.MountOptsMask, forceNoserverino, forceNoDfs bool) volumedriver.Mounter {
+	return &smbMounter{invoker: invoker, osutil: osutil, ioutil: ioutil, configMask: configMask, forceNoserverino: forceNoserverino, forceNoDfs: forceNoDfs}
 }
 
 func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, opts map[string]interface{}) error {
@@ -48,11 +49,17 @@ func (m *smbMounter) Mount(env dockerdriver.Env, source string, target string, o
 	}
 
 	mountFlags, mountEnvVars := ToKernelMountOptionFlagsAndEnvVars(mountOpts)
+
+	mountFlags = fmt.Sprintf("%s,uid=2000,gid=2000", mountFlags)
+
 	if m.forceNoserverino {
-		mountFlags = fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000,noserverino")
-	} else {
-		mountFlags = fmt.Sprintf("%s,%s", mountFlags, "uid=2000,gid=2000")
+		mountFlags = fmt.Sprintf("%s,noserverino", mountFlags)
 	}
+
+	if m.forceNoDfs {
+		mountFlags = fmt.Sprintf("%s,nodfs", mountFlags)
+	}
+
 	mountArgs := []string{
 		"-t", "cifs",
 		source,

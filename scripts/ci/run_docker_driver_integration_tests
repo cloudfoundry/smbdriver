@@ -30,7 +30,7 @@ apt-get update
 apt-get -y install cifs-utils 
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:/root/go/bin/:$PATH
-go install github.com/onsi/ginkgo/ginkgo@latest
+
 
 pushd smbdriver
   listen_port=8589
@@ -52,7 +52,7 @@ pushd smbdriver
     }
   } " > "${FIXTURE_FILENAME}"
 
-  go build -mod=vendor -o "/tmp/smbdriver" "cmd/smbdriver/main.go"
+  go build -o "/tmp/smbdriver" "cmd/smbdriver/main.go"
 
   mountDir="/tmp/mountdir"
   mkdir -p "${mountDir}"
@@ -63,5 +63,5 @@ pushd smbdriver
 popd
 
 pushd ${TEST_PACKAGE}
-  ginkgo -mod vendor -v -keepGoing . -race
+  go run github.com/onsi/ginkgo/v2/ginkgo -v --keep-going . -race
 popd
