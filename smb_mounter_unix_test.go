@@ -64,7 +64,7 @@ var _ = Describe("SmbMounter", func() {
 		configMask, err := smbdriver.NewSmbVolumeMountMask()
 		Expect(err).NotTo(HaveOccurred())
 
-		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
+		subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false, false)
 	})
 
 	Context("#Mount", func() {
@@ -99,7 +99,7 @@ var _ = Describe("SmbMounter", func() {
 					configMask, err := smbdriver.NewSmbVolumeMountMask()
 					Expect(err).NotTo(HaveOccurred())
 
-					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
+					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false, false)
 				})
 
 				DescribeTable("when passed smb versions", func(version string, containsVers bool) {
@@ -187,6 +187,41 @@ var _ = Describe("SmbMounter", func() {
 
 			})
 
+			Context("when configured without forceNoDfs", func() {
+				It("should not pass the nodfs mount flag", func() {
+					Expect(err).NotTo(HaveOccurred())
+					_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+					Expect(strings.Join(args, " ")).NotTo(ContainSubstring("nodfs"))
+				})
+			})
+
+			Context("when configured with forceNoDfs", func() {
+				// The forceNoDfs option was added on 2024-01-09.
+				//
+				// We had seen a large deployment in which upgrading beyond jammy v1.199
+				// stemcells caused all apps using SMB mounts to fail with:
+				// "CIFS: VFS: cifs_mount failed w/return code = -19"
+				// errors. This turned out to be because the kernel had a regression around
+				// CIFS DFS handling.
+				//
+				// The fix was to re-bind the SMB service with the mount parameter
+				// "nodfs". This option was intended to allow the platform operator to
+				// apply that fix across the whole foundation, rather than relying on
+				// application authors to re-bind their SMB services.
+				It("should pass the nodfs mount flag", func() {
+					fakeInvoker = &invokerfakes.FakeInvoker{}
+					fakeInvoker.InvokeReturns(fakeInvokeResult)
+					configMask, err := smbdriver.NewSmbVolumeMountMask()
+					Expect(err).NotTo(HaveOccurred())
+
+					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false, true)
+					Expect(subject.Mount(env, "source", "target", opts)).To(Succeed())
+
+					_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
+					Expect(strings.Join(args, " ")).To(ContainSubstring("nodfs"))
+				})
+			})
+
 			Context("when configured without forceNoserverino", func() {
 				It("should not pass the noserverino mount flag", func() {
 					Expect(err).NotTo(HaveOccurred())
@@ -213,7 +248,7 @@ var _ = Describe("SmbMounter", func() {
 					configMask, err := smbdriver.NewSmbVolumeMountMask()
 					Expect(err).NotTo(HaveOccurred())
 
-					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, true)
+					subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, true, false)
 					Expect(subject.Mount(env, "source", "target", opts)).To(Succeed())
 
 					_, _, args, _ := fakeInvoker.InvokeArgsForCall(0)
@@ -254,7 +289,7 @@ var _ = Describe("SmbMounter", func() {
 				)
 				Expect(err2).NotTo(HaveOccurred())
 
-				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false)
+				subject = smbdriver.NewSmbMounter(fakeInvoker, fakeOs, fakeIoutil, configMask, false, false)
 			})
 
 			Context("when a required option is missing", func() {
