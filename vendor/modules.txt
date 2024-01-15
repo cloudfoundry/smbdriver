@@ -13,7 +13,7 @@ code.cloudfoundry.org/debugserver
 ## explicit
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
-# code.cloudfoundry.org/goshims v0.28.0
+# code.cloudfoundry.org/goshims v0.29.0
 ## explicit; go 1.20
 code.cloudfoundry.org/goshims/bufioshim
 code.cloudfoundry.org/goshims/filepathshim
