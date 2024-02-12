@@ -3,7 +3,7 @@ module code.cloudfoundry.org/smbdriver
 require (
 	code.cloudfoundry.org/debugserver v0.0.0-20230411203424-7d38b2728d52
 	code.cloudfoundry.org/dockerdriver v0.0.0-20230406152506-76bff1bc51ef
-	code.cloudfoundry.org/goshims v0.29.0
+	code.cloudfoundry.org/goshims v0.30.0
 	code.cloudfoundry.org/lager/v3 v3.0.3
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230320190829-8f91c367795b
 	code.cloudfoundry.org/volume-mount-options v0.79.0
@@ -26,8 +26,8 @@ require (
 	github.com/nxadm/tail v1.4.11 // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
