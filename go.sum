@@ -596,8 +596,8 @@ code.cloudfoundry.org/cfhttp v2.0.0+incompatible h1:Gk1oNYalXmkebrG9kgUtZ9+FPjQG
 code.cloudfoundry.org/cfhttp v2.0.0+incompatible/go.mod h1:kwYQ8kChWl4AuUJG3vKtp1po2B91S7XoUWhoKElabmA=
 code.cloudfoundry.org/clock v1.1.0 h1:XLzC6W3Ah/Y7ht1rmZ6+QfPdt1iGWEAAtIZXgiaj57c=
 code.cloudfoundry.org/clock v1.1.0/go.mod h1:yA3fxddT9RINQL2XHS7PS+OXxKCGhfrZmlNUCIM6AKo=
-code.cloudfoundry.org/debugserver v0.0.0-20240216143506-a6177cebb9a9 h1:gOlBQcNV5D2X9s6Pxjqe4uok0IVrpqCIES18FdR6CsQ=
-code.cloudfoundry.org/debugserver v0.0.0-20240216143506-a6177cebb9a9/go.mod h1:6unDsywcXyGvj3PFGlyi2DpkzrD6bKJa55MBUTCuAs8=
+code.cloudfoundry.org/debugserver v0.0.0-20240301143847-7967b4b03e2b h1:7NCRnP0ddmUQbo89ecJRs6JBJyrzWrocPoiSlhjIML8=
+code.cloudfoundry.org/debugserver v0.0.0-20240301143847-7967b4b03e2b/go.mod h1:FnzOW2RjeG9Lx+gU96dnHa/6PTAM5w58DC7m/wKd4rE=
 code.cloudfoundry.org/dockerdriver v0.0.0-20240213153304-5bf6621f54e1 h1:ekskzxMKaqSs72N8BSGi8LHHwWm9MDzbJwXt2S4XFBs=
 code.cloudfoundry.org/dockerdriver v0.0.0-20240213153304-5bf6621f54e1/go.mod h1:tqB0l3zbTCHDEd5Pof0asPkXYuV5avhvf5g86aBhGao=
 code.cloudfoundry.org/goshims v0.30.0 h1:hVYXO5vcCTxW5mcmtrNi/r3lPr1LyVAPZ8MX4heWz7k=
@@ -785,8 +785,8 @@ github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38/go.mod h1:kpwsk12EmLe
 github.com/google/pprof v0.0.0-20210601050228-01bbb1931b22/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/pprof v0.0.0-20210609004039-a478d1d731e9/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/pprof v0.0.0-20210720184732-4bb14d4b1be1/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
-github.com/google/pprof v0.0.0-20240207164012-fb44976bdcd5 h1:E/LAvt58di64hlYjx7AsNS6C/ysHWYo+2qPCZKTQhRo=
-github.com/google/pprof v0.0.0-20240207164012-fb44976bdcd5/go.mod h1:czg5+yv1E0ZGTi6S6vVK1mke0fV+FaUhNGcd6VRS9Ik=
+github.com/google/pprof v0.0.0-20240227163752-401108e1b7e7 h1:y3N7Bm7Y9/CtpiVkw/ZWj6lSlDF3F74SfKwfTCer72Q=
+github.com/google/pprof v0.0.0-20240227163752-401108e1b7e7/go.mod h1:czg5+yv1E0ZGTi6S6vVK1mke0fV+FaUhNGcd6VRS9Ik=
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
