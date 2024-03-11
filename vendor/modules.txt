@@ -37,8 +37,8 @@ code.cloudfoundry.org/tlsconfig
 ## explicit; go 1.22.1
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.86.0
-## explicit; go 1.22.0
+# code.cloudfoundry.org/volumedriver v0.87.0
+## explicit; go 1.22.1
 code.cloudfoundry.org/volumedriver
 code.cloudfoundry.org/volumedriver/internal/syncmap
 code.cloudfoundry.org/volumedriver/invoker
