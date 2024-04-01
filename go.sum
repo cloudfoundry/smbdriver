@@ -608,8 +608,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6 h1:1ST1gDGrIB
 code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6/go.mod h1:F7K0dpcWQmW1Z0+4at/mDMg1OF89sJJmVMfo/EZR3iI=
 code.cloudfoundry.org/volume-mount-options v0.82.0 h1:MrGSGbIL5bEqmQPKAIuuMOM+3Pcn4esvTW4lBqxgoQw=
 code.cloudfoundry.org/volume-mount-options v0.82.0/go.mod h1:EgyyY0IZM6K3EZE75dOd7lp2Jvlhcjh7kB4vRa4QFp4=
-code.cloudfoundry.org/volumedriver v0.89.0 h1:Jdkn0fRQSIqqfXXi1UlS9TW/wxseGXRcadfR/WK6aCw=
-code.cloudfoundry.org/volumedriver v0.89.0/go.mod h1:U9Svgqbkstqg5Igr8Q0Ihlf0SreV/WQQ4wWTBnh6H/0=
+code.cloudfoundry.org/volumedriver v0.90.0 h1:PVzrGSNSCqLqFSMfKkQ64UyDnzx2J04PrY+/AgzZVTE=
+code.cloudfoundry.org/volumedriver v0.90.0/go.mod h1:CWgoA2zc3DSZYVb1Vo9yDJVnRpwNFPtYBeY3lewRbR8=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
