@@ -9,7 +9,7 @@ code.cloudfoundry.org/clock
 # code.cloudfoundry.org/debugserver v0.0.0-20240504164949-ec4d5482b504
 ## explicit; go 1.19
 code.cloudfoundry.org/debugserver
-# code.cloudfoundry.org/dockerdriver v0.0.0-20240415151549-8a2e51b861b3
+# code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0
 ## explicit; go 1.19
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
@@ -37,7 +37,7 @@ code.cloudfoundry.org/tlsconfig
 ## explicit; go 1.22.2
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
-# code.cloudfoundry.org/volumedriver v0.94.0
+# code.cloudfoundry.org/volumedriver v0.95.0
 ## explicit; go 1.22.2
 code.cloudfoundry.org/volumedriver
 code.cloudfoundry.org/volumedriver/internal/syncmap

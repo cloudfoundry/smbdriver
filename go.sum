@@ -598,8 +598,8 @@ code.cloudfoundry.org/clock v1.1.0 h1:XLzC6W3Ah/Y7ht1rmZ6+QfPdt1iGWEAAtIZXgiaj57
 code.cloudfoundry.org/clock v1.1.0/go.mod h1:yA3fxddT9RINQL2XHS7PS+OXxKCGhfrZmlNUCIM6AKo=
 code.cloudfoundry.org/debugserver v0.0.0-20240504164949-ec4d5482b504 h1:CML09I/veaVz2KLr8aIqQpX+Cc4GV1lbBjQR+E7UMbI=
 code.cloudfoundry.org/debugserver v0.0.0-20240504164949-ec4d5482b504/go.mod h1:UYFt+GHL7cE9ib0TtMJDYIug4w1tK1TVZit6hZ5/SZM=
-code.cloudfoundry.org/dockerdriver v0.0.0-20240415151549-8a2e51b861b3 h1:YSTFgZIJcmC4MT5ZGYbYQ5JZysb+vP4//4mii9w/SjE=
-code.cloudfoundry.org/dockerdriver v0.0.0-20240415151549-8a2e51b861b3/go.mod h1:VrOyJbn5y/OSxSchDYeAzZa2HJ/r0/rsacdV+iqVSY0=
+code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0 h1:LtXPi3kfkRv1v9r4Z1vrx8C4MrzTQOAD5UikJ2LnTBI=
+code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0/go.mod h1:MMEvnCuQXFE3x52RigbEEp8CGpqVWdSzEvnUseIPv/I=
 code.cloudfoundry.org/goshims v0.34.0 h1:R0t2MLPOrcqVLO8JrKSvEtE9P7t5caF5MaLrb1i4xGk=
 code.cloudfoundry.org/goshims v0.34.0/go.mod h1:yUG2P9BnyBLJICLuH5bdDDPiRcPkhZDpUmxkrecBvdU=
 code.cloudfoundry.org/lager/v3 v3.0.3 h1:/UTmadZfIaKuT/whEinSxK1mzRfNu1uPfvjFfGqiwzM=
@@ -608,8 +608,8 @@ code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6 h1:1ST1gDGrIB
 code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6/go.mod h1:F7K0dpcWQmW1Z0+4at/mDMg1OF89sJJmVMfo/EZR3iI=
 code.cloudfoundry.org/volume-mount-options v0.86.0 h1:szHQo3HaY4ZliiPn4xGdED8nfd70eM5I4/JECURdevY=
 code.cloudfoundry.org/volume-mount-options v0.86.0/go.mod h1:W5RcqnfBJnfUkayrF0HiEszimZuYA9zEgkqsqVt7458=
-code.cloudfoundry.org/volumedriver v0.94.0 h1:RyH+b2IOpl7dKa6p4DRRGlMGWGK3FX3OwUnGdsfoOIw=
-code.cloudfoundry.org/volumedriver v0.94.0/go.mod h1:cJJe0WCp60tMtRjFxQyb9/B33ahFrUKyHKRA65ddvcw=
+code.cloudfoundry.org/volumedriver v0.95.0 h1:B8Eg/r9Yhks0ofP3GGGs5xbpdkeK8cRKGitoCTa+8tI=
+code.cloudfoundry.org/volumedriver v0.95.0/go.mod h1:59AgjH3MxhoH24gBgyW2mYKSfQtGKBUhuags6P6Q+z8=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
