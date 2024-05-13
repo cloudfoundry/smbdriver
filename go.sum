@@ -600,8 +600,8 @@ code.cloudfoundry.org/debugserver v0.0.0-20240510172920-2e46c6dc69d9 h1:IUMSJAmS
 code.cloudfoundry.org/debugserver v0.0.0-20240510172920-2e46c6dc69d9/go.mod h1:w8y3Kai28/2VnvER31QVzlKEqPcSkE87D4F/YhWakAU=
 code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0 h1:LtXPi3kfkRv1v9r4Z1vrx8C4MrzTQOAD5UikJ2LnTBI=
 code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0/go.mod h1:MMEvnCuQXFE3x52RigbEEp8CGpqVWdSzEvnUseIPv/I=
-code.cloudfoundry.org/goshims v0.34.0 h1:R0t2MLPOrcqVLO8JrKSvEtE9P7t5caF5MaLrb1i4xGk=
-code.cloudfoundry.org/goshims v0.34.0/go.mod h1:yUG2P9BnyBLJICLuH5bdDDPiRcPkhZDpUmxkrecBvdU=
+code.cloudfoundry.org/goshims v0.35.0 h1:2QJem6S/YfW7lHDalUsWyH80zoAF1gV89tir8b/myVQ=
+code.cloudfoundry.org/goshims v0.35.0/go.mod h1:ED2Cq4h2VftZlduIo/PJLP0rPGGwgwpY8T+kyy54KJo=
 code.cloudfoundry.org/lager/v3 v3.0.3 h1:/UTmadZfIaKuT/whEinSxK1mzRfNu1uPfvjFfGqiwzM=
 code.cloudfoundry.org/lager/v3 v3.0.3/go.mod h1:Zn5q1SrIuuHjEUE7xerMKt3ztunrJQCZETAo7rV0CH8=
 code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6 h1:1ST1gDGrIBPt3Tuhx1tfxVxK5UQq7p6sqgdHBIeuSwM=
