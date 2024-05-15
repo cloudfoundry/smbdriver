@@ -9,10 +9,14 @@ image_resource:
 inputs:
   - name: smbdriver
   - name: docker_driver_integration_tests
+  - name: docker_image_samba_input
+    optional: true
 
 params:
   TEST_PACKAGE: docker_driver_integration_tests
   BINDINGS_FILE: smb-bindings.json
+  SAMBA_IMAGE_NAME: dperson/samba
+  
 
 run:
   path: smbdriver/scripts/ci/run_docker_driver_integration_tests
