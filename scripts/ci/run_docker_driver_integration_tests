@@ -13,12 +13,16 @@ export DOCKER_HOST="tcp://${OUTER_CONTAINER_IP}:4243"
 
 start_docker "${certs_dir}"
 
+if [[ -d docker_image_samba_input ]]; then
+  docker load -i docker_image_samba_input/image.tar
+fi
+
 SMB_REMOTE_PATH="//localhost/example1"
 SMB_USERNAME="example1"
 SMB_PASSWORD="badpass"
 
 docker --tlsverify --tlscacert=${certs_dir}/ca.pem --tlscert=${certs_dir}/cert.pem --tlskey=${certs_dir}/key.pem \
-            run -it -p 139:139 -p 445:445 -d harbor-repo.vmware.com/dockerhub-proxy-cache/dperson/samba -p \
+            run -it -p 139:139 -p 445:445 -d ${SAMBA_IMAGE_NAME} -p \
             -u "$SMB_USERNAME;$SMB_PASSWORD" \
             -s "$SMB_USERNAME;/$SMB_USERNAME;no;no;no;$SMB_USERNAME" \
             -p \
