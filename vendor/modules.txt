@@ -33,8 +33,8 @@ code.cloudfoundry.org/lager/v3/lagertest
 # code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6
 ## explicit; go 1.19
 code.cloudfoundry.org/tlsconfig
-# code.cloudfoundry.org/volume-mount-options v0.90.0
-## explicit; go 1.22.3
+# code.cloudfoundry.org/volume-mount-options v0.91.0
+## explicit; go 1.22.4
 code.cloudfoundry.org/volume-mount-options
 code.cloudfoundry.org/volume-mount-options/utils
 # code.cloudfoundry.org/volumedriver v0.96.0

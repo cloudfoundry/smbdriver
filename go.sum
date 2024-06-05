@@ -606,8 +606,8 @@ code.cloudfoundry.org/lager/v3 v3.0.3 h1:/UTmadZfIaKuT/whEinSxK1mzRfNu1uPfvjFfGq
 code.cloudfoundry.org/lager/v3 v3.0.3/go.mod h1:Zn5q1SrIuuHjEUE7xerMKt3ztunrJQCZETAo7rV0CH8=
 code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6 h1:1ST1gDGrIBPt3Tuhx1tfxVxK5UQq7p6sqgdHBIeuSwM=
 code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6/go.mod h1:F7K0dpcWQmW1Z0+4at/mDMg1OF89sJJmVMfo/EZR3iI=
-code.cloudfoundry.org/volume-mount-options v0.90.0 h1:1pENRhy8ib9lirWkkr9IyNfW+buu72o6PAXfPvwsdME=
-code.cloudfoundry.org/volume-mount-options v0.90.0/go.mod h1:Zk4fmMtL8MGBg/YDGe0elLF9ZEEYFTsYL9xf6RW3t1c=
+code.cloudfoundry.org/volume-mount-options v0.91.0 h1:5mjzIS9P4+nvqhfEDiwIXeJIAwgNTRbcstyn3Gb2vfw=
+code.cloudfoundry.org/volume-mount-options v0.91.0/go.mod h1:n05mvauMe1s80FIc3zst+KqpZNMqtLjGDrLVkg9bFWQ=
 code.cloudfoundry.org/volumedriver v0.96.0 h1:MKMzeJpzKux2KEGpyF7nlhQrZKCxBw4CdP91UdqLoy4=
 code.cloudfoundry.org/volumedriver v0.96.0/go.mod h1:r19vg7YQV3DDaP2hHNTuWM7F5KDpRYxOHVMUBUPV564=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
