@@ -1,7 +1,7 @@
 module code.cloudfoundry.org/smbdriver
 
 require (
-	code.cloudfoundry.org/debugserver v0.0.0-20240618173558-74ca23c0ae8c
+	code.cloudfoundry.org/debugserver v0.0.0-20240625174232-b3229b6daea3
 	code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0
 	code.cloudfoundry.org/goshims v0.37.0
 	code.cloudfoundry.org/lager/v3 v3.0.3
@@ -23,7 +23,7 @@ require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/pprof v0.0.0-20240618054019-d3b898a103f8 // indirect
+	github.com/google/pprof v0.0.0-20240625030939-27f56978b8b0 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
