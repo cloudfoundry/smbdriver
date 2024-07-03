@@ -1,15 +1,14 @@
-# code.cloudfoundry.org/cfhttp v2.0.0+incompatible
-## explicit
-code.cloudfoundry.org/cfhttp
-code.cloudfoundry.org/cfhttp/handlers
-code.cloudfoundry.org/cfhttp/unix_transport
+# code.cloudfoundry.org/cfhttp/v2 v2.1.0
+## explicit; go 1.19
+code.cloudfoundry.org/cfhttp/v2
+code.cloudfoundry.org/cfhttp/v2/handlers
 # code.cloudfoundry.org/clock v1.1.0
 ## explicit; go 1.20
 code.cloudfoundry.org/clock
 # code.cloudfoundry.org/debugserver v0.0.0-20240625174232-b3229b6daea3
 ## explicit; go 1.19
 code.cloudfoundry.org/debugserver
-# code.cloudfoundry.org/dockerdriver v0.0.0-20240425154110-a68c794c8bb0
+# code.cloudfoundry.org/dockerdriver v0.0.0-20240620154825-441e44b5dbb3
 ## explicit; go 1.19
 code.cloudfoundry.org/dockerdriver
 code.cloudfoundry.org/dockerdriver/driverhttp
@@ -30,7 +29,7 @@ code.cloudfoundry.org/lager/v3/internal/truncate
 code.cloudfoundry.org/lager/v3/lagerctx
 code.cloudfoundry.org/lager/v3/lagerflags
 code.cloudfoundry.org/lager/v3/lagertest
-# code.cloudfoundry.org/tlsconfig v0.0.0-20240308143921-4b874b341ed6
+# code.cloudfoundry.org/tlsconfig v0.0.0-20240522170710-79df114af82a
 ## explicit; go 1.19
 code.cloudfoundry.org/tlsconfig
 # code.cloudfoundry.org/volume-mount-options v0.91.0
