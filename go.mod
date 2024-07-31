@@ -3,7 +3,7 @@ module code.cloudfoundry.org/smbdriver
 require (
 	code.cloudfoundry.org/debugserver v0.0.0-20240708175632-eff029929d18
 	code.cloudfoundry.org/dockerdriver v0.0.0-20240620154825-441e44b5dbb3
-	code.cloudfoundry.org/goshims v0.37.0
+	code.cloudfoundry.org/goshims v0.38.0
 	code.cloudfoundry.org/lager/v3 v3.0.3
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240522170710-79df114af82a
 	code.cloudfoundry.org/volume-mount-options v0.91.0
@@ -34,4 +34,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-go 1.22.5
+go 1.22.6
